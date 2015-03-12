@@ -1,0 +1,5 @@
+ln -s ../tfcommon/keys.tfvars keys.tfvars
+ln -s ../tfcommon/network.tf network.tf
+ln -s ../tfcommon/network.tfvars network.tfvars
+ln -s ../tfcommon/provider.tf provider.tf
+ln -s ../tfcommon/variables.tf variables.tf

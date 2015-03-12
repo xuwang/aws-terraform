@@ -1,0 +1,82 @@
+# coreos.units.* components
+    - name: format-disk.service
+      command: start
+      content: |
+        [Unit]
+        Description=Formats the disk drive
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        Environment="LABEL=var-lib-docker"
+        Environment="DEV=/dev/xvdb"
+        # Do not wipe btrfs if it's already being used.'
+        ExecStart=-/bin/bash -c "if ! findfs LABEL=$LABEL > /tmp/label.$LABEL; then  wipefs -f $DEV && mkfs.btrfs -f -L $LABEL $DEV && echo wiped; fi"
+    - name: var-lib-docker.mount
+      command: start
+      content: |
+        [Unit]
+        Description=Mount disk to /var/lib/docker
+        Requires=format-disk.service
+        After=format-disk.service
+        Before=docker.service
+        [Mount]
+        What=/dev/xvdb
+        Where=/var/lib/docker
+        Type=btrfs
+
+    - name: setup-etcdctl-env.service
+      command: start
+      content: |       
+          [Unit]
+          Description=Setup etcdctl env vars
+          ConditionPathExists=/etc/environment
+          
+          [Service]
+          Type=oneshot
+          RemainAfterExit=true
+          ExecStart=/bin/bash -c "source /etc/profile.d/etcd-envvars.sh; env | grep -E 'ETCDCTL|FLEETCTL|INSTANCE_ID' >>  /etc/environment"
+          [Install]
+          WantedBy=multi-user.target
+    - name: s3sync.service
+      command: start
+      content: |
+        [Unit]
+        Description=s3sync
+        Requires=docker.service
+        After=docker.service
+        
+        [Service]
+        EnvironmentFile=/etc/environment
+        TimeoutStartSec=10min
+        ExecStartPre=-/usr/bin/docker rm s3sync
+        ExecStart=/opt/bin/s3sync.sh
+        [Install]
+        WantedBy=multi-user.target
+    - name: s3sync.timer
+      command: start
+      content: |      
+        [Unit]
+        Description=s3sync timer
+        
+        [Timer]
+        OnCalendar=*:*:00
+        #OnUnitActiveSec=30
+        
+        [Install]
+        WantedBy=multi-user.target
+    - name: user-data.service
+      command: start
+      content: |       
+          [Unit]
+          Description=A hook to excute bootstrap script at boot
+          Wants=s3sync.service
+          After=s3sync.service
+          
+          [Service]
+          Type=oneshot
+          RemainAfterExit=true
+          EnvironmentFile=/etc/environment
+          ExecStartPre=/usr/bin/bash -c "until [ -d /var/lib/apps/bin ]; do sleep 3; done; chmod a+x /var/lib/apps/bin/*"
+          ExecStart=/var/lib/apps/bin/user-data.sh
+          [Install]
+          WantedBy=multi-user.target

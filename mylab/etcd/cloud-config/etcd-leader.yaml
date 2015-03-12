@@ -1,0 +1,16 @@
+#cloud-config
+
+coreos:
+  etcd:
+    addr: $private_ipv4:4001
+    peer-addr: $private_ipv4:7001
+    # The number needs to be at least: one + peers allowed to particiate election
+    cluster-active-size: 9
+    # This is the first in the cluster, no peers list.
+    #peers: "10.0.2.50:7001,10.0.2.100:7001,10.0.2.150:7001"
+  units:
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      mask: true
+      

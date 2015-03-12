@@ -1,0 +1,67 @@
+#cloud-config
+
+# Workers cloud-config: run fleetd only
+coreos:
+  fleet:
+    public-ip: $private_ipv4
+    metadata: "platform=ec2,provider=aws,region=us-west-2,disk=ssd,role=hosting"
+    etcd_servers: "http://10.0.2.50:4001,http://10.0.2.100:4001,http://10.0.2.150:4001"
+  update:
+    reboot-strategy: off
+  units:
+    - name: etcd.service
+      mask: true
+    - name: fleet.service
+      command: reload-or-restart
+    - name: docker.service
+      command: start
+      drop-ins:
+        - name: 60-docker-wait-for-flannel-config.conf
+          content: |
+              [Unit]
+              After=flannel.service
+              Requires=flannel.service
+              ConditionFileNotEmpty=/run/flannel/subnet.env
+              [Service]
+              EnvironmentFile=/run/flannel/subnet.env
+              ExecStart=
+              ExecStart=/usr/bin/docker -d -H fd:// --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU} \
+                  --insecure-registry 10.0.0.0/8 --insecure-registry 172.16.0.0/12 \
+                  --insecure-registry dockerhub.mylab.example.com
+              Restart=always
+              RestartSec=5
+              Restart=on-failure
+    - name: flannel-install.service
+      command: start
+      content: |            
+          [Unit]         
+          Description=Flannel Installer
+          
+          [Service]
+          Type=oneshot
+          RemainAfterExit=true
+          Environment=FLANNEL_RELEASE_URL='https://github.com/coreos/flannel/releases/download/v0.3.0/flannel-linux-amd64-0.3.0.tar.gz'
+          Environment=FLANNEL_VERSION='0.3.0'
+          ExecStart=-/bin/mkdir -p /opt/bin
+          ExecStart=/bin/bash -c "[[ -x /opt/bin/flanneld ]] || \
+              (cd /tmp; curl -L ${FLANNEL_RELEASE_URL} | tar -xz &&  \
+              install /tmp/flannel-${FLANNEL_VERSION}/flanneld /opt/bin)"
+    - name: flannel.service
+      command: start
+      content: |            
+          [Unit]
+          Description=Flannel is an etcd backed overlay network for containers
+          Requires=flannel-install.service
+          After=flannel-install.service
+          ConditionFileIsExecutable=/opt/bin/flanneld
+          
+          [Service]
+          Environment=ETCDCTL_PEERS='http://10.0.2.50:4001,http://10.0.2.100:4001,http://10.0.2.150:4001'
+          ExecStartPre=-/usr/bin/etcdctl mkdir /coreos.com/network/mylab
+          ExecStartPre=-/usr/bin/etcdctl mk /coreos.com/network/mylab/config '{"Network":"192.168.0.0/16", "SubnetLen": 24,"SubnetMin": "192.168.1.0","SubnetMax": "192.168.99.0"}'
+          ExecStart=/bin/bash -c '/opt/bin/flanneld -iface=$private_ipv4 -etcd-prefix="/coreos.com/network/mylab" -etcd-endpoints="http://10.0.2.50:4001,http://10.0.2.100:4001,http://10.0.2.150:4001"'
+          Restart=on-failure
+          TimeoutSec=60
+          RestartSec=10
+    - name: iptables-restore.service
+      enable: true

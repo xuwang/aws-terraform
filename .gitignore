@@ -1,0 +1,13 @@
+keys.tfvars*
+keys-*.tfvars*
+*.keys
+crash.log
+*.tfplan*
+*.pem
+*.key
+.DS_Store
+.vagrant
+.git
+.registryrc
+state/
+tmp/
