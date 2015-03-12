@@ -11,13 +11,13 @@ resource "aws_security_group" "splunk_elb_sg"  {
       from_port = 80
       to_port = 80
       protocol = "tcp"
-      cidr_blocks = ["${var.allow_from_supub}", "${var.allow_from_su_pub_vpn}"]
+      cidr_blocks = ["${var.allow_from_vpc}"]
     }
     ingress {
       from_port = 443
       to_port = 443
       protocol = "tcp"
-      cidr_blocks = ["${var.allow_from_supub}", "${var.allow_from_su_pub_vpn}"]
+      cidr_blocks = ["${var.allow_from_vpc}"]
     }
     tags {
       Name = "splunk_elb_sg"

@@ -499,7 +499,6 @@ resource "aws_security_group" "rds_sg"  {
       to_port = 3306
       protocol = "tcp"
       security_groups = ["${aws_security_group.bastion_sg.id}","${aws_security_group.etcd_sg.id}", "${aws_security_group.hosting_sg.id}"]
-      cidr_blocks = ["${var.allow_from_mylab_forsythe}", "${var.allow_from_su_pub_vpn}" ]
     }
     # Allow PostgresSQL access
     ingress {
@@ -507,7 +506,6 @@ resource "aws_security_group" "rds_sg"  {
       to_port = 5432
       protocol = "tcp"
       security_groups = ["${aws_security_group.bastion_sg.id}","${aws_security_group.etcd_sg.id}", "${aws_security_group.hosting_sg.id}"]
-      cidr_blocks = ["${var.allow_from_mylab_forsythe}", "${var.allow_from_su_pub_vpn}" ]
     }
     tags {
       Name = "rds_sg"

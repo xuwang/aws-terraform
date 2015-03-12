@@ -21,16 +21,6 @@ variable "allow_from_anywhere" {
   default = "0.0.0.0/0"
 }
 
-variable "allow_from_supub" {
-  default = "171.64.0.0/14"
-}
-variable "allow_from_su_pub_vpn" {
-  default = "171.66.0.0/16"
-}
-variable "allow_from_mylab_forsythe" {
-  default = "171.66.7.0/24"
-}
-
 # get updates at https://s3.amazonaws.com/coreos.com/dist/aws/coreos-beta-hvm.template
 variable "amis" {
   default = {

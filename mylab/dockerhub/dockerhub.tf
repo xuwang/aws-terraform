@@ -53,12 +53,12 @@ resource "aws_security_group" "dockerhub" {
   #depends_on = ["aws_security_group.dockerhub_elb"]
 
   # ssh from campus and from vpc
-  description = "Allow SSH from VPC, mylab_forsythe, and 5000-8080 from vpc."
+  description = "Allow SSH from VPC."
   ingress {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = [ "${var.allow_from_mylab_forsythe}", "${var.vpc_cidr}" ]
+    cidr_blocks = [ "${var.vpc_cidr}" ]
   }
   
   ingress {

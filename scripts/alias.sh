@@ -1,6 +1,6 @@
 alias tf='terraform -module-depth=-1 --var-file=network.tfvars '
 alias tfp='tf plan --var-file=keys.tfvars --var-file=../tfcommon/network.tfvars'
-alias tfr='/Users/sfeng/bin/terraform/terraform -module-depth=-1 --var-file=network.tfvars refresh --var-file=keys.tfvars '
+alias tfr='~/bin/terraform/terraform -module-depth=-1 --var-file=network.tfvars refresh --var-file=keys.tfvars '
 alias tfdp='tf --module-depth=-1 plan  --var-file=keys.tfvars -destroy --var-file=../tfcommon/network.tfvars --out=destroy.tfplan'
 alias tfa='tf apply --var-file=keys.tfvars --var-file=../tfcommon/network.tfvars'
 alias tfda='tf apply destroy.tfplan '
