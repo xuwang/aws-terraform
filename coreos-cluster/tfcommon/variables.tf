@@ -1,15 +1,11 @@
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
 
-variable "aws_account_id" {
-  default = "012345678901"
-}
-
 variable "environment" {
   default = "green"
 }
 variable "aws_instance_type" {
-  default = "m3.medium"
+  default = "t2.micro"
 }
 
 variable "aws_region" {
@@ -25,14 +21,9 @@ variable "allow_from_anywhere" {
   default = "0.0.0.0/0"
 }
 
-variable "allow_from_supub" {
-  default = "171.64.0.0/14"
-}
-variable "allow_from_su_pub_vpn" {
-  default = "171.66.0.0/16"
-}
-variable "allow_from_mylab_forsythe" {
-  default = "171.66.7.0/24"
+# My IP address allowed to access coreos-cluster nodes, NOTE: use your own ip block.
+variable "allow_from_myip" {
+  default = "0.0.0.0/0"
 }
 
 # get updates at https://s3.amazonaws.com/coreos.com/dist/aws/coreos-beta-hvm.template
@@ -47,9 +38,8 @@ variable "iam_instance_profile" {
     default = {
       admiral = "admiral"
       etcd = "etcd"
-      hosting = "hosting"
+      worker = "worker"
       dockerhub = "dockerhub"
-      its-dashboard = "its-dashboard"
     }
 }
 
@@ -57,32 +47,18 @@ variable "aws_ec2_keypair" {
     default = {
       admiral = "admiral"
       etcd = "etcd"
-      hosting = "hosting"
+      worker = "worker"
       dockerhub = "dockerhub"
-      its-dashboard = "its-dashboard"
     }
 }
 
-variable "project_tag_mylab" {
+variable "project_tags" {
   default = {
-    key = "mylab:billing"
-    value = "mylabplatform"
+    coreos-cluster = "Key=Billing,Value=coreos-cluster"
   }
-}
-
-variable "project_tag_its-dashboard" {
-    default = {
-      key = "Billing"
-      value = "itsappsup"
-    }
 }
 
 # primary hosted zone id
 variable "aws_route53_zone_id_primary" {
   default = "Z11XFUMVHH2M4Z"
-}
-
-# primary hosted zone id
-variable "aws_route53_zone_id_postgresdb" {
-  default = "ZMT1CXRYMBKG9"
 }
