@@ -26,7 +26,11 @@ AWS docker infrastructure provisioning.
     ```
 6. Source scripts/alias.sh && alias
 
-  This will create aliases for some rerequently used terraform commands, with default variable files (key.tfvars, for instance).
+  This will create aliases for some rerequently used terraform commands, with default variable files (key.tfvars, for instance). For example:
+	```
+   alias tfp='tf plan --var-file=../tfcommon/keys.tfvars --var-file=../tfcommon/network.tfvars'
+   alias tfa='tf apply --var-file=../tfcommon/keys.tfvars --var-file=../tfcommon/network.tfvars'
+	```
 
 7. Create mylab/tfcommon/keys.tfvars
 
@@ -50,7 +54,7 @@ AWS docker infrastructure provisioning.
 
 9. Go to each AWS resource directory to create desired resource:
     ```
-    tfp --var-files=../tfcommon/keys.tfvars 
+    tfp 
     ```
  If the plan looks good:
 
