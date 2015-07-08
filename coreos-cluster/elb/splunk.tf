@@ -3,21 +3,21 @@
 #
 
 resource "aws_security_group" "splunk_elb_sg"  {
-    name = "docker-splunk_elb-sg"
+    name = "splunk_elb-sg"
     vpc_id = "${var.vpc_id}" 
-    description = "docker-splunk_elb-sg SG"
+    description = "splunk_elb-sg SG"
 
     ingress {
       from_port = 80
       to_port = 80
       protocol = "tcp"
-      cidr_blocks = ["${var.allow_from_supub}", "${var.allow_from_su_pub_vpn}"]
+      cidr_blocks = ["0.0.0.0/0"]
     }
     ingress {
       from_port = 443
       to_port = 443
       protocol = "tcp"
-      cidr_blocks = ["${var.allow_from_supub}", "${var.allow_from_su_pub_vpn}"]
+      cidr_blocks = ["0.0.0.0/0"]
     }
     tags {
       Name = "splunk_elb_sg"
@@ -28,7 +28,7 @@ resource "aws_elb" "splunk_elb" {
   name = "splunk-elb"
   
   security_groups = [ "${aws_security_group.splunk_elb_sg.id}" ]
-  subnets = ["${var.subnet_ext_elb-us-west-2a}","${var.subnet_ext_elb-us-west-2b}","${var.subnet_ext_elb-us-west-2c}"]
+  subnets = ["${var.subnet_elb-us-west-2a}","${var.subnet_elb-us-west-2b}","${var.subnet_elb-us-west-2c}"]
   cross_zone_load_balancing = "true"
   
   listener {
@@ -36,7 +36,7 @@ resource "aws_elb" "splunk_elb" {
     lb_protocol = "https"
     instance_port = 8081
     instance_protocol = "https"
-    ssl_certificate_id = "arn:aws:iam::012345678901:server-certificate/MyLabWildCardCert201711"
+    ssl_certificate_id = "${var.elb_wildcard_cert}"
   }
 
   health_check {

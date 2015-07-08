@@ -4,8 +4,8 @@
 resource "aws_elb" "nodeapp_elb" {
   name = "nodeapp-${var.environment}-elb"
   
-  security_groups = [ "${var.security_group_docker-ext-elb}" ]
-  subnets = ["${var.subnet_ext_elb-us-west-2a}","${var.subnet_ext_elb-us-west-2b}","${var.subnet_ext_elb-us-west-2c}"]
+  security_groups = [ "${var.security_group_elb}" ]
+  subnets = ["${var.subnet_elb-us-west-2a}","${var.subnet_elb-us-west-2b}","${var.subnet_elb-us-west-2c}"]
   cross_zone_load_balancing = "true"
   
   listener {

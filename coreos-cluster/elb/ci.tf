@@ -8,8 +8,8 @@
 resource "aws_elb" "jenkins_elb" {
   name = "jenkins-${var.environment}-elb"
   
-  security_groups = [ "${var.security_group_docker-ext-elb}" ]
-  subnets = ["${var.subnet_ext_elb-us-west-2a}","${var.subnet_ext_elb-us-west-2b}","${var.subnet_ext_elb-us-west-2c}"]
+  security_groups = [ "${var.security_group_elb}" ]
+  subnets = ["${var.subnet_elb-us-west-2a}","${var.subnet_elb-us-west-2b}","${var.subnet_elb-us-west-2c}"]
   cross_zone_load_balancing = "true"
   
   listener {
@@ -17,7 +17,7 @@ resource "aws_elb" "jenkins_elb" {
     lb_protocol = "https"
     instance_port = 8080
     instance_protocol = "http"
-    ssl_certificate_id = "arn:aws:iam::012345678901:server-certificate/MyLabWildCardCert201711"
+    ssl_certificate_id = "${var.elb_wildcard_cert}"
   }
 
   listener {

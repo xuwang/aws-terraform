@@ -5,15 +5,15 @@
 resource "aws_elb" "dockerhub_elb" {
   name = "dockerhub-${var.environment}-elb"
   
-  security_groups = [ "${var.security_group_docker-ext-elb}" ]
-  subnets = ["${var.subnet_ext_elb-us-west-2a}","${var.subnet_ext_elb-us-west-2b}","${var.subnet_ext_elb-us-west-2c}"]
+  security_groups = [ "${var.security_group_elb}" ]
+  subnets = ["${var.subnet_elb-us-west-2a}","${var.subnet_elb-us-west-2b}","${var.subnet_elb-us-west-2c}"]
   
   listener {
     lb_port = 443
     lb_protocol = "https"
     instance_port = 5080
     instance_protocol = "http"
-    ssl_certificate_id = "arn:aws:iam::012345678901:server-certificate/MyLabWildCardCert201711"
+    ssl_certificate_id = "${var.elb_wildcard_cert}"
   }
 
   health_check {
