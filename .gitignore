@@ -12,4 +12,6 @@ crash.log
 state/
 terraform.tfstate.backup
 terraform.tfstate
+network.tf
+network.tfvars
 tmp/

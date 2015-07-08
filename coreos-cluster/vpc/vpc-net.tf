@@ -122,7 +122,7 @@ resource "aws_subnet" "elb-a" {
     map_public_ip_on_launch = "true"
 
     tags {
-        Name = "elb_net-a"
+        Name = "elb-a"
         Billing = "${var.project_tags.coreos-cluster}"
     }
 }
@@ -306,14 +306,16 @@ resource "aws_security_group" "etcd_sg"  {
       cidr_blocks = ["${var.vpc.cidr}"]
     }
 
+    /*
     # Allow SSH from campus hosts
     ingress {
       from_port = 22
       to_port = 22
       protocol = "tcp"
       cidr_blocks = ["${var.allow_from_myip}"]
-      self =  true
+      self = true
     }
+    */
 
     tags {
       Name = "etcd_sg"
