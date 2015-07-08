@@ -54,7 +54,7 @@ variable "aws_ec2_keypair" {
 
 variable "project_tags" {
   default = {
-    coreos-cluster = "Key=Billing,Value=coreos-cluster"
+    coreos-cluster = "coreos-cluster"
   }
 }
 
