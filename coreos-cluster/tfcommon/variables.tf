@@ -62,3 +62,8 @@ variable "project_tags" {
 variable "aws_route53_zone_id_primary" {
   default = "Z11XFUMVHH2M4Z"
 }
+
+# Wildcard certificate on elb
+variable "elb_wildcard_cert" {
+  default = "arn:aws:iam::012345678901:server-certificate/MyLabWildCardCert201711"
+}

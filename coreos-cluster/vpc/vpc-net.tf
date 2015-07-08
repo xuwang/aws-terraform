@@ -306,7 +306,6 @@ resource "aws_security_group" "etcd_sg"  {
       cidr_blocks = ["${var.vpc.cidr}"]
     }
 
-    /*
     # Allow SSH from campus hosts
     ingress {
       from_port = 22
@@ -315,7 +314,6 @@ resource "aws_security_group" "etcd_sg"  {
       cidr_blocks = ["${var.allow_from_myip}"]
       self = true
     }
-    */
 
     tags {
       Name = "etcd_sg"
