@@ -5,7 +5,7 @@ variable "environment" {
   default = "green"
 }
 variable "aws_instance_type" {
-  default = "m3.medium"
+  default = "t2.micro"
 }
 
 variable "aws_region" {
@@ -21,8 +21,9 @@ variable "allow_from_anywhere" {
   default = "0.0.0.0/0"
 }
 
+# My IP address allowed to access coreos-cluster nodes, NOTE: use your own ip block.
 variable "allow_from_myip" {
-  default = "108.84.154.184/32"
+  default = "0.0.0.0/0"
 }
 
 # get updates at https://s3.amazonaws.com/coreos.com/dist/aws/coreos-beta-hvm.template
@@ -37,7 +38,7 @@ variable "iam_instance_profile" {
     default = {
       admiral = "admiral"
       etcd = "etcd"
-      hosting = "hosting"
+      worker = "worker"
       dockerhub = "dockerhub"
     }
 }
@@ -46,15 +47,14 @@ variable "aws_ec2_keypair" {
     default = {
       admiral = "admiral"
       etcd = "etcd"
-      hosting = "hosting"
+      worker = "worker"
       dockerhub = "dockerhub"
     }
 }
 
 variable "project_tags" {
   default = {
-    sws = "Key=Billing,Value=swsplatform"
-    mylab = "Key=Billing,Value=mylabplatform"
+    coreos-cluster = "Key=Billing,Value=coreos-cluster"
   }
 }
 

@@ -1,7 +1,13 @@
-AWS docker infrastructure provisioning.
+## AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)
 
-1. Download [Terraform](http://www.terraform.io/downloads.html), choose MacOX 64 version.
-1. Install in your home bin directory:
+1. Install [Terraform](http://www.terraform.io/downloads.html)
+
+    For MacOS,
+    ```
+    brew update
+    brew install terraform
+    ```
+    or
     ```
     mkdir -p ~/bin/terraform
     cd ~/bin/terraform
@@ -9,40 +15,58 @@ AWS docker infrastructure provisioning.
     unzip terraform_0.6.0_darwin_amd64.zip
     ```
 
-1. Clone the repo    
+1. Install AWS CLI
     ```
-    git@github.com:xuwang/aws-terraform.git
+    brew install awscli
     ```
-4. Install AWS CLI
+    or
 
     ```
     sudo easy_install pip
     sudo pip install --upgrade awscli
     ```
 
-5. Configure AWS
+1. Clone the repo    
     ```
-    aws configure --profile mylab
+    git clone git@github.com:xuwang/aws-terraform.git
+    cd aws-terraform
     ```
-6. Source scripts/alias.sh && alias
+1. Setup AWS Credentials at [AWS Console](https://console.aws.amazon.com/)
+    1. Create a group `coreos-cluster` with `AaminstratorAccess` policy.
+    2. Create an user `coreos-cluster` and download user credentials.
+    3. Add user `coreos-cluster` to group `coreos-cluster`.
 
+1. Configure AWS profile with `coreos-cluster` credentials
+    ```
+    aws configure --profile coreos-cluster
+    ```
+
+1. Setup Shell Alisas
+    ```
+    source scripts/alias.sh && alias
+    ```
   This will create aliases for some rerequently used terraform commands, with default variable files (key.tfvars, for instance). For example:
-	```
-   alias tfp='tf plan --var-file=../tfcommon/keys.tfvars --var-file=../tfcommon/network.tfvars'
-   alias tfa='tf apply --var-file=../tfcommon/keys.tfvars --var-file=../tfcommon/network.tfvars'
-	```
-
-7. Create mylab/tfcommon/keys.tfvars
-
-	```
-    aws_access_key = "<key_id>"
-    aws_secret_key = "<key_secret>"
     ```
-8. Create VPC first
+   alias tfp='tf plan --var-file=../tfcommon/network.tfvars'
+   alias tfa='tf apply --var-file=../tfcommon/network.tfvars'
+    ```
+
+1. Setup AWS credintials for Terraform
+    ```
+    source scripts/setup-tf-vars.sh
+    ```
+    This script will setup AWS credential enveriment variables from aws profile `coreos-cluster`
+    ```
+    TF_VAR_aws_access_key_id
+    TF_VAR_aws_secret_access_key
+    TF_VAR_aws_region
+    ```
+
+1. Create VPC first
 
   This step creates VPC, subnets, and security groups. Review the vpc-net.tf and then:
     ```
-    cd mylab/vpc
+    cd vpc
     tfp
     tfa
     ```
@@ -52,7 +76,7 @@ AWS docker infrastructure provisioning.
   ./gen-network-tfvars.sh
   ```
 
-9. Go to each AWS resource directory to create desired resource:
+1. Go to each AWS resource directory to create desired resource:
     ```
     tfp 
     ```
@@ -62,7 +86,7 @@ AWS docker infrastructure provisioning.
     tfa
 	```
 		
-10. Destroy resource:
+1. Destroy resource:
     ```
     tfpd
     tfd
