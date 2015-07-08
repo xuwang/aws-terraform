@@ -3,9 +3,9 @@ hostedZoneId=$1
 elbName=$2
 recordName=$3
 
-elbZone=$(aws elb describe-load-balancers --load-balancer-name=$elbName --profile anchorage  --query "LoadBalancerDescriptions[0].CanonicalHostedZoneNameID")
-elbDns=$(aws elb describe-load-balancers --load-balancer-name=$elbName --profile anchorage --query "LoadBalancerDescriptions[0].DNSName")
-hostedZoneName=$(aws --profile anchorage route53 get-hosted-zone --id=$hostedZoneId --query "HostedZone.Name")
+elbZone=$(aws elb describe-load-balancers --load-balancer-name=$elbName --profile mylab  --query "LoadBalancerDescriptions[0].CanonicalHostedZoneNameID")
+elbDns=$(aws elb describe-load-balancers --load-balancer-name=$elbName --profile mylab --query "LoadBalancerDescriptions[0].DNSName")
+hostedZoneName=$(aws --profile mylab route53 get-hosted-zone --id=$hostedZoneId --query "HostedZone.Name")
 
 cat > /tmp/$elbName.json <<CHANGESET
 {
@@ -27,4 +27,4 @@ cat > /tmp/$elbName.json <<CHANGESET
 }
 CHANGESET
 
-aws route53 change-resource-record-sets --hosted-zone-id $hostedZoneId --change-batch file:///tmp/$elbName.json --profile anchorage
+aws route53 change-resource-record-sets --hosted-zone-id $hostedZoneId --change-batch file:///tmp/$elbName.json --profile mylab

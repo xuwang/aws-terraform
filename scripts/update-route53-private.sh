@@ -1,8 +1,8 @@
 #!/bin/bash
 hostedZoneId=Z1X0KFWJ26JEFP
-recordName=spelunking.anchorage.local
+recordName=spelunking.mylab.local
 
-hostedZoneName=$(aws --profile anchorage route53 get-hosted-zone --id=$hostedZoneId --query "HostedZone.Name")
+hostedZoneName=$(aws --profile mylab route53 get-hosted-zone --id=$hostedZoneId --query "HostedZone.Name")
 
 cat > /tmp/$newName.json <<CHANGESET
 {
@@ -25,4 +25,4 @@ cat > /tmp/$newName.json <<CHANGESET
 }
 CHANGESET
 
-aws route53 change-resource-record-sets --hosted-zone-id $hostedZoneId --change-batch file:///tmp/$newName.json --profile anchorage
+aws route53 change-resource-record-sets --hosted-zone-id $hostedZoneId --change-batch file:///tmp/$newName.json --profile mylab
