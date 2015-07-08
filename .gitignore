@@ -10,4 +10,6 @@ crash.log
 .git
 .registryrc
 state/
+terraform.tfstate.backup
+terraform.tfstate
 tmp/

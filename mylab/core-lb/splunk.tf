@@ -11,13 +11,13 @@ resource "aws_security_group" "splunk_elb_sg"  {
       from_port = 80
       to_port = 80
       protocol = "tcp"
-      cidr_blocks = ["${var.allow_from_vpc}"]
+      cidr_blocks = ["${var.allow_from_supub}", "${var.allow_from_su_pub_vpn}"]
     }
     ingress {
       from_port = 443
       to_port = 443
       protocol = "tcp"
-      cidr_blocks = ["${var.allow_from_vpc}"]
+      cidr_blocks = ["${var.allow_from_supub}", "${var.allow_from_su_pub_vpn}"]
     }
     tags {
       Name = "splunk_elb_sg"
@@ -36,7 +36,7 @@ resource "aws_elb" "splunk_elb" {
     lb_protocol = "https"
     instance_port = 8081
     instance_protocol = "https"
-    ssl_certificate_id = "arn:aws:iam::012345789:server-certificate/certname"
+    ssl_certificate_id = "arn:aws:iam::012345678901:server-certificate/MyLabWildCardCert201711"
   }
 
   health_check {

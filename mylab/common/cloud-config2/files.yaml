@@ -1,0 +1,83 @@
+write_files:
+  - path: /opt/bin/setup-aws-env
+    permissions: 0700
+    owner: root
+    content: |
+        #!/bin/bash
+        
+        # Create /root/.aws/envvars and config 
+        create_aws_cred () {
+            echo "AWS_ACCESS_KEY_ID=$(etcdctl get /_pacific/_aws/deployment/id)" > $AWS_CONFIG_ENV
+            echo "AWS_SECRET_ACCESS_KEY=$(etcdctl get /_pacific/_aws/deployment/key)" >> $AWS_CONFIG_ENV
+            echo "AWS_DEFAULT_REGION=us-west-2" >> $AWS_CONFIG_ENV
+            echo "[default]" > $AWS_CONFIG_FILE
+            echo "aws_access_key_id = $(etcdctl get /_pacific/_aws/deployment/id)" >> $AWS_CONFIG_FILE
+            echo "aws_secret_access_key = $(etcdctl get /_pacific/_aws/deployment/key)" >> $AWS_CONFIG_FILE
+            echo "region = us-west-2" >>  $AWS_CONFIG_FILE
+            chmod 600 /root/.aws/*
+            cp -r /root/.aws  /home/core/
+            chown -R core:core /home/core/.aws
+            chmod 600 /home/core/.aws/*  
+        }
+        
+        # Bootstrap keys from S3 bucket and store in etcd datastore
+        get_keys () {
+          /usr/bin/docker run --rm --name etcd-init -v /root/tmp:/root/tmp suet/awscli \
+              aws s3 cp --quiet  s3://$profile-config/credentials/deployment/id /root/tmp/id
+          /usr/bin/docker run --rm --name etcd-init -v /root/tmp:/root/tmp suet/awscli \
+              aws s3 cp  --quiet s3://$profile-config/credentials/deployment/key /root/tmp/key
+          /usr/bin/docker run --rm --name etcd-init -v /root/tmp:/root/tmp suet/awscli \
+              aws s3 cp --quiet s3://$profile-config/credentials/deployment/apps-bucket /root/tmp/apps-bucket
+          /usr/bin/docker run --rm --name etcd-init -v /root/tmp:/root/tmp suet/awscli \
+              aws s3 cp --quiet s3://$profile-config/credentials/deployment/datadog-apikey /root/tmp/datadog-apikey
+      
+          ID=$(cat /root/tmp/id)
+          KEY=$(cat /root/tmp/key)
+          APPSBUCKET=$(cat /root/tmp/apps-bucket)
+          DATADOGAPI=$(cat /root/tmp/datadog-apikey)
+          TIMPSTAMP=$(date +%Y%m%d-$RANDOM)
+      
+          # Store keys in etcd. supress key output so it doesn't end up in the journal log.
+          etcdctl mkdir /_pacific/_aws/deployment
+          etcdctl mkdir /_pacific/_datadog/
+          etcdctl set /_pacific/_aws/deployment/id $ID
+          etcdctl set /_pacific/_aws/deployment/key $KEY > /dev/null
+          etcdctl set /_pacific/_aws/deployment/app-config-bucket $APPSBUCKET
+          etcdctl set /_pacific/_aws/deployment/app-platform $profile
+          etcdctl set /_pacific/_datadog/apikey $DATADOGAPI > /dev/null
+        }
+        
+        # Main
+        mkdir -p /root/.aws/
+        AWS_CONFIG_ENV=/root/.aws/envvars    
+        AWS_CONFIG_FILE=/root/.aws/config
+      
+        # Platform name
+        profile='mylab'
+        
+        if ! etcdctl get /_pacific/_aws/deployment/id > /dev/null 2>&1 ;
+        then
+          get_keys
+        fi
+        create_aws_cred
+               
+  - path: /opt/bin/s3sync.sh
+    permissions: 0700
+    owner: root
+    content: |
+        #!/bin/bash
+        AWS_CONFIG_ENV=/root/.aws/envvars
+        [[ -f $AWS_CONFIG_ENV ]] || /opt/bin/setup-aws-env
+        IMAGE=suet/awscli:latest
+        APPBUCKET=$(etcdctl get /_pacific/_aws/deployment/app-config-bucket)
+        DST=/var/lib/apps
+        CMD="aws s3 sync --exact-timestamps --delete $APPBUCKET $DST && chmod 755 ${DST}/bin/*"
+        
+        # pull the IMAGE if not loaded
+        docker history $IMAGE > /dev/null 2>&1 || docker pull $IMAGE
+        # sync s3 apps to
+        docker run --rm --name s3sync -v ${DST}:${DST} --env-file=$AWS_CONFIG_ENV $IMAGE /bin/bash -c "$CMD"
+  - path: /etc/systemd/system/docker.service.d/50-insecure-registry.conf
+    content: |
+        [Service]
+        Environment=DOCKER_OPTS='--insecure-registry=dockerhub.mylab.example.com'

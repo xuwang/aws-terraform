@@ -451,6 +451,24 @@ resource "aws_security_group" "etcd_elb_sg"  {
     }
 }
 
+resource "aws_security_group" "docker-drush-ssh_sg"  {
+    name = "docker-drush-ssh-sg"
+    vpc_id = "${aws_vpc.mylab.id}" 
+    description = "Drush SSH security group"
+
+    # Allow SSH port 2222
+    ingress {
+      from_port = 2222
+      to_port = 2222
+      protocol = "tcp"
+      cidr_blocks = ["${var.allow_from_anywhere}"]
+    }
+
+    tags {
+      Name = "drush-ssh_sg"
+    }
+}
+
 resource "aws_security_group" "etcd_sg"  {
     name = "docker-etcd-sg"
     vpc_id = "${aws_vpc.mylab.id}"
@@ -464,10 +482,25 @@ resource "aws_security_group" "etcd_sg"  {
       self = true
     }
 
+    # Allow etcd2 peers to communicate
+    ingress {
+      from_port = 2380
+      to_port = 2380
+      protocol = "tcp"
+      self = true
+    }
+
     # Allow etcd clients to communicate
     ingress {
       from_port = 4001
       to_port = 4001
+      protocol = "tcp"
+      cidr_blocks = ["${var.vpc.cidr}"]
+    }
+    # Allow etcd2 clients to communicate
+    ingress {
+      from_port = 2379
+      to_port = 2379
       protocol = "tcp"
       cidr_blocks = ["${var.vpc.cidr}"]
     }
@@ -477,7 +510,7 @@ resource "aws_security_group" "etcd_sg"  {
       from_port = 22
       to_port = 22
       protocol = "tcp"
-      cidr_blocks = ["${aws_security_group.bastion_sg.id}"]
+      cidr_blocks = ["${var.allow_from_myip}"]
       security_groups = ["${aws_security_group.bastion_sg.id}"]
       self =  true
     }
@@ -499,13 +532,14 @@ resource "aws_security_group" "rds_sg"  {
       to_port = 3306
       protocol = "tcp"
       security_groups = ["${aws_security_group.bastion_sg.id}","${aws_security_group.etcd_sg.id}", "${aws_security_group.hosting_sg.id}"]
+      cidr_blocks = ["${var.allow_from_myip}"]
     }
     # Allow PostgresSQL access
     ingress {
       from_port = 5432
       to_port = 5432
       protocol = "tcp"
-      security_groups = ["${aws_security_group.bastion_sg.id}","${aws_security_group.etcd_sg.id}", "${aws_security_group.hosting_sg.id}"]
+      cidr_blocks = ["${var.allow_from_myip}", "${var.vpc.cidr}" ]
     }
     tags {
       Name = "rds_sg"
@@ -544,7 +578,7 @@ resource "aws_security_group" "hosting_sg"  {
       from_port = 1024
       to_port = 65535
       protocol = "tcp"
-      security_groups = ["${aws_security_group.ext_elb_sg.id}"]
+      security_groups = ["${aws_security_group.ext_elb_sg.id}", "${aws_security_group.docker-drush-ssh_sg.id}"]
     }
 
     ingress {
@@ -563,6 +597,78 @@ resource "aws_security_group" "hosting_sg"  {
     #}
     tags {
       Name = "hosting_sg"
+    }
+}
+
+resource "aws_security_group" "dockerhub_sg"  {
+    name = "docker-dockerhub-sg"
+    vpc_id = "${aws_vpc.mylab.id}"
+    description = "docker-dockerhub-sg SG"
+
+    ingress {
+      from_port = 5000
+      to_port = 8080
+      protocol = "tcp"
+      cidr_blocks = [ "${var.vpc.cidr}" ]
+    }
+    # Add outbound rule
+    egress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags {
+      Name = "hosting_sg"
+    }
+}
+
+resource "aws_security_group" "admiral_sg"  {
+    name = "docker-admiral-sg"
+    vpc_id = "${aws_vpc.mylab.id}"
+    
+    description = "docker-admiral-sg SG"
+    
+    ingress {
+      from_port = 22
+      to_port = 22
+      protocol = "tcp"
+      cidr_blocks = [ "${var.allow_from_myip}" ]
+    }
+  
+    ingress {
+      from_port = 5000
+      to_port = 9000
+      protocol = "tcp"
+      cidr_blocks = [ "${var.vpc.cidr}" ]
+    }
+
+    # For splunk logging
+    ingress {
+      from_port = 10514
+      to_port = 10514
+      protocol = "tcp"
+      cidr_blocks = [ "${var.vpc.cidr}" ]
+    }
+  
+    # Add outbound rule
+    egress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+    
+    ingress {
+      from_port = 22
+      to_port = 22
+      protocol = "tcp"
+      security_groups = ["${aws_security_group.bastion_sg.id}", "${aws_security_group.etcd_sg.id}"]
+    }
+    
+    tags {
+      Name = "admiral_sg"
     }
 }
 
@@ -609,14 +715,14 @@ output "subnet_bastion-us-west-2c" {
     value = "\"${aws_subnet.docker-bastion-c.id}\""
 }
 
-# Core (apps)
-output "subnet_core-us-west-2a" {
+# Admiral (apps)
+output "subnet_admiral-us-west-2a" {
     value = "\"${aws_subnet.docker-etcd-a.id}\""
 }
-output "subnet_core-us-west-2b" {
+output "subnet_admiral-us-west-2b" {
     value = "\"${aws_subnet.docker-etcd-b.id}\""
 }
-output "subnet_core-us-west-2c" {
+output "subnet_admiral-us-west-2c" {
     value = "\"${aws_subnet.docker-etcd-c.id}\""
 }
 
@@ -648,11 +754,20 @@ output "subnet_hosting-us-west-2c" {
 }
 
 # Security groups
+output "security_group_admiral" {
+    value = "\"${aws_security_group.admiral_sg.id}\""
+}
 output "security_group_bastion" {
     value = "\"${aws_security_group.bastion_sg.id}\""
 }
+output "security_group_dockerhub" {
+    value = "\"${aws_security_group.dockerhub_sg.id}\""
+}
 output "security_group_docker-ext-elb" {
     value = "\"${aws_security_group.ext_elb_sg.id}\""
+}
+output "security_group_docker-drush-ssh" {
+    value = "\"${aws_security_group.docker-drush-ssh_sg.id}\""
 }
 output "security_group_etcd" {
     value = "\"${aws_security_group.etcd_sg.id}\""

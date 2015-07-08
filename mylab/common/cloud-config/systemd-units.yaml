@@ -9,8 +9,8 @@
         RemainAfterExit=yes
         Environment="LABEL=var-lib-docker"
         Environment="DEV=/dev/xvdb"
-        # Do not wipe btrfs if it's already being used.'
-        ExecStart=-/bin/bash -c "if ! findfs LABEL=$LABEL > /tmp/label.$LABEL; then  wipefs -f $DEV && mkfs.btrfs -f -L $LABEL $DEV && echo wiped; fi"
+        # Do not wipe the disk if it's already being used, so the docker images persiste cross reboot.
+        ExecStart=-/bin/bash -c "if ! findfs LABEL=$LABEL > /tmp/label.$LABEL; then wipefs -a -f $DEV && mkfs.ext4 -T news -F -L $LABEL $DEV && echo wiped; fi"
     - name: var-lib-docker.mount
       command: start
       content: |
@@ -22,7 +22,7 @@
         [Mount]
         What=/dev/xvdb
         Where=/var/lib/docker
-        Type=btrfs
+        Type=ext4
 
     - name: setup-etcdctl-env.service
       command: start

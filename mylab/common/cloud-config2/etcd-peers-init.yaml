@@ -1,0 +1,10 @@
+  - path: /opt/bin/etcd-init.sh
+    permissions: 0700
+    owner: root
+    content: |
+      #!/bin/bash
+      
+      image=suet/etcd-aws-cluster
+      /usr/bin/docker run -e REGION="us-west-2" -v /etc/sysconfig/:/etc/sysconfig/ $image /etcd-aws-cluster
+      /usr/bin/docker run -e ASGNAME="docker-etcd2" -e REGION="us-west-2" -v /etc/sysconfig/:/etc/sysconfig/ $image /etcd-aws-proxy
+      

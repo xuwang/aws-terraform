@@ -1,6 +1,6 @@
 resource "aws_db_subnet_group" "mylab-db" {
     name = "mylab-db"
-    description = "main db group of subnets"
+    description = "Mylab main db group of subnets"
     subnet_ids = [ "${var.subnet_rds-us-west-2a}", "${var.subnet_rds-us-west-2b}", "${var.subnet_rds-us-west-2c}" ]
 }
 

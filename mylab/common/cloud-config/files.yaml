@@ -20,8 +20,8 @@ write_files:
         echo "AWS_SECRET_ACCESS_KEY=$(etcdctl get /_pacific/_aws/deployment/key)" >> $AWS_CONFIG_ENV
         echo "AWS_DEFAULT_REGION=us-west-2" >> $AWS_CONFIG_ENV
         AWS_CONFIG_FILE=/root/.aws/config
-        echo "[default]" >> $AWS_CONFIG_FILE
-        echo "aws_access_key_id = $(etcdctl get /_pacific/_aws/deployment/id)" > $AWS_CONFIG_FILE
+        echo "[default]" > $AWS_CONFIG_FILE
+        echo "aws_access_key_id = $(etcdctl get /_pacific/_aws/deployment/id)" >> $AWS_CONFIG_FILE
         echo "aws_secret_access_key = $(etcdctl get /_pacific/_aws/deployment/key)" >> $AWS_CONFIG_FILE
         echo "region = us-west-2" >>  $AWS_CONFIG_FILE
         chmod 600 /root/.aws/*
@@ -38,7 +38,7 @@ write_files:
         IMAGE=suet/awscli:latest
         APPBUCKET=$(etcdctl get /_pacific/_aws/deployment/app-config-bucket)
         DST=/var/lib/apps
-        CMD="aws s3 sync --recursive --exact-timestamps --delete $APPBUCKET $DST && chmod 755 ${DST}/bin/*"
+        CMD="aws s3 sync --exact-timestamps --delete $APPBUCKET $DST && chmod 755 ${DST}/bin/*"
         
         # pull the IMAGE if not loaded
         docker history $IMAGE > /dev/null 2>&1 || docker pull $IMAGE
@@ -48,13 +48,3 @@ write_files:
     content: |
         [Service]
         Environment=DOCKER_OPTS='--insecure-registry=dockerhub.mylab.example.com'
-        
-  - path: /var/lib/iptables/rules-save
-    permissions: 0644
-    owner: root:root
-    content: |
-      *filter
-      -I FORWARD 1 -s 172.17.0.0/16 -p tcp -m tcp --dport 7001 -j DROP
-      -I FORWARD 1 -s 172.17.0.0/16 -p tcp -m tcp --dport 4001 -j DROP
-      -I FORWARD 1 -s 172.17.0.0/16 -d 169.254.169.254/32 -j DROP
-      COMMIT

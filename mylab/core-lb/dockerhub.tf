@@ -13,7 +13,7 @@ resource "aws_elb" "dockerhub_elb" {
     lb_protocol = "https"
     instance_port = 5080
     instance_protocol = "http"
-    ssl_certificate_id = "arn:aws:iam::012345678901:server-certificate/certname"
+    ssl_certificate_id = "arn:aws:iam::012345678901:server-certificate/MyLabWildCardCert201711"
   }
 
   health_check {

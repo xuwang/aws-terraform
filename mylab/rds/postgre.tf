@@ -1,6 +1,6 @@
 resource "aws_db_subnet_group" "mylab-db" {
     name = "mylab-db"
-    description = "main db group of subnets"
+    description = "Mylab main db group of subnets"
     subnet_ids = [ "${var.subnet_rds-us-west-2a}", "${var.subnet_rds-us-west-2b}", "${var.subnet_rds-us-west-2c}" ]
 }
 resource "aws_db_instance" "mylab-postgres" {
@@ -11,7 +11,7 @@ resource "aws_db_instance" "mylab-postgres" {
     instance_class = "db.t1.micro"
     name = "mylab"
     username = "root"
-    password = "iey6aiLei1"
+    password = ""
     multi_az = "false" 
     availability_zone = "us-west-2b"
     port = "5432"

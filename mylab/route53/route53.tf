@@ -33,3 +33,15 @@ TFVARS
 CMD_DATA
     }
 }
+
+resource "aws_route53_zone" "its-dashboard" {
+    name = "dashboard-new.example.com"
+    provisioner "local-exec" {
+    command = <<CMD_DATA
+cat >> ../tfcommon/route53.tfvars <<TFVARS
+# db hosted zone id
+aws_route53_zone_id_postgresdb = ${aws_route53_zone.its-dashboard.zone_id}
+TFVARS
+CMD_DATA
+    }
+}

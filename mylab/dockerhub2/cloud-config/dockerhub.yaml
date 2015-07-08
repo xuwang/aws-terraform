@@ -1,0 +1,20 @@
+#cloud-config
+
+coreos: 
+  etcd2:
+    proxy: on
+  fleet:
+    public-ip: $private_ipv4
+    metadata: "platform=ec2,provider=aws,region=us-west-2,disk=ssd,role=dockerhub,env=mylab"
+  units:
+    - name: etcd2.service
+      command: start
+      drop-ins:
+        - name: 60-initial-cluster.conf
+          content: |
+            [Service]
+            EnvironmentFile=/etc/sysconfig/initial-cluster
+    - name: fleet.service
+      command: reload-or-restart
+
+      

@@ -17,7 +17,7 @@ resource "aws_elb" "jenkins_elb" {
     lb_protocol = "https"
     instance_port = 8080
     instance_protocol = "http"
-    ssl_certificate_id = "arn:aws:iam::1234567890:server-certificate/cert"
+    ssl_certificate_id = "arn:aws:iam::012345678901:server-certificate/MyLabWildCardCert201711"
   }
 
   listener {
