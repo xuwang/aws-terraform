@@ -35,11 +35,18 @@ AWS docker infrastructure provisioning.
     aws_secret_key = "<key_secret>"
     ```
 8. Create VPC first
+
+  This step creates VPC, subnets, and security groups. Review the vpc-net.tf and then:
     ```
     cd mylab/vpc
     tfp
     tfa
     ```
+  Generate ../tfcommon/network.tfvars based on the output of the above steps. The network.vars will be used by other resouces:
+  
+  ```
+  ./gen-network-tfvars.sh
+  ```
 
 9. Go to each AWS resource directory to create desired resource:
     ```
