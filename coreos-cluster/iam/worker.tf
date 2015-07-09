@@ -6,11 +6,11 @@ resource "aws_iam_instance_profile" "worker" {
 resource "aws_iam_role" "worker" {
     name = "worker"
     path = "/"
-    assume_role_policy = 
-    assume_role_policy =  "${file('assume_role_policy.json')}"
+    assume_role_policy =  "${file(\"assume_role_policy.json\")}"
+}
 
 resource "aws_iam_role_policy" "worker_policy" {
     name = "worker_policy"
     role = "${aws_iam_role.worker.id}"
-    policy = "${file('worker_policy.json')}"
+    policy = "${file(\"worker_policy.json\")}"
 }
