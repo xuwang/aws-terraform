@@ -1,0 +1,29 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::-dockerhub",
+        "arn:aws:s3:::-dockerhub/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:List*",
+        "s3:Get*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-cloudinit/etcd/initial-cluster",
+        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-/dockerhub/",
+        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-/dockerhub/*",
+        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-config",
+        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-config/*"
+      ]
+    }
+  ]
+}

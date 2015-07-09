@@ -28,6 +28,11 @@
     $ sudo pip install --upgrade awscli
     ```
 
+1. Install [Jq](http://stedolan.github.io/jq/)
+    ```
+    $ brew install jq
+    ```
+
 1. Clone the repo    
     ```
     $ git clone git@github.com:xuwang/aws-terraform.git
@@ -83,6 +88,16 @@ The network.vars will be used by other resouces:
     $ tfpd
     $ tfda
     ```
+
+## Create S3 Buckets 
+
+    ```
+    $ cd coreos-cluster/s3
+    $ tfp
+    $ tfa
+    ```
+
+## Create AMI Roles
 
 ## Create Other Cluster Components
 
