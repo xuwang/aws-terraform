@@ -1,4 +1,6 @@
-## AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)
+# AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)
+
+## Install Tools and Setup AWS credentials
 
 1. Install [Terraform](http://www.terraform.io/downloads.html)
 
@@ -57,21 +59,40 @@
     alias tfa='tf apply --var-file=../tfcommon/keys.tfvars --var-file=../tfcommon/network.tfvars'
     ```
 
-1. Create VPC first
+## Create VPC, Subnets, and Security Groups
 
-    This step creates VPC, subnets, and security groups. Review the vpc-net.tf and then:
     ```
     $ cd coreos-cluster/vpc
+    ```
+
+1. Review the `vpc-net.tf` and then:
+    ```
     $ tfp
     $ tfa
     ```
-    Generate ../tfcommon/network.tfvars based on the output of the above steps. The network.vars will be used by other resouces:
+
+1. Generate ../tfcommon/network.tfvars based on the output of the above steps. 
+The network.vars will be used by other resouces:
     
     ```
     $ ./gen-network-tfvars.sh
     ```
 
-1. Go to each AWS resource directory to create desired resource:
+1. To destroy VPC:
+    ```
+    $ tfpd
+    $ tfda
+    ```
+
+## Create Other Cluster Components
+
+Create other components, i.e. coreos-cluster/etcd coreos-cluster/dockerhub, coreos-cluster/worker, etc.
+
+    ```
+    $ cd coreos-cluster/<component>
+    ```
+
+1. Plan and apply desired component:
     ```
     $ tfp 
     ```
@@ -80,8 +101,8 @@
     $ tfa
     ```
 
-1. Destroy resource:
+1. Destroy component:
     ```
     $ tfpd
-    $ tfd
+    $ tfda
     ```
