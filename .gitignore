@@ -9,6 +9,7 @@ crash.log
 .vagrant
 .git
 .registryrc
+.bak
 state/
 terraform.tfstate.backup
 terraform.tfstate
