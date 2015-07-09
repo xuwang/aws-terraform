@@ -1,5 +1,6 @@
 keys.tfvars*
 keys-*.tfvars*
+*.bak
 *.keys
 crash.log
 *.tfplan*
@@ -9,7 +10,6 @@ crash.log
 .vagrant
 .git
 .registryrc
-.bak
 state/
 terraform.tfstate.backup
 terraform.tfstate
