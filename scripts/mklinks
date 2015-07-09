@@ -1,0 +1,5 @@
+#!/bin/bash
+for i in override.tf network.tf variables.tf  provider.tf 
+do
+    ln -s -f ../tfcommon/$i $i
+done

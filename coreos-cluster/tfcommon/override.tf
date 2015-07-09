@@ -5,8 +5,8 @@ variable "amis" {
   }
 }
 variable "environment" {
-  default = "mylab"
+  default = "green"
 }
 variable "aws_instance_type" {
-  default = "t2.medium"
+  default = "t2.micro"
 }

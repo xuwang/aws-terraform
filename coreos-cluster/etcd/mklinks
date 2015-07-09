@@ -1,7 +1,0 @@
-#!/bin/bash
-
-for i in override.tf  network.tf variables.tf network.tfvars provider.tf 
-do
-    ln -s -f ../tfcommon/$i $i
-done
-ln -s -f ../tfcommon/mylab.keys keys.tfvars
