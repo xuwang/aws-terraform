@@ -40,7 +40,7 @@
     ```
 1. Setup AWS Credentials at [AWS Console](https://console.aws.amazon.com/)
     1. Create a group `coreos-cluster` with `AaminstratorAccess` policy.
-    2. Create an user `coreos-cluster` and download user credentials.
+    2. Create a user `coreos-cluster` and download user credentials.
     3. Add user `coreos-cluster` to group `coreos-cluster`.
 
 1. Configure AWS profile with `coreos-cluster` credentials
@@ -77,7 +77,7 @@
     ```
 
 1. Generate ../tfcommon/network.tfvars based on the output of the above steps. 
-The network.vars will be used by other resouces:
+The network.tfvars will be used by other resouces:
     
     ```
     $ ./gen-network-tfvars.sh
