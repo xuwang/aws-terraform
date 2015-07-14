@@ -12,7 +12,7 @@ echo "Getting AWS account number..."
 AWS_ACCOUNT=$(aws --profile coreos-cluster iam get-user --user-name=coreos-cluster | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')
 workdir=${DIR}/../coreos-cluster
 cd $workdir
-files=$(grep -s -l AWS-ACCOUNT -r --include *.tmpl --include *.tmpl .)
+files=$(grep -s -l AWS-ACCOUNT -r --include *.tmpl .)
 if [ "X$files" != "X" ];
 then
   for i in $files
