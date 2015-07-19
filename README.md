@@ -48,51 +48,26 @@
     $ aws configure --profile coreos-cluster
     ```
 
-1. Setup AWS credintials for Terraform
-    ```
-    $ scripts/setup-aws-vars.sh
-    ```
-    This script will create coreos-cluster/tfcommon/keys.tfvars from AWS profile `coreos-cluster`.
-
-1. Setup Shell Alisas
-    ```
-    $ source scripts/alias.sh
-    ```
-    This will create aliases for common terraform commands with options (key.tfvars, for instance). For example:
-    ```
-    alias tfp='tf plan --var-file=../tfcommon/keys.tfvars --var-file=../tfcommon/network.tfvars'
-    alias tfa='tf apply --var-file=../tfcommon/keys.tfvars --var-file=../tfcommon/network.tfvars'
-    ```
 
 ## Create VPC, Subnets, and Security Groups
 
     ```
-    $ cd coreos-cluster/vpc
-    ```
-
-1. Review the `vpc-net.tf` and then:
-    ```
-    $ tfp
-    $ tfa
-    ```
-
-1. Generate ../tfcommon/network.tfvars based on the output of the above steps. 
-The network.tfvars will be used by other resouces:
-    
-    ```
-    $ ./gen-network-tfvars.sh
+    $ make vpc plan
+    $ make vpc apply
     ```
 
 1. To destroy VPC:
+
+Note: Destroy other resources before destroy vpc. Otherwise, destroy will fail because of dependencies.
+
     ```
-    $ tfpd
-    $ tfda
+    $ make vpc destroy
     ```
 
 ## Create S3 Buckets 
 
     ```
-    $ cd coreos-cluster/s3
+    $ make s3_plan
     $ tfp
     $ tfa
     ```
