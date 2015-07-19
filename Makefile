@@ -17,11 +17,11 @@ export
 all: vpc
 
 show_all: 
-	cd $(BUILD)/vpc; $(MAKE) show
+	cd $(BUILD)/vpc; $(MAKE) -i show
 	
 
 clean:	
-	cd $(BUILD)/vpc; $(MAKE) clean
+	cd $(BUILD)/vpc; $(MAKE) -i clean
 	rm -rf $(BUILD)
 	
 $(BUILD): 
