@@ -1,7 +1,8 @@
 
 all: apply
 
-clean: destroy
+clean:
+	# let top level do the clean job
 
 # Terraform Targets
 plan:
@@ -14,7 +15,8 @@ destroy_plan:
 	$(TF_DESTROY_PLAN); cat /dev/null > network.tfvars; cat /dev/null > network.tf
 
 destroy: | destroy_plan
-	$(TF_DESTROY_APPLY)
+	test -s $(TF_DESTROY_PLAN_FILE) || { echo "Noting to destroy"; exit 0; } ; \
+		$(TF_DESTROY_APPLY); rm -f $(TF_DESTROY_PLAN_FILE)
 
 show:
 	$(TF_SHOW)

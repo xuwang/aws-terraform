@@ -11,17 +11,18 @@ TF_APPLY := terraform apply --var-file=$(KEY_VARS)
 TF_DESTROY_PLAN := terraform plan -destroy --var-file=$(KEY_VARS) --out=destroy.tfplan
 TF_DESTROY_APPLY := terraform apply destroy.tfplan
 TF_SHOW := terraform show terraform.tfstate
+TF_DESTROY_PLAN_FILE := destroy.tfplan
 # Exports all above vars
 export
 
 all: vpc
 
 show_all: 
-	cd $(BUILD)/vpc; $(MAKE) -i show
+	test -d $(BUILD)/vpc && { cd $(BUILD)/vpc; $(MAKE) -i show; }; exit 0
 	
 
 clean:	
-	cd $(BUILD)/vpc; $(MAKE) -i clean
+	test -d $(BUILD)/vpc && { $(MAKE) -i -C $(BUILD)/vpc clean; }; exit 0
 	rm -rf $(BUILD)
 	
 $(BUILD): 
