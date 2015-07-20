@@ -54,13 +54,21 @@ variable "aws_ec2_keypair" {
 
 variable "project_tags" {
   default = {
-    coreos-cluster = "coreos-cluster"
+    coreos_cluster = "coreos-cluster"
+    public_domain = "dockerage.com"
+    private_domain = "coreos-cluster.local"
   }
 }
 
+
 # primary hosted zone id
-variable "aws_route53_zone_id_primary" {
-  default = "Z11XFUMVHH2M4Z"
+variable "aws_route53_primary_zone_id" {
+  default = "to_be_set_by_route53_tf"
+}
+
+# private hosted zone id
+variable "aws_route53_private_zone_id" {
+  default = "to_be_set_by_route53_tf"
 }
 
 # Wildcard certificate on elb
