@@ -51,48 +51,66 @@
 
 ## Create VPC, Subnets, and Security Groups
 
+1. To build:
+
+    ```
+    $ make vpc
+    ```
+
+    or step-by-step:
+
     ```
     $ make vpc plan
     $ make vpc apply
+    $ make vpc show
     ```
 
-1. To destroy VPC:
+    This will create a build/vpc directory, copy terraform files from coreos-cluster to the build dir, 
+    and execute correspondent terraform cmd to build vpc on AWS.
 
-Note: Destroy other resources before destroy vpc. Otherwise, destroy will fail because of dependencies.
+
+1. To destroy:
 
     ```
     $ make vpc destroy
     ```
 
-## Create S3 Buckets 
+    Note: Destroy other resources before destroy vpc. Otherwise, destroy will fail because of dependencies.
+
+## Create Other Platform Resources
+
+Currently defined resources are:
+
+* s3
+* iam
+* route53
+* etcd
+* admiral
+* dockerhub
+* worker
+* elb
+* rds
+
+
+1. To build:
 
     ```
-    $ make s3_plan
-    $ tfp
-    $ tfa
+    $ make <resource>
     ```
 
-## Create AMI Roles
-
-## Create Other Cluster Components
-
-Create other components, i.e. coreos-cluster/etcd coreos-cluster/dockerhub, coreos-cluster/worker, etc.
+    or step-by-step:
 
     ```
-    $ cd coreos-cluster/<component>
+    $ make <resource> plan
+    $ make <resource> apply
+    $ make <resource> show
     ```
 
-1. Plan and apply desired component:
-    ```
-    $ tfp 
-    ```
-    If the plan looks good:
-    ```
-    $ tfa
-    ```
+    This will create a build/<resource> directory, copy all terraform files to the build dir, 
+    and execute correspondent terraform cmd to build the resource on AWS.
 
-1. Destroy component:
+2. To destroy:
+
     ```
-    $ tfpd
-    $ tfda
+    $ make <resource> destroy
     ```

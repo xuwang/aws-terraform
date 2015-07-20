@@ -47,7 +47,7 @@ resource "aws_vpc" "coreos-cluster" {
     cidr_block = "${var.vpc.cidr}"
     tags {
         Name = "coreos-cluster-vpc"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
     enable_dns_support = true
     enable_dns_hostnames = true
@@ -73,7 +73,7 @@ resource "aws_subnet" "etcd-a" {
 
     tags {
         Name = "etcd-a"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
 }
 
@@ -90,7 +90,7 @@ resource "aws_subnet" "etcd-b" {
 
     tags {
         Name = "etcd-b"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
 }
 resource "aws_route_table_association" "etcd-rt-b" {
@@ -106,7 +106,7 @@ resource "aws_subnet" "etcd-c" {
 
     tags {
         Name = "etcd-c"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
 }
 
@@ -123,7 +123,7 @@ resource "aws_subnet" "elb-a" {
 
     tags {
         Name = "elb-a"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
 }
 resource "aws_route_table_association" "elb-rt-a" {
@@ -139,7 +139,7 @@ resource "aws_subnet" "elb-b" {
 
     tags {
         Name = "elb-b"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
 }
 resource "aws_route_table_association" "elb-rt-b" {
@@ -155,7 +155,7 @@ resource "aws_subnet" "elb-c" {
 
     tags {
         Name = "elb-c"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
 }
 resource "aws_route_table_association" "elb-rt-c" {
@@ -171,7 +171,7 @@ resource "aws_subnet" "worker-a" {
 
     tags {
         Name = "worker-a"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
 }
 
@@ -188,7 +188,7 @@ resource "aws_subnet" "worker-b" {
 
     tags {
         Name = "worker-b"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
 }
 resource "aws_route_table_association" "worker-rt-b" {
@@ -204,7 +204,7 @@ resource "aws_subnet" "worker-c" {
 
     tags {
         Name = "worker-c"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
 }
 
@@ -221,7 +221,7 @@ resource "aws_subnet" "rds-a" {
 
     tags {
         Name = "rds-a"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
 }
 resource "aws_route_table_association" "rds-rt-a" {
@@ -237,7 +237,7 @@ resource "aws_subnet" "rds-b" {
 
     tags {
         Name = "rds-b"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
 }
 resource "aws_route_table_association" "rds-rt-b" {
@@ -253,7 +253,7 @@ resource "aws_subnet" "rds-c" {
 
     tags {
         Name = "rds-c"
-        Billing = "${var.project_tags.coreos-cluster}"
+        Billing = "${var.project_tags.coreos_cluster}"
     }
 }
 
@@ -440,7 +440,7 @@ resource "aws_security_group" "dockerhub_sg"  {
     }
 
     tags {
-      Name = "worker_sg"
+        Name = "worker_sg"
     }
 }
 

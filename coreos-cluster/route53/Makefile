@@ -6,21 +6,19 @@ clean:
 
 # Terraform Targets
 plan: | init
-	$(TF_PLAN)
+	$(TF_PLAN) --var-file=$(VPC_VARS);
 
 apply: | plan
-	$(TF_APPLY); $(SCRIPTS)/gen-vpc-vars.sh
+	$(TF_APPLY) --var-file=$(VPC_VARS);
 
 destroy_plan: | init
-	$(TF_DESTROY_PLAN)
+	$(TF_DESTROY_PLAN) --var-file=$(VPC_VARS) ; exit 0
 
 destroy: | destroy_plan
 	if [ -a $(TF_DESTROY_PLAN_FILE) ]; \
 	then \
 		$(TF_DESTROY_APPLY); \
 		rm -f $(TF_DESTROY_PLAN_FILE); \
-		cat /dev/null > $(TF_COMMON)/vpc.tf; \
-		cat /dev/null > $(VPC_VARS); \
 	else \
 		echo "Noting to destroy"; \
 	fi
@@ -30,9 +28,9 @@ show: | init
 
 refresh: | init
 	$(TF_REFRESH) --var-file=$(VPC_VARS)
-	$(SCRIPTS)/gen-vpc-vars.sh
 
 init: 
 	ln -s -f $(TF_COMMON)/override.tf override.tf
 	ln -s -f $(TF_COMMON)/variables.tf variables.tf
 	ln -s -f $(TF_COMMON)/provider.tf provider.tf
+	ln -s -f $(VPC_VARS_TF) vpc-vars.tf
