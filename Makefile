@@ -53,6 +53,7 @@ $(BUILD):
 	cp -Rf  $(SRC)/tfcommon $(BUILD)
 	$(SCRIPTS)/get-ami.sh >> $(TF_COMMON)/override.tf
 
+# This goal is usefull if we need to reset aws keys or default ami, etc.
 reset_tfcommon: $(KEY_VARS)
 
 all: vpc
