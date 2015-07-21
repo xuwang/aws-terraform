@@ -1,8 +1,9 @@
 # AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)
 
-This project builds a docker cluster that runs on CoreOS and is implemented on AWS, managed by Terraform. 
-AWS compoments includes: VPC, security groups, IAM, S3, ELB, Route53, Autoscaling. 
-The infrastructure templates are defined in each Terraform resource folder. The build process will copy all resources under a *build* directory, and manage resources under *build*, keepting the original terraform files intact. The build directory is ignored in .gitignore so that you don't accidentally checkin sensitive data. 
+This a practical implementation of [CoreOS production achirtecture] (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS. The infrastructure code is managed by Terraform. 
+AWS compoments includes: VPC, security groups, IAM, S3, ELB, Route53, Autoscaling, RDS etc. 
+
+The AWS resources are defined in Terraform resource folders. The build process will copy all resources under a *build* directory, and manage resources under *build*, keepting the original terraform files intact. The build directory is ignored in .gitignore so that you don't accidentally checkin sensitive data. 
 
 ## Install Tools and Setup AWS credentials
 
@@ -89,7 +90,7 @@ Currently defined resources are:
   - iam
   - route53
   - etcd
-  - admiral
+  - central-services (Jenkins, fleet-ui, monitoring, splunk)
   - dockerhub
   - worker
   - rds
