@@ -101,7 +101,7 @@ Resource | Description
 *route53* | Public and private hosted zones on Route53 DNS service
 *etcd* | Setup ETCD2 cluster
 *elb* | Setup predefined ELBs
-*admiral* | Central services cluster (Jenkins, fleet-ui, monitoring, splunk)
+*admiral* | Central service cluster (Jenkins, fleet-ui, monitoring, logging, etc)
 *dockerhub* | Private docker registry cluster
 *worker* | Setup application docker hosting cluster
 *rds* | RDS servers
