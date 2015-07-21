@@ -1,9 +1,6 @@
 
 all: apply
 
-clean:
-	# let top level do the clean job
-
 # Terraform Targets
 plan: | init
 	$(TF_PLAN)

@@ -22,6 +22,19 @@ export
 # Note the order of BUILD_SUBDIRS is significant, because there are dependences on clean_all
 BUILD_SUBDIRS := iam s3 route53 vpc
 
+# Get goals for sub-module
+SUBGOALS := $(filter-out $(BUILD_SUBDIRS), $(MAKECMDGOALS))
+
+# Get the sub-module name
+GOAL := $(firstword $(MAKECMDGOALS))
+
+# Get the sub-module dir
+BUILD_SUBDIR := build/$(GOAL)
+
+# Copy sub-module dir to build
+$(BUILD_SUBDIR): 
+	cp -R $(SRC)/$(GOAL) $(BUILD)
+
 all: vpc
 
 show_all:
@@ -29,7 +42,10 @@ show_all:
         test -d $$dir && $(MAKE) -C $$dir -i show ; \
     done
 
-clean_all:
+destroy:
+	@echo Use \"make destroy_all\" to destroy ALL resources
+
+destroy_all:
 	cd build; for dir in $(BUILD_SUBDIRS); do \
         test -d $$dir && $(MAKE) -C $$dir -i destroy ; \
     done
@@ -47,29 +63,32 @@ $(KEY_VARS): | $(BUILD)
 	echo aws_region = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/config $(PROFILE) region)\" >> $(KEY_VARS)
 
 
-vpc: | $(KEY_VARS)
-	cp -R $(SRC)/vpc $(BUILD); cd $(BUILD)/vpc; $(MAKE) $(filter-out vpc, $(MAKECMDGOALS))
+vpc: | $(KEY_VARS) $(BUILD_SUBDIR)
+	$(MAKE) -C $(BUILD)/vpc $(SUBGOALS)
 
 # This goal is needed because some other goals dependents on $(VPC_VARS)
-$(VPC_VARS): | $(KEY_VARS)
-	cp -R $(SRC)/vpc $(BUILD); cd $(BUILD)/vpc; $(MAKE) apply;
+$(VPC_VARS):
+	make vpc apply
 
-s3: | $(KEY_VARS)
-	cp -R $(SRC)/s3 $(BUILD); cd $(BUILD)/s3; $(MAKE) $(filter-out s3, $(MAKECMDGOALS))
+s3: | $(KEY_VARS) $(BUILD_SUBDIR)
+	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
-iam: | $(KEY_VARS)
-	cp -R $(SRC)/iam $(BUILD); cd $(BUILD)/iam; $(MAKE) $(filter-out iam, $(MAKECMDGOALS))
+iam: | $(KEY_VARS) $(BUILD_SUBDIR)
+	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
-route53: | $(VPC_VARS)
-	cp -R $(SRC)/route53 $(BUILD); cd $(BUILD)/route53; $(MAKE) $(filter-out route53, $(MAKECMDGOALS))
+route53: | $(VPC_VARS) $(BUILD_SUBDIR)
+	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
 # This goal is needed because some other goals dependents on $(R53_VARS)
-$(R53_VARS): | $(VPC_VARS)
-	cp -R $(SRC)/route53 $(BUILD); cd $(BUILD)/route53; $(MAKE) apply
+$(R53_VARS):
+	make route53 apply
+
+etcd: | $(KEY_VARS) $(BUILD_SUBDIR)
+	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
 # Terraform Targets
-plan apply destroy_plan destroy refresh show init:
-	@echo $(MAKECMDGOALS)
+plan apply destroy_plan refresh show init:
+	# Goals for sub-module $(MAKECMDGOALS)
 
-.PHONY: pall lan apply destroy_plan destroy refresh show init clean show_all clean_all init_build
-.PHONY: vpc s3 iam route53
+.PHONY: pall lan apply destroy_plan destroy refresh show init show_all destroy_all init_build
+.PHONY: vpc s3 iam route53 etcd
