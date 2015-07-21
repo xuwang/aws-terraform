@@ -4,11 +4,13 @@ PROFILE := "profile $(PROFILE_NAME)"
 SRC := $(CWD)/coreos-cluster
 BUILD := $(CWD)/build
 SCRIPTS := $(CWD)/scripts
+# Terraform dirs and var files
 TF_COMMON := $(BUILD)/tfcommon
 KEY_VARS := $(TF_COMMON)/keys.tfvars
 VPC_VARS_TF=$(TF_COMMON)/vpc-vars.tf
 VPC_VARS := $(TF_COMMON)/vpc-vars.tfvars
 R53_VARS := $(TF_COMMON)/route53-vars.tfvars
+# Terraform commands
 TF_PLAN := terraform plan --var-file=$(KEY_VARS)
 TF_APPLY := terraform apply --var-file=$(KEY_VARS)
 TF_REFRESH := terraform refresh --var-file=$(KEY_VARS)
@@ -16,6 +18,10 @@ TF_DESTROY_PLAN := terraform plan -destroy --var-file=$(KEY_VARS) --out=destroy.
 TF_DESTROY_APPLY := terraform apply destroy.tfplan
 TF_SHOW := terraform show
 TF_DESTROY_PLAN_FILE := destroy.tfplan
+# For get-ami.sh
+COREOS_UPDATE_CHANNE=beta
+AWS_ZONE=us-west-2
+VM_TYPE=pv
 # Exports all above vars
 export
 
@@ -45,13 +51,14 @@ $(KEY_VARS): | $(BUILD)
 $(BUILD):
 	mkdir -p $(BUILD)
 	cp -Rf  $(SRC)/tfcommon $(BUILD)
-
+	$(SCRIPTS)/get-ami.sh >> $(TF_COMMON)/override.tf
 
 all: vpc
 
 show_all:
 	cd build; for dir in $(BUILD_SUBDIRS); do \
         test -d $$dir && $(MAKE) -C $$dir -i show ; \
+        exit 0; \
     done
 
 destroy:
