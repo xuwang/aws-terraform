@@ -53,6 +53,8 @@ $(BUILD):
 	cp -Rf  $(SRC)/tfcommon $(BUILD)
 	$(SCRIPTS)/get-ami.sh >> $(TF_COMMON)/override.tf
 
+reset_tfcommon: $(KEY_VARS)
+
 all: vpc
 
 show_all:
@@ -97,5 +99,6 @@ etcd: | $(BUILD_SUBDIR)
 plan apply destroy_plan refresh show init:
 	# Goals for sub-module $(MAKECMDGOALS)
 
-.PHONY: pall lan apply destroy_plan destroy refresh show init show_all destroy_all init_build
+.PHONY: show_all destroy_all init_build reset_tfcommon
+.PHONY: pall lan apply destroy_plan destroy refresh show init 
 .PHONY: vpc s3 iam route53 etcd
