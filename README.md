@@ -8,6 +8,10 @@ AWS compoments includes: VPC, security groups, IAM, S3, ELB, Route53, Autoscalin
 
 AWS resources are defined in Terraform resource folders. The build process will copy all resources defined in the repository to a *build* directory. The view, plan, apply, and destroy operations are performed under *build*, keepting the original Terraform files in the repo intact. The *build* directory is ignored in .gitignore so that you don't accidentally checkin sensitive data. 
 
+
+**WIP**
+
+
 ## Install Tools and Setup AWS credentials
 
 1. Install [Terraform](http://www.terraform.io/downloads.html)
@@ -87,17 +91,20 @@ AWS resources are defined in Terraform resource folders. The build process will 
 
 ## Create Other Platform Resources
 
-Currently defined resources are:
-
-  - s3
-  - iam
-  - route53
-  - etcd
-  - central-services (Jenkins, fleet-ui, monitoring, splunk)
-  - dockerhub
-  - worker
-  - rds
-  - elb
+Currently defined resources:
+  
+Resource | Description
+--- | ---
+*vpc* | VPC, Subnets, and Security Groups
+*s3* | S3 buckets
+*iam* | IAM roles and polices
+*route53* | Public and private hosted zones on Route53 DNS service
+*etcd* | Setup ETCD2 cluster
+*elb* | Setup predefined ELBs
+*admiral* | Central services cluster (Jenkins, fleet-ui, monitoring, splunk)
+*dockerhub* | Private docker registry cluster
+*worker* | Setup application docker hosting cluster
+*rds* | RDS servers
 
 1. To build:
 
