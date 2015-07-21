@@ -4,7 +4,7 @@
 resource "aws_autoscaling_group" "etcd" {
   name = "etcd"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c"]
-  min_size = 1
+  min_size = 3
   max_size = 3
   desired_capacity = 3
   
@@ -38,17 +38,18 @@ resource "aws_launch_configuration" "etcd" {
   iam_instance_profile = "${var.iam_instance_profile.etcd}"
   security_groups = [ "${var.security_group_etcd}" ]
   key_name = "${var.aws_ec2_keypair.etcd}"  
+  lifecycle { create_before_destroy = true }
 
   # /root
   root_block_device = {
     volume_type = "gp2"
-    volume_size = "24"
+    volume_size = "8"
   }
   # /var/lib/docker
   ebs_block_device = {
     device_name = "/dev/sdb"
     volume_type = "gp2"
-    volume_size = "50"
+    volume_size = "8"
   }
 
   user_data = <<USER_DATA
