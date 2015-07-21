@@ -2,7 +2,7 @@
 
 This project builds a docker cluster that runs on CoreOS and is implemented on AWS, managed by Terraform. 
 AWS compoments includes: VPC, security groups, IAM, S3, ELB, Route53, Autoscaling. 
-The infrastructure templates are defined in each Terraform resource folder. The build process will copy all resources under a *build* directory, and manage resources under *build*, keepting the original template intact. The build directory is ignored in .gitignore so you don't accidentally checkin sensitive data. 
+The infrastructure templates are defined in each Terraform resource folder. The build process will copy all resources under a *build* directory, and manage resources under *build*, keepting the original terraform files intact. The build directory is ignored in .gitignore so that you don't accidentally checkin sensitive data. 
 
 ## Install Tools and Setup AWS credentials
 
