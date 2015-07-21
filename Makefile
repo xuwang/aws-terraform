@@ -19,7 +19,7 @@ TF_DESTROY_PLAN_FILE := destroy.tfplan
 # Exports all above vars
 export
 
-# Note the order of BUILD_SUBDIRS is significant, because there are dependences on clean_all
+# Note the order of BUILD_SUBDIRS is significant, because there are dependences on destroy_all
 BUILD_SUBDIRS := iam s3 route53 vpc
 
 # Get goals for sub-module
@@ -55,7 +55,7 @@ show_all:
     done
 
 destroy:
-	@echo Use \"make destroy_all\" to destroy ALL resources
+	echo Use \"make destroy_all\" to destroy ALL resources
 
 destroy_all:
 	cd build; for dir in $(BUILD_SUBDIRS); do \
