@@ -1,9 +1,12 @@
 # AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)
 
-This a practical implementation of [CoreOS production achirtecture] (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS. The infrastructure code is managed by Terraform. 
+This a practical implementation of [CoreOS cluster achirtecture] (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS. The cluster follows CoreOS production cluster model that contains 3-node etcd cluster in an autoscalting group, a central service node that you can run shared services such as CI, logging and monigoring, a private docker registry, and a fleet of worker nodes to run other service containers. 
+
+The entire infrastructure is managed by Terraform. 
+
 AWS compoments includes: VPC, security groups, IAM, S3, ELB, Route53, Autoscaling, RDS etc. 
 
-The AWS resources are defined in Terraform resource folders. The build process will copy all resources under a *build* directory, and manage resources under *build*, keepting the original terraform files intact. The build directory is ignored in .gitignore so that you don't accidentally checkin sensitive data. 
+AWS resources are defined in Terraform resource folders. The build process will copy all resources defined in the repository to a *build* directory, plan, apply, view, destroy resources are performed under *build*, keepting the original Terraform files in the repo intact. The *build* directory is ignored in .gitignore so that you don't accidentally checkin sensitive data. 
 
 ## Install Tools and Setup AWS credentials
 
