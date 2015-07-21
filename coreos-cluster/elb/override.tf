@@ -1,3 +1,0 @@
-variable "environment" {
-  default = "green"
-}
