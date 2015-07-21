@@ -85,16 +85,15 @@ The infrastructure templates are defined in each Terraform resource folder. The 
 
 Currently defined resources are:
 
-* s3
-* iam
-* route53
-* etcd
-* admiral
-* dockerhub
-* worker
-* elb
-* rds
-
+  - s3
+  - iam
+  - route53
+  - etcd
+  - admiral
+  - dockerhub
+  - worker
+  - rds
+  - elb
 
 1. To build:
 
