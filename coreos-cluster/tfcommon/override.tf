@@ -24,8 +24,8 @@ variable "etcd_cluster_capacity" {
 
 variable "worker_cluster_capacity" {
   default = {
-    min_size = 3
-    max_size = 3
-    desired_capacity = 3
+    min_size = 1
+    max_size = 1
+    desired_capacity = 1
   }
 }

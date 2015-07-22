@@ -35,26 +35,23 @@
               [Service]
               Restart=always
               RestartSec=5        
-    - name: s3sync.service
+    - name: git-sync.service
       command: start
       content: |
         [Unit]
-        Description=s3sync
-        Requires=docker.service
-        After=docker.service
+        Description=git-sync
         
         [Service]
         EnvironmentFile=/etc/environment
         TimeoutStartSec=10min
-        ExecStartPre=-/usr/bin/docker rm s3sync
-        ExecStart=/opt/bin/s3sync.sh
+        ExecStart=/opt/bin/git-sync.sh
         [Install]
         WantedBy=multi-user.target
-    - name: s3sync.timer
+    - name: git-sync.timer
       command: start
       content: |      
         [Unit]
-        Description=s3sync timer
+        Description=git-sync timer
         
         [Timer]
         OnCalendar=*:*:00
@@ -67,8 +64,8 @@
       content: |       
           [Unit]
           Description=A hook to excute bootstrap script at boot
-          Wants=s3sync.service
-          After=s3sync.service
+          Wants=git-sync.service
+          After=git-sync.service
           
           [Service]
           Type=oneshot

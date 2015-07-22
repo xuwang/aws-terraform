@@ -22,11 +22,9 @@ TF_DESTROY_PLAN_FILE := destroy.tfplan
 COREOS_UPDATE_CHANNE=beta
 AWS_ZONE=us-west-2
 VM_TYPE=hvm
-# Exports all above vars
-export
 
 # Note the order of BUILD_SUBDIRS is significant, because there are dependences on destroy_all
-BUILD_SUBDIRS :=  etcd s3 route53 vpc
+BUILD_SUBDIRS :=  etcd s3 iam route53 vpc
 
 # Get goals for sub-module
 SUBGOALS := $(filter-out $(BUILD_SUBDIRS), $(MAKECMDGOALS))
@@ -36,6 +34,9 @@ GOAL := $(firstword $(MAKECMDGOALS))
 
 # Get the sub-module dir
 BUILD_SUBDIR := build/$(GOAL)
+
+# Exports all above vars
+export
 
 # Copy sub-module dir to build
 $(BUILD_SUBDIR): | $(BUILD) build_subdir
@@ -56,7 +57,6 @@ build_init:
 	echo aws_access_key = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/credentials $(PROFILE_NAME) aws_access_key_id)\" > $(KEY_VARS)
 	echo aws_secret_key = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/credentials $(PROFILE_NAME) aws_secret_access_key)\" >> $(KEY_VARS)	
 	echo aws_region = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/config $(PROFILE) region)\" >> $(KEY_VARS)
-
 
 all: vpc
 
@@ -82,6 +82,9 @@ vpc: | $(BUILD_SUBDIR)
 $(VPC_VARS):
 	$(MAKE) vpc apply
 
+iam: | $(BUILD_SUBDIR)
+	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
+
 s3: | $(BUILD_SUBDIR)
 	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
@@ -94,12 +97,13 @@ $(R53_VARS):
 
 etcd: | $(BUILD_SUBDIR) $(VPC_VARS)
 	$(MAKE) s3
+	$(MAKE) iam
 	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
 # Terraform Targets
 plan apply destroy_plan refresh show init:
 	# Goals for sub-module $(MAKECMDGOALS)
 
-.PHONY: show_all destroy_all init_build reset_tfcommon
+.PHONY: init_build build_subdir show_all destroy_all all
 .PHONY: pall lan apply destroy_plan destroy refresh show init 
-.PHONY: vpc s3 route53 etcd
+.PHONY: vpc s3 iam route53 etcd
