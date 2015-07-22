@@ -1,3 +1,5 @@
+# s3 bucket for initial-cluster etcd proxy discovery
+# and two-stage cloudinit user-data files
 resource "aws_s3_bucket" "coreos-cluster-cloudinit" {
     bucket = "AWS-ACCOUNT-coreos-cluster-cloudinit"
     acl = "private"
@@ -6,7 +8,7 @@ resource "aws_s3_bucket" "coreos-cluster-cloudinit" {
         Name = "Cloudinit"
     }
 }
-
+# s3 bucket for application configuration, code, units etcd. Shared by all cluster nodes
 resource "aws_s3_bucket" "coreos-cluster-config" {
     bucket = "AWS-ACCOUNT-coreos-cluster-config"
     acl = "private"
@@ -16,6 +18,7 @@ resource "aws_s3_bucket" "coreos-cluster-config" {
     }
 }
 
+# s3 bucket for jenkins backup data
 resource "aws_s3_bucket" "jenkins" {
     bucket = "AWS-ACCOUNT-jenkins"
     acl = "private"
@@ -25,6 +28,7 @@ resource "aws_s3_bucket" "jenkins" {
     }
 }
 
+# s3 bucket for private docker registry
 resource "aws_s3_bucket" "dockerhub" {
     bucket = "AWS-ACCOUNT-dockerhub"
     acl = "private"
@@ -34,11 +38,12 @@ resource "aws_s3_bucket" "dockerhub" {
     }
 }
 
-resource "aws_s3_bucket" "splunk" {
-    bucket = "AWS-ACCOUNT-splunk"
+# s3 bucket for log data backup
+resource "aws_s3_bucket" "logs" {
+    bucket = "AWS-ACCOUNT-logs"
     acl = "private"
 
     tags {
-        Name = "Spluck"
+        Name = "Logs"
     }
 }

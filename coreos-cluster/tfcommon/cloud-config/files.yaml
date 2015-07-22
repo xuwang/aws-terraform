@@ -7,12 +7,12 @@ write_files:
         
         # Create /root/.aws/envvars and config 
         create_aws_cred () {
-            echo "AWS_ACCESS_KEY_ID=$(etcdctl get /_pacific/_aws/deployment/id)" > $AWS_CONFIG_ENV
-            echo "AWS_SECRET_ACCESS_KEY=$(etcdctl get /_pacific/_aws/deployment/key)" >> $AWS_CONFIG_ENV
+            echo "AWS_ACCESS_KEY_ID=$(etcdctl get /_aws/deployment/id)" > $AWS_CONFIG_ENV
+            echo "AWS_SECRET_ACCESS_KEY=$(etcdctl get /_aws/deployment/key)" >> $AWS_CONFIG_ENV
             echo "AWS_DEFAULT_REGION=us-west-2" >> $AWS_CONFIG_ENV
             echo "[default]" > $AWS_CONFIG_FILE
-            echo "aws_access_key_id = $(etcdctl get /_pacific/_aws/deployment/id)" >> $AWS_CONFIG_FILE
-            echo "aws_secret_access_key = $(etcdctl get /_pacific/_aws/deployment/key)" >> $AWS_CONFIG_FILE
+            echo "aws_access_key_id = $(etcdctl get /_aws/deployment/id)" >> $AWS_CONFIG_FILE
+            echo "aws_secret_access_key = $(etcdctl get /_aws/deployment/key)" >> $AWS_CONFIG_FILE
             echo "region = us-west-2" >>  $AWS_CONFIG_FILE
             chmod 600 /root/.aws/*
             cp -r /root/.aws  /home/core/
@@ -34,17 +34,13 @@ write_files:
           ID=$(cat /root/tmp/id)
           KEY=$(cat /root/tmp/key)
           APPSBUCKET=$(cat /root/tmp/apps-bucket)
-          DATADOGAPI=$(cat /root/tmp/datadog-apikey)
-          TIMPSTAMP=$(date +%Y%m%d-$RANDOM)
       
           # Store keys in etcd. supress key output so it doesn't end up in the journal log.
-          etcdctl mkdir /_pacific/_aws/deployment
-          etcdctl mkdir /_pacific/_datadog/
-          etcdctl set /_pacific/_aws/deployment/id $ID
-          etcdctl set /_pacific/_aws/deployment/key $KEY > /dev/null
-          etcdctl set /_pacific/_aws/deployment/app-config-bucket $APPSBUCKET
-          etcdctl set /_pacific/_aws/deployment/app-platform $profile
-          etcdctl set /_pacific/_datadog/apikey $DATADOGAPI > /dev/null
+          etcdctl mkdir /_coreos-cluster/deployment
+          etcdctl set /_coreos-cluster/deployment/id $ID
+          etcdctl set /_coreos-cluster/deployment/key $KEY > /dev/null
+          etcdctl set /_coreos-cluster/deployment/app-config-bucket $APPSBUCKET
+          etcdctl set /_coreos-cluster/deployment/app-platform $profilel
         }
         
         # Main
@@ -53,9 +49,9 @@ write_files:
         AWS_CONFIG_FILE=/root/.aws/config
       
         # Platform name
-        profile='mylab'
+        profile='coreos-cluster'
         
-        if ! etcdctl get /_pacific/_aws/deployment/id > /dev/null 2>&1 ;
+        if ! etcdctl get /_coreos-cluster/deployment/id > /dev/null 2>&1 ;
         then
           get_keys
         fi

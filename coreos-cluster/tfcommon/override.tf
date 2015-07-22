@@ -13,3 +13,19 @@ variable "project_tags" {
     private_domain = "coreos-cluster.local"
   }
 }
+
+variable "etcd_cluster_capacity" {
+  default = {
+    min_size = 3
+    max_size = 3
+    desired_capacity = 3
+  }
+}
+
+variable "worker_cluster_capacity" {
+  default = {
+    min_size = 3
+    max_size = 3
+    desired_capacity = 3
+  }
+}

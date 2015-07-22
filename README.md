@@ -97,7 +97,6 @@ Resource | Description
 --- | ---
 *vpc* | VPC, Subnets, and Security Groups
 *s3* | S3 buckets
-*iam* | IAM roles and polices
 *route53* | Setup public and private hosted zones on Route53 DNS service
 *etcd* | Setup ETCD2 cluster
 *elb* | Setup predefined ELBs

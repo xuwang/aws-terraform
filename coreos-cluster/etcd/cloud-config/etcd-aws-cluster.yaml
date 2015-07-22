@@ -3,10 +3,10 @@ coreos:
   etcd2:
     advertise-client-urls: http://$private_ipv4:2379
     initial-advertise-peer-urls: http://$private_ipv4:2380
-    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
-    listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
+    listen-client-urls: http://0.0.0.0:2379
+    listen-peer-urls: http://$private_ipv4:2380
   fleet:
-    metadata: disk=ssd,env=mylab,platform=ec2,provider=aws,region=us-west-2,role=etcd2
+    metadata: disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
     public-ip: $private_ipv4
   units:
     - name: etcd2.service

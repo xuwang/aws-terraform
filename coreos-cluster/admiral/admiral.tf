@@ -56,6 +56,23 @@ ${file("../../scripts/s3-cloudconfig-bootstrap.sh")}
 USER_DATA
 }
 
+resource "aws_iam_instance_profile" "admiral" {
+    name = "admiral"
+    roles = ["${aws_iam_role.admiral.name}"]
+}
+
+resource "aws_iam_role" "admiral" {
+    name = "admiral"
+    path = "/"
+    assume_role_policy = "${file(\"../tfcommon/assume_role_policy.json\")}"
+}
+
+resource "aws_iam_role_policy" "admiral_policy" {
+    name = "admiral_policy"
+    role = "${aws_iam_role.admiral.id}"
+    policy = "${file(\"admiral_policy.json\")}"
+}
+
 output "aws-launch-configuration-id" {
     value = "${aws_launch_configuration.admiral2.id}"
 }

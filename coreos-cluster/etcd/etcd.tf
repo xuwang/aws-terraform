@@ -4,9 +4,9 @@
 resource "aws_autoscaling_group" "etcd" {
   name = "etcd"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c"]
-  min_size = 3
-  max_size = 3
-  desired_capacity = 3
+  min_size = "${var.etcd_cluster_capacity.min_size}"
+  max_size = "${var.etcd_cluster_capacity.max_size}"
+  desired_capacity = "${var.etcd_cluster_capacity.desired_capacity}"
   
   health_check_type = "EC2"
   force_delete = true
@@ -17,12 +17,6 @@ resource "aws_autoscaling_group" "etcd" {
   tag {
     key = "Name"
     value = "etcd"
-    propagate_at_launch = true
-  }
-  # Billing
-  tag {
-    key = "Billing"
-    value = "${var.project_tags.coreos-cluster}"
     propagate_at_launch = true
   }
 }
@@ -52,12 +46,31 @@ resource "aws_launch_configuration" "etcd" {
     volume_size = "8"
   }
 
+  # assemble cloudinit user-data, the file segments must be in this order
   user_data = <<USER_DATA
-${file("../common/cloud-config2/etcd-aws-cluster.yaml")}
-${file("../common/cloud-config2/systemd-units.yaml")}
-${file("../common/cloud-config2/files.yaml")}
-${file("../common/cloud-config2/etcd-peers-init.yaml")}
+${file("cloud-config/etcd-aws-cluster.yaml")}
+${file("../tfcommon/cloud-config/systemd-units.yaml")}
+${file("../tfcommon/cloud-config/files.yaml")}
+${file("cloud-config/etcd-peers-init.yaml")}
 USER_DATA
+}
+
+# setup the etcd ec2 profile, role and polices
+resource "aws_iam_instance_profile" "etcd" {
+    name = "etcd"
+    roles = ["${aws_iam_role.etcd.name}"]
+}
+
+resource "aws_iam_role" "etcd" {
+    name = "etcd"
+    path = "/"
+    assume_role_policy =  "${file(\"../tfcommon/assume_role_policy.json\")}"
+}
+
+resource "aws_iam_role_policy" "etcd_policy" {
+    name = "etcd_policy"
+    role = "${aws_iam_role.etcd.id}"
+    policy = "${file(\"./etcd_policy.json\")}"
 }
 
 output "aws-launch-configuration-id" {

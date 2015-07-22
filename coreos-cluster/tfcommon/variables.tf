@@ -16,6 +16,22 @@ variable "aws_availability_zone" {
   default = "us-west-2a"
 }
 
+variable "etcd_cluster_capacity" {
+  default = {
+    min_size = 3
+    max_size = 3
+    desired_capacity = 3
+  }
+}
+
+variable "worker_cluster_capacity" {
+  default = {
+    min_size = 3
+    max_size = 3
+    desired_capacity = 3
+  }
+}
+
 # The net block (CIDR) that SSH is available to.
 variable "allow_from_anywhere" {
   default = "0.0.0.0/0"

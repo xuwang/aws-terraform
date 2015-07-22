@@ -51,6 +51,21 @@ ${file("../../scripts/s3-cloudconfig-bootstrap.sh")}
 USER_DATA
 }
 
+resource "aws_iam_instance_profile" "dockerhub" {
+    name = "dockerhub"
+    roles = ["${aws_iam_role.dockerhub.name}"]
+}
+
+resource "aws_iam_role" "dockerhub" {
+    name = "dockerhub"
+    path = "/"
+    assume_role_policy =  "${file(\"../tfcommon/assume_role_policy.json\")}"
+}
+
+resource "aws_iam_role_policy" "dockerhub_policy" {
+    name = "dockerhub_policy"
+    role = "${aws_iam_role.dockerhub.id}"
+  
 output "aws-launch-configuration-id" {
     value = "${aws_launch_configuration.dockerhub2.id}"
 }

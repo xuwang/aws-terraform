@@ -21,12 +21,12 @@ TF_DESTROY_PLAN_FILE := destroy.tfplan
 # For get-ami.sh
 COREOS_UPDATE_CHANNE=beta
 AWS_ZONE=us-west-2
-VM_TYPE=pv
+VM_TYPE=hvm
 # Exports all above vars
 export
 
 # Note the order of BUILD_SUBDIRS is significant, because there are dependences on destroy_all
-BUILD_SUBDIRS := iam s3 route53 vpc
+BUILD_SUBDIRS :=  etcd s3 route53 vpc
 
 # Get goals for sub-module
 SUBGOALS := $(filter-out $(BUILD_SUBDIRS), $(MAKECMDGOALS))
@@ -38,23 +38,25 @@ GOAL := $(firstword $(MAKECMDGOALS))
 BUILD_SUBDIR := build/$(GOAL)
 
 # Copy sub-module dir to build
-$(BUILD_SUBDIR): $(KEY_VARS)
+$(BUILD_SUBDIR): | $(BUILD) build_subdir
+
+build_subdir:
 	cp -R $(SRC)/$(GOAL) $(BUILD)
 
-# Generate keys.tfvars from AWS credentials
-$(KEY_VARS): | $(BUILD)
+# Create build dir and copy tfcommon to build
+$(BUILD): build_init
+
+build_init: 
+	mkdir -p $(BUILD)
+	# Copy shared terraform files
+	cp -Rf  $(SRC)/tfcommon $(BUILD)
+	# Generate default AMI id
+	$(SCRIPTS)/get-ami.sh >> $(TF_COMMON)/override.tf
+	# Generate keys.tfvars from AWS credentials
 	echo aws_access_key = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/credentials $(PROFILE_NAME) aws_access_key_id)\" > $(KEY_VARS)
 	echo aws_secret_key = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/credentials $(PROFILE_NAME) aws_secret_access_key)\" >> $(KEY_VARS)	
 	echo aws_region = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/config $(PROFILE) region)\" >> $(KEY_VARS)
 
-# Create build dir and copy tfcommon to build
-$(BUILD):
-	mkdir -p $(BUILD)
-	cp -Rf  $(SRC)/tfcommon $(BUILD)
-	$(SCRIPTS)/get-ami.sh >> $(TF_COMMON)/override.tf
-
-# This goal is usefull if we need to reset aws keys or default ami, etc.
-reset_tfcommon: $(KEY_VARS)
 
 all: vpc
 
@@ -78,12 +80,9 @@ vpc: | $(BUILD_SUBDIR)
 
 # This goal is needed because some other goals dependents on $(VPC_VARS)
 $(VPC_VARS):
-	make vpc apply
+	$(MAKE) vpc apply
 
 s3: | $(BUILD_SUBDIR)
-	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
-
-iam: | $(BUILD_SUBDIR)
 	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
 route53: | $(VPC_VARS) $(BUILD_SUBDIR)
@@ -91,9 +90,10 @@ route53: | $(VPC_VARS) $(BUILD_SUBDIR)
 
 # This goal is needed because some other goals dependents on $(R53_VARS)
 $(R53_VARS):
-	make route53 apply
+	$(MAKE) route53 apply
 
-etcd: | $(BUILD_SUBDIR)
+etcd: | $(BUILD_SUBDIR) $(VPC_VARS)
+	$(MAKE) s3
 	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
 # Terraform Targets
@@ -102,4 +102,4 @@ plan apply destroy_plan refresh show init:
 
 .PHONY: show_all destroy_all init_build reset_tfcommon
 .PHONY: pall lan apply destroy_plan destroy refresh show init 
-.PHONY: vpc s3 iam route53 etcd
+.PHONY: vpc s3 route53 etcd

@@ -1,3 +1,3 @@
 cloud-config/hosting.yaml
-../common/cloud-config2/systemd-units.yaml
-../common/cloud-config2/files.yaml
+../tfcommon/cloud-config/systemd-units.yaml
+../tfcommon/cloud-config/files.yaml
