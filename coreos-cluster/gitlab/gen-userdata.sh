@@ -1,1 +1,1 @@
-cat cloud-config/admiral.yaml ../common/cloud-config/systemd-units.yaml ../common/cloud-config/files.yaml > user-data
+cat cloud-config/admiral.yaml ../tfcommon/cloud-config/systemd-units.yaml ../tfcommon/cloud-config/files.yaml > user-data

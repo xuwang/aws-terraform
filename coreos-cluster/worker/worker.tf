@@ -1,44 +1,39 @@
 #
-# Docker hosting2 autoscale group configurations
+# Docker worker autoscale group configurations
 #
-resource "aws_autoscaling_group" "docker_hosting2" {
-  name = "docker-hosting2"
+resource "aws_autoscaling_group" "worker" {
+  name = "worker"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c"]
-  max_size = 9
-  min_size = 2
-  desired_capacity = 2
+  min_size = "${var.worker_cluster_capacity.min_size}"
+  max_size = "${var.worker_cluster_capacity.max_size}"
+  desired_capacity = "${var.worker_cluster_capacity.desired_capacity}"
   
   health_check_type = "EC2"
   force_delete = true
   
-  launch_configuration = "${aws_launch_configuration.docker_hosting2.name}"
-  vpc_zone_identifier = ["${var.subnet_hosting-us-west-2a}","${var.subnet_hosting-us-west-2b}","${var.subnet_hosting-us-west-2c}"]
+  launch_configuration = "${aws_launch_configuration.worker.name}"
+  vpc_zone_identifier = ["${var.subnet_worker-us-west-2a}","${var.subnet_worker-us-west-2b}","${var.subnet_worker-us-west-2c}"]
   
   # Name tag
   tag {
     key = "Name"
-    value = "docker-hosting2"
-    propagate_at_launch = true
-  }
-  # Billing
-  tag {
-    key = "${var.project_tag_mylab.key}"
-    value = "${var.project_tag_mylab.value}"
+    value = "worker"
     propagate_at_launch = true
   }
 }
 
 output "aws-autoscaling-group-id" {
-  value = "${aws_autoscaling_group.docker_hosting2.id}"
+  value = "${aws_autoscaling_group.worker.id}"
 }
 
-resource "aws_launch_configuration" "docker_hosting2" {
-  name = "docker-hosting2-v2"
+resource "aws_launch_configuration" "worker" {
+  name = "worker"
   image_id = "${lookup(var.amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type}"
-  iam_instance_profile = "${var.iam_instance_profile.hosting}"
-  security_groups = [ "${var.security_group_hosting}" ]
-  key_name = "${var.aws_ec2_keypair.hosting}"  
+  iam_instance_profile = "${var.iam_instance_profile.worker}"
+  security_groups = [ "${var.security_group_worker}" ]
+  key_name = "${var.aws_ec2_keypair.worker}"
+  lifecycle { create_before_destroy = true }
 
   # /root
   root_block_device = {
@@ -52,9 +47,7 @@ resource "aws_launch_configuration" "docker_hosting2" {
     volume_size = "50"
   }
 
-  user_data = <<USER_DATA
-${file("../../scripts/s3-cloudconfig-bootstrap.sh")}
-USER_DATA
+  user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
 }
 
 resource "aws_iam_instance_profile" "worker" {
@@ -76,5 +69,5 @@ resource "aws_iam_role_policy" "worker_policy" {
 
 
 output "aws-launch-configuration-id" {
-    value = "${aws_launch_configuration.docker_hosting2.id}"
+    value = "${aws_launch_configuration.worker.id}"
 }

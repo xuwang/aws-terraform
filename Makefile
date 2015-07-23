@@ -24,7 +24,7 @@ AWS_ZONE=us-west-2
 VM_TYPE=hvm
 
 # Note the order of BUILD_SUBDIRS is significant, because there are dependences on destroy_all
-BUILD_SUBDIRS :=  etcd s3 iam route53 vpc
+BUILD_SUBDIRS :=  worker etcd s3 iam route53 vpc
 
 # Get goals for sub-module
 SUBGOALS := $(filter-out $(BUILD_SUBDIRS), $(MAKECMDGOALS))
@@ -45,9 +45,9 @@ build_subdir:
 	cp -R $(SRC)/$(GOAL) $(BUILD)
 
 # Create build dir and copy tfcommon to build
-$(BUILD): build_init
+$(BUILD): init_build
 
-build_init: 
+init_build: 
 	mkdir -p $(BUILD)
 	# Copy shared terraform files
 	cp -Rf  $(SRC)/tfcommon $(BUILD)
@@ -66,12 +66,12 @@ show_all:
         exit 0; \
     done
 
-destroy:
+clean clean_all:
 	echo Use \"make destroy_all\" to destroy ALL resources
 
 destroy_all:
 	cd build; for dir in $(BUILD_SUBDIRS); do \
-        test -d $$dir && $(MAKE) -C $$dir -i destroy ; \
+        test -d $$dir && $(MAKE) -C $$dir destroy ; \
     done
 	rm -rf $(BUILD)
 
@@ -100,10 +100,14 @@ etcd: | $(BUILD_SUBDIR) $(VPC_VARS)
 	$(MAKE) iam
 	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
+worker: | $(BUILD_SUBDIR) $(VPC_VARS)
+	$(MAKE) etcd
+	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
+
 # Terraform Targets
-plan apply destroy_plan refresh show init:
+apply destroy destroy_plan init plan refresh show :
 	# Goals for sub-module $(MAKECMDGOALS)
 
+.PHONY: $(BUILD) $(BUILD_SUBDIR)
 .PHONY: init_build build_subdir show_all destroy_all all
-.PHONY: pall lan apply destroy_plan destroy refresh show init 
-.PHONY: vpc s3 iam route53 etcd
+.PHONY: pall lan apply destroy_plan destroy refresh show init

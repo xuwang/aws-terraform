@@ -546,7 +546,7 @@ output "subnet_worker-us-west-2b" {
 output "subnet_worker-us-west-2c" {
     value = "\"${aws_subnet.worker-c.id}\""
 }
-# Hosting
+# Worker
 output "subnet_worker-us-west-2a" {
     value = "\"${aws_subnet.worker-a.id}\""
 }

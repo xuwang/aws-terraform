@@ -3,7 +3,7 @@
 resource "aws_s3_bucket" "coreos-cluster-cloudinit" {
     bucket = "AWS-ACCOUNT-coreos-cluster-cloudinit"
     acl = "private"
-
+    force_destroy = true
     tags {
         Name = "Cloudinit"
     }
@@ -11,6 +11,7 @@ resource "aws_s3_bucket" "coreos-cluster-cloudinit" {
 # s3 bucket for application configuration, code, units etcd. Shared by all cluster nodes
 resource "aws_s3_bucket" "coreos-cluster-config" {
     bucket = "AWS-ACCOUNT-coreos-cluster-config"
+    force_destroy = true
     acl = "private"
 
     tags {
@@ -21,6 +22,7 @@ resource "aws_s3_bucket" "coreos-cluster-config" {
 # s3 bucket for jenkins backup data
 resource "aws_s3_bucket" "jenkins" {
     bucket = "AWS-ACCOUNT-jenkins"
+    force_destroy = true
     acl = "private"
 
     tags {
@@ -31,6 +33,7 @@ resource "aws_s3_bucket" "jenkins" {
 # s3 bucket for private docker registry
 resource "aws_s3_bucket" "dockerhub" {
     bucket = "AWS-ACCOUNT-dockerhub"
+    force_destroy = true
     acl = "private"
 
     tags {
@@ -41,6 +44,7 @@ resource "aws_s3_bucket" "dockerhub" {
 # s3 bucket for log data backup
 resource "aws_s3_bucket" "logs" {
     bucket = "AWS-ACCOUNT-logs"
+    force_destroy = true
     acl = "private"
 
     tags {
