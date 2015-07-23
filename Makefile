@@ -27,7 +27,7 @@ VM_TYPE=hvm
 BUILD_SUBDIRS :=  worker etcd s3 iam route53 vpc
 
 # Get goals for sub-module
-SUBGOALS := $(filter-out $(BUILD_SUBDIRS), $(MAKECMDGOALS))
+SUBGOALS := $(filter-out $(BUILD_SUBDIRS) all, $(MAKECMDGOALS))
 
 # Get the sub-module name
 GOAL := $(firstword $(MAKECMDGOALS))
@@ -37,6 +37,10 @@ BUILD_SUBDIR := build/$(GOAL)
 
 # Exports all above vars
 export
+
+
+all:
+	$(MAKE) worker
 
 # Copy sub-module dir to build
 $(BUILD_SUBDIR): | $(BUILD) build_subdir
@@ -57,8 +61,6 @@ init_build:
 	echo aws_access_key = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/credentials $(PROFILE_NAME) aws_access_key_id)\" > $(KEY_VARS)
 	echo aws_secret_key = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/credentials $(PROFILE_NAME) aws_secret_access_key)\" >> $(KEY_VARS)	
 	echo aws_region = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/config $(PROFILE) region)\" >> $(KEY_VARS)
-
-all: vpc
 
 show_all:
 	cd build; for dir in $(BUILD_SUBDIRS); do \
