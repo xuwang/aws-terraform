@@ -5,6 +5,7 @@
       "Effect": "Allow",
       "Action": [
         "elasticloadbalancing:*",
+        "route53:*",
         "s3:*"
       ],
       "Resource": [
