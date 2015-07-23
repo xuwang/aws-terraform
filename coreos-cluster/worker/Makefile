@@ -43,4 +43,4 @@ init:
 	# create ec2 keypaire and upload to s3://AWS_ACCOUNT-coreos-cluster-config/keypairs/
 	$(SCRIPTS)/create-and-upload-keypair.sh $(EC2_ROLE)
 	# create user-data and upload to s3://AWS_ACCOUNT-coreos-cluster-config/worker/cloud-config.yaml
-	$(SCRIPTS)/substitute-AWS-ACCOUNT.sh
+	$(SCRIPTS)/gen-userdata.sh $(PROFILE_NAME) $(EC2_ROLE)

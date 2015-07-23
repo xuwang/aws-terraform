@@ -19,7 +19,8 @@
       ],
       "Resource": [
         "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-cloudinit/etcd/initial-cluster",
-        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-cloudinit/worker/",
+        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-cloudinit",
+        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-cloudinit/worker",
         "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-cloudinit/worker/*",
         "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-config",
         "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-config/*"

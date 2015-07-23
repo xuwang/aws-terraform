@@ -275,20 +275,20 @@ resource "aws_security_group" "etcd_sg"  {
       cidr_blocks = ["0.0.0.0/0"]
     }
     
-    # Allow etcd peers to communicate
+    # Allow etcd peers to communicate, include etcd proxies
     ingress {
       from_port = 7001
       to_port = 7001
       protocol = "tcp"
-      self = true
+      cidr_blocks = ["${var.vpc.cidr}"]
     }
 
-    # Allow etcd2 peers to communicate
+    # Allow etcd2 peers to communicate, include etcd proxies
     ingress {
       from_port = 2380
       to_port = 2380
       protocol = "tcp"
-      self = true
+      cidr_blocks = ["${var.vpc.cidr}"]
     }
 
     # Allow etcd clients to communicate
@@ -306,7 +306,7 @@ resource "aws_security_group" "etcd_sg"  {
       cidr_blocks = ["${var.vpc.cidr}"]
     }
 
-    # Allow SSH from campus hosts
+    # Allow SSH from my hosts
     ingress {
       from_port = 22
       to_port = 22

@@ -1,14 +1,14 @@
 #!/bin/bash -e
 
 # This is a coreos-cluster-cloudinit bootstrap script. It is passed in as 'user-data' file during the machine build. 
-# Then the script is excecuted to download the CoreOs "coreos-cluster-cloudinit.yaml" file  and "intial-cluster" files.
-# These files  will configure the system to join the CoreOS cluster. The second stage coreos-cluster-cloudinit.yaml can 
+# Then the script is excecuted to download the CoreOs "cloud-config.yaml" file  and "intial-cluster" files.
+# These files  will configure the system to join the CoreOS cluster. The second stage cloud-config.yaml can 
 # be changed to allow system configuration changes wihtout having to rebuild the system. All it takes is a reboot.
 # If this script changes, the machine will need to be rebuild (user-data change)
 
 # Convention: 
-# 1. A bucket should exist that contains role-based coreos-cluster-cloudinit.yaml
-#  e.g. <account-id>-coreos-cluster-cloudinit/<roleProfile>/coreos-cluster-cloudinit.yaml
+# 1. A bucket should exist that contains role-based cloud-config.yaml
+#  e.g. <account-id>-coreos-cluster-cloudinit/<roleProfile>/cloud-config.yaml
 # 2. All machines should have instance role profile, with a policy that allows readonly access to this bucket.
 
 # Get instance auth token from meta-data
@@ -54,11 +54,11 @@ roleProfile=$(curl -s http://169.254.169.254/latest/meta-data/iam/info \
 accountId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document \
 	| grep -Eo '([[:digit:]]{12})')
 
-# Bucket path for the coreos-cluster-cloudinit.yaml 
+# Bucket path for the cloud-config.yaml 
 bucket=${accountId}-coreos-cluster-cloudinit
 
-# Path to coreos-cluster-cloudinit.yaml
-cloudConfigYaml="${roleProfile}/coreos-cluster-cloudinit.yaml"
+# Path to cloud-config.yaml
+cloudConfigYaml="${roleProfile}/cloud-config.yaml"
 
 # path to initial-cluster urls file
 initialCluster="etcd/initial-cluster"
@@ -115,4 +115,4 @@ then
 fi
 
 # Run cloud-init
-coreos-cloudinit --from-file=${workDir}/coreos-cluster-cloudinit.yaml
+coreos-cloudinit --from-file=${workDir}/cloud-config.yaml
