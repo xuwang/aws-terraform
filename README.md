@@ -45,11 +45,6 @@ AWS resources are defined in Terraform resource folders. The build process will 
     $ brew install jq
     ```
 
-1. Clone the repo    
-    ```
-    $ git clone git@github.com:xuwang/aws-terraform.git
-    $ cd aws-terraform
-    ```
 1. Setup AWS Credentials at [AWS Console](https://console.aws.amazon.com/)
     1. Create a group `coreos-cluster` with `AaminstratorAccess` policy.
     2. Create a user `coreos-cluster` and download user credentials.
@@ -61,35 +56,43 @@ AWS resources are defined in Terraform resource folders. The build process will 
     ```
 
 
-## Create VPC, Subnets, and Security Groups
+## Quick Start
 
-1. To build:
+### To build:
 
-    ```
-    $ make vpc
-    ```
+```
+$ git clone git@github.com:xuwang/aws-terraform.git
+$ cd aws-terraform
+$ make all
+... build steps info ...
+... and at last should give out the worker's ip:
+    EC2 public ips: 52.24.xxx.xxx
+```
 
-    or step-by-step:
+This will create a vpc, s3 buckets, iam roles and keys, a etcd node, and a worker node.
 
-    ```
-    $ make vpc plan
-    $ make vpc apply
-    $ make vpc show
-    ```
+Login to the worker node:
 
-    This will create a build/vpc directory, copy terraform files from coreos-cluster to the build dir, 
-    and execute correspondent terraform cmd to build vpc on AWS.
+```
+$ ssh -A core@52.24.xxx.xxx
+core@ip-52.24.xxx.xxx ~ $ fleetctl list-machines
+
+MACHINE     IP      METADATA
+289a6ba7... 10.0.1.141  disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
+320bd4ac... 10.0.5.50   disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
+
+```
 
 
-1. To destroy:
+### To destroy:
 
-    ```
-    $ make vpc destroy
-    ```
+```
+$ make destroy_all
+```
 
-    Note: Destroy other resources before destroy vpc. Otherwise, destroy will fail because of dependencies.
+This will destroy ALL resources created by 
 
-## Create Other Platform Resources
+## Create Individual Platform Resources
 
 Currently defined resources:
   
@@ -97,33 +100,33 @@ Resource | Description
 --- | ---
 *vpc* | VPC, Subnets, and Security Groups
 *s3* | S3 buckets
+*iam* | Setup a deployment user and deployment keys
 *route53* | Setup public and private hosted zones on Route53 DNS service
 *etcd* | Setup ETCD2 cluster
+*worker* | Setup application docker hosting cluster
 *elb* | Setup predefined ELBs
 *admiral* | Central service cluster (Jenkins, fleet-ui, monitoring, logging, etc)
 *dockerhub* | Private docker registry cluster
-*worker* | Setup application docker hosting cluster
 *rds* | RDS servers
 
-1. To build:
+### To build:
 
-    ```
-    $ make <resource>
-    ```
+```
+$ make <resource>
+```
 
-    or step-by-step:
+or step-by-step:
+```
+$ make <resource> plan
+$ make <resource> apply
+$ make <resource> show
+```
 
-    ```
-    $ make <resource> plan
-    $ make <resource> apply
-    $ make <resource> show
-    ```
+This will create a build/<resource> directory, copy all terraform files to the build dir, 
+and execute correspondent terraform cmd to build the resource on AWS.
 
-    This will create a build/<resource> directory, copy all terraform files to the build dir, 
-    and execute correspondent terraform cmd to build the resource on AWS.
+### To destroy:
 
-2. To destroy:
-
-    ```
-    $ make <resource> destroy
-    ```
+```
+$ make <resource> destroy
+```
