@@ -32,3 +32,4 @@ init:
 	ln -s -f $(TF_COMMON)/override.tf override.tf
 	ln -s -f $(TF_COMMON)/variables.tf variables.tf
 	ln -s -f $(TF_COMMON)/provider.tf provider.tf
+	$(SCRIPTS)/substitute-AWS-ACCOUNT.sh

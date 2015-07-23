@@ -38,3 +38,4 @@ init:
 	ln -s -f $(TF_COMMON)/vpc-vars.tf vpc-vars.tf
 	# create ec2 keypaire and upload to ${AWS_ACCOUNT}-coreos-cluster-config/keypairs/
 	$(SCRIPTS)/create-and-upload-keypair.sh etcd
+	$(SCRIPTS)/substitute-AWS-ACCOUNT.sh
