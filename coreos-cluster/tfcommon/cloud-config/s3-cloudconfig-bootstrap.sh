@@ -71,18 +71,23 @@ s3Secret=$(get_value "SecretAccessKey")
 workDir="/tmp"
 cd ${workDir}
 
-# Download coreos-cluster-cloudinit
+# Download coreos-cluster-cloudinit/<profile>/clould-config.yaml
+# 
+# And replace ipv4 vars in clould-config.yaml
+# because oem-cloudinit.service does it only on native "user-data", i.e. this script.
 resource="/${bucket}/${cloudConfigYaml}"
 create_string_to_sign
 signature=$(/bin/echo -n "$stringToSign" | openssl sha1 -hmac ${s3Secret} -binary | base64)
 filePath=${cloudConfigYaml}
 debug_log
-curl -s -O -H "Host: ${bucket}.s3.amazonaws.com" \
+curl -s -H "Host: ${bucket}.s3.amazonaws.com" \
   -H "Content-Type: ${contentType}" \
   -H "Authorization: AWS ${s3Key}:${signature}" \
   -H "x-amz-security-token:${s3Token}" \
   -H "Date: ${dateValue}" \
-  https://${bucket}.s3.amazonaws.com/${cloudConfigYaml}
+  https://${bucket}.s3.amazonaws.com/${cloudConfigYaml} \
+  | sed "s/\\$private_ipv4/$private_ipv4/g; s/\\$public_ipv4/$public_ipv4/g" \
+  > ${workDir}/cloud-config.yaml
 
 # Download initial-cluster
 resource="/${bucket}/${initialCluster}"
@@ -108,10 +113,8 @@ fi
 coreos_env='/etc/environment'
 if [ ! -f $coreos_env ];
 then
-    private_ip=$(curl 169.254.169.254/latest/meta-data/local-ipv4)
-    public_ip=$(curl 169.254.169.254/latest/meta-data/public-ipv4)
-    echo "COREOS_PRIVATE_IPV4=$private_ip" > /etc/environment
-    echo "COREOS_PUBLIC_IPV4=$public_ip" >> /etc/environment
+    echo "COREOS_PRIVATE_IPV4=$private_ipv4" > /etc/environment
+    echo "COREOS_PUBLIC_IPV4=$public_ipv4" >> /etc/environment
 fi
 
 # Run cloud-init

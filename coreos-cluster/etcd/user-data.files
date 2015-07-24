@@ -1,0 +1,4 @@
+cloud-config/etcd-aws-cluster.yaml
+../tfcommon/cloud-config/systemd-units.yaml
+../tfcommon/cloud-config/files.yaml
+cloud-config/etcd-peers-init.yaml

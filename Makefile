@@ -18,6 +18,8 @@ TF_DESTROY_PLAN := terraform plan -destroy --var-file=$(KEY_VARS) --out=destroy.
 TF_DESTROY_APPLY := terraform apply destroy.tfplan
 TF_SHOW := terraform show
 TF_DESTROY_PLAN_FILE := destroy.tfplan
+export
+
 # For get-ami.sh
 COREOS_UPDATE_CHANNE=beta
 AWS_ZONE=us-west-2

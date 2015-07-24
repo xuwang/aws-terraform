@@ -65,8 +65,9 @@ $ git clone git@github.com:xuwang/aws-terraform.git
 $ cd aws-terraform
 $ make all
 ... build steps info ...
-... and at last should give out the worker's ip:
-    EC2 public ips: 52.24.xxx.xxx
+... at last, shows the worker's ip:
+    worker public ips: 52.24.xxx.xxx
+    ...
 ```
 
 This will create a vpc, s3 buckets, iam roles and keys, a etcd node, and a worker node.

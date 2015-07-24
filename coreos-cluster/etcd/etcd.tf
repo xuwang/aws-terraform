@@ -45,14 +45,8 @@ resource "aws_launch_configuration" "etcd" {
     volume_type = "gp2"
     volume_size = "8"
   }
-
-  # assemble cloudinit user-data, the file segments must be in this order
-  user_data = <<USER_DATA
-${file("cloud-config/etcd-aws-cluster.yaml")}
-${file("../tfcommon/cloud-config/systemd-units.yaml")}
-${file("../tfcommon/cloud-config/files.yaml")}
-${file("cloud-config/etcd-peers-init.yaml")}
-USER_DATA
+  
+  user_data = "${file("../tfcommon/cloud-config/s3-cloudconfig-bootstrap.sh")}"
 }
 
 # setup the etcd ec2 profile, role and polices

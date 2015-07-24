@@ -47,7 +47,7 @@ resource "aws_launch_configuration" "worker" {
     volume_size = "50"
   }
 
-  user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
+  user_data = "${file("../tfcommon/cloud-config/s3-cloudconfig-bootstrap.sh")}"
 }
 
 resource "aws_iam_instance_profile" "worker" {

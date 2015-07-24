@@ -59,7 +59,7 @@
         
         [Install]
         WantedBy=multi-user.target
-    - name: user-data.service
+    - name: post-provisioning.service
       command: start
       content: |       
           [Unit]
@@ -72,6 +72,6 @@
           RemainAfterExit=true
           EnvironmentFile=/etc/environment
           ExecStartPre=/usr/bin/bash -c "until [ -d /var/lib/apps/bin ]; do sleep 3; done; chmod a+x /var/lib/apps/bin/*"
-          ExecStart=/var/lib/apps/bin/user-data.sh
+          ExecStart=/var/lib/apps/bin/post-provisioning
           [Install]
           WantedBy=multi-user.target
