@@ -21,7 +21,7 @@ resource "aws_s3_bucket" "coreos-cluster-config" {
 
 # s3 bucket for jenkins backup data
 resource "aws_s3_bucket" "jenkins" {
-    bucket = "AWS-ACCOUNT-jenkins"
+    bucket = "AWS-ACCOUNT-coreos-cluster-jenkins"
     force_destroy = true
     acl = "private"
 
@@ -32,7 +32,7 @@ resource "aws_s3_bucket" "jenkins" {
 
 # s3 bucket for private docker registry
 resource "aws_s3_bucket" "dockerhub" {
-    bucket = "AWS-ACCOUNT-dockerhub"
+    bucket = "AWS-ACCOUNT-coreos-cluster-dockerhub"
     force_destroy = true
     acl = "private"
 
@@ -43,7 +43,7 @@ resource "aws_s3_bucket" "dockerhub" {
 
 # s3 bucket for log data backup
 resource "aws_s3_bucket" "logs" {
-    bucket = "AWS-ACCOUNT-logs"
+    bucket = "AWS-ACCOUNT-coreos-cluster-logs"
     force_destroy = true
     acl = "private"
 
