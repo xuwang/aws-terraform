@@ -83,6 +83,30 @@ MACHINE     IP      METADATA
 
 ```
 
+### Build multi-nodes cluster
+
+The number of etcd nodes and worker nodes is defined in *coreos-cluster/tfcommon/override.tf*:
+
+```
+variable "etcd_cluster_capacity" {
+  default = {
+    min_size = 1
+    max_size = 1
+    desired_capacity = 1
+  }
+}
+
+variable "worker_cluster_capacity" {
+  default = {
+    min_size = 1
+    max_size = 1
+    desired_capacity = 1
+  }
+}
+```
+
+Change the cluster_coapacity to build multi-nodes etcd/worker cluster.
+
 
 ### To destroy:
 
