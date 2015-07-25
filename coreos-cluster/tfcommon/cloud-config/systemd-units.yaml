@@ -59,19 +59,33 @@
         
         [Install]
         WantedBy=multi-user.target
+    - name: update-window.service
+      command: start
+      content: |
+        [Unit]
+        Description=Reboot if an update has been downloaded
+        [Service]
+        ExecStart=/bin/bash /opt/bin/update-window.sh
+    - name: update-window.timer
+      command: start
+      content: |
+        [Unit]
+        Description=Reboot timer
+        [Timer]
+        OnCalendar=*-*-* 05,06:00/30:00
     - name: post-provisioning.service
       command: start
       content: |       
-          [Unit]
-          Description=A hook to excute bootstrap script at boot
-          Wants=git-sync.service
-          After=git-sync.service
-          
-          [Service]
-          Type=oneshot
-          RemainAfterExit=true
-          EnvironmentFile=/etc/environment
-          ExecStartPre=/usr/bin/bash -c "until [ -d /var/lib/apps/bin ]; do sleep 3; done; chmod a+x /var/lib/apps/bin/*"
-          ExecStart=/var/lib/apps/bin/post-provisioning
-          [Install]
-          WantedBy=multi-user.target
+        [Unit]
+        Description=A hook to excute bootstrap script at boot
+        Wants=git-sync.service
+        After=git-sync.service
+        
+        [Service]
+        Type=oneshot
+        RemainAfterExit=true
+        EnvironmentFile=/etc/environment
+        ExecStartPre=/usr/bin/bash -c "until [ -f /var/lib/apps/bin/post-provisioning ]; do sleep 3; done; chmod a+x /var/lib/apps/bin/*"
+        ExecStart=/var/lib/apps/bin/post-provisioning
+        [Install]
+        WantedBy=multi-user.target
