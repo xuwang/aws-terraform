@@ -66,7 +66,7 @@ $ cd aws-terraform
 $ make all
 ... build steps info ...
 ... at last, shows the worker's ip:
-    worker public ips: 52.24.xxx.xxx
+    worker public ips: 52.27.156.202
     ...
 ```
 
@@ -75,9 +75,10 @@ This will create a vpc, s3 buckets, iam roles and keys, a etcd node, and a worke
 Login to the worker node:
 
 ```
-$ ssh -A core@52.24.xxx.xxx
-core@ip-52.24.xxx.xxx ~ $ fleetctl list-machines
+$ ssh -A core@52.27.156.202
 
+CoreOS beta (723.3.0)
+core@ip-52.24.xxx.xxx ~ $ fleetctl list-machines
 MACHINE     IP      METADATA
 289a6ba7... 10.0.1.141  disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
 320bd4ac... 10.0.5.50   disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
@@ -86,28 +87,66 @@ MACHINE     IP      METADATA
 
 ### Build multi-nodes cluster
 
-The number of etcd nodes and worker nodes is defined in *coreos-cluster/tfcommon/override.tf*:
+The number of etcd nodes and worker nodes are defined in *coreos-cluster/tfcommon/override.tf*.
+
+Change the cluster_coapacity in the file to build multi-nodes etcd/worker cluster:
 
 ```
+# etcd_cluster_capacity should be in odd number, e.g. 3, 5, 9
 variable "etcd_cluster_capacity" {
   default = {
-    min_size = 1
-    max_size = 1
-    desired_capacity = 1
+    min_size = 3
+    max_size = 3
+    desired_capacity = 3
   }
 }
 
 variable "worker_cluster_capacity" {
   default = {
-    min_size = 1
-    max_size = 1
-    desired_capacity = 1
+    min_size = 3
+    max_size = 3
+    desired_capacity = 3
   }
 }
 ```
+To build:
 
-Change the cluster_coapacity to build multi-nodes etcd/worker cluster.
+```
+$ make all
+... build steps info ...
+... at last, shows the worker's ip:
+    worker public ips:  52.26.32.57 52.10.147.7 52.27.156.202
+    ...
+```
 
+This will create 3 etcd nodes, and 3 worker nodes.
+
+Login to a worker node:
+
+```
+$ ssh -A core@52.27.156.202
+CoreOS beta (723.3.0)
+
+core@ip-52.27.156.202 ~ $ etcdctl cluster-health
+cluster is healthy
+member 34d5239c565aa4f6 is healthy
+member 5d6f4a5f10a44465 is healthy
+member ab930e93b1d5946c is healthy
+
+core@ip-10-0-1-92 ~ $ etcdctl member list
+34d5239c565aa4f6: name=i-65e333ac peerURLs=http://10.0.1.92:2380 clientURLs=http://10.0.1.92:2379
+5d6f4a5f10a44465: name=i-cd40d405 peerURLs=http://10.0.1.185:2380 clientURLs=http://10.0.1.185:2379
+ab930e93b1d5946c: name=i-ecfa0d1a peerURLs=http://10.0.1.45:2380 clientURLs=http://10.0.1.45:2379
+
+core@ip-52.27.156.202 ~ $ fleetctl list-machines
+MACHINE     IP      METADATA
+0d16eb52... 10.0.1.92   disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
+d320718e... 10.0.1.185  disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
+f0bea88e... 10.0.1.45   disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
+0cb636ac... 10.0.5.4    disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
+4acc8d6e... 10.0.5.112  disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
+fa9f4ea7... 10.0.5.140  disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
+```
 
 ### To destroy:
 
