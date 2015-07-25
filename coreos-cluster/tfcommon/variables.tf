@@ -80,7 +80,6 @@ variable "project_tags" {
   }
 }
 
-
 # primary hosted zone id
 variable "aws_route53_primary_zone_id" {
   default = "to_be_set_by_route53_tf"
@@ -89,9 +88,4 @@ variable "aws_route53_primary_zone_id" {
 # private hosted zone id
 variable "aws_route53_private_zone_id" {
   default = "to_be_set_by_route53_tf"
-}
-
-# Wildcard certificate on elb
-variable "elb_wildcard_cert" {
-  default = "arn:aws:iam::012345678901:server-certificate/MyLabWildCardCert201711"
 }

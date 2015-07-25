@@ -2,8 +2,10 @@
 # Docker registry public facing ELB configurations
 #
 
-resource "aws_elb" "dockerhub_elb" {
-  name = "dockerhub-${var.environment}-elb"
+
+resource "aws_elb" "dockerhub" {
+  name = "dockerhub-elb"
+  depends_on = "aws_iam_server_certificate.wildcard"
   
   security_groups = [ "${var.security_group_elb}" ]
   subnets = ["${var.subnet_elb-us-west-2a}","${var.subnet_elb-us-west-2b}","${var.subnet_elb-us-west-2c}"]
@@ -13,7 +15,7 @@ resource "aws_elb" "dockerhub_elb" {
     lb_protocol = "https"
     instance_port = 5080
     instance_protocol = "http"
-    ssl_certificate_id = "${var.elb_wildcard_cert}"
+    ssl_certificate_id = "${aws_iam_server_certificate.wildcard.arn}"
   }
 
   health_check {
@@ -23,12 +25,17 @@ resource "aws_elb" "dockerhub_elb" {
     target = "HTTP:5080/_ping"
     interval = 30
   }
+}
 
-  # Workaround for Alias type
-  provisioner "local-exec" {
-      command = <<CMD_DATA
-         ./update-route53.sh ${var.aws_route53_zone_id_primary} ${aws_elb.dockerhub_elb.name} dockerhub.mylab.example.com
-CMD_DATA
-    }
+resource "aws_route53_record" "dockerhub" {
+  zone_id = "${var.aws_route53_primary_zone_id}"
+  name = "dockerhub"
+  type = "A"
+  
+  alias {
+    name = "${aws_elb.dockerhub.dns_name}"
+    zone_id = "${aws_elb.dockerhub.zone_id}"
+    evaluate_target_health = true
+  }
 }
 

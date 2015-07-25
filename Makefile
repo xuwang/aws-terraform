@@ -1,9 +1,9 @@
-CWD := $(shell pwd)
+ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 PROFILE_NAME := coreos-cluster
 PROFILE := "profile $(PROFILE_NAME)"
-SRC := $(CWD)/coreos-cluster
-BUILD := $(CWD)/build
-SCRIPTS := $(CWD)/scripts
+SRC := $(ROOT_DIR)/coreos-cluster
+BUILD := $(ROOT_DIR)/build
+SCRIPTS := $(ROOT_DIR)/scripts
 # Terraform dirs and var files
 TF_COMMON := $(BUILD)/tfcommon
 KEY_VARS := $(TF_COMMON)/keys.tfvars
@@ -18,7 +18,6 @@ TF_DESTROY_PLAN := terraform plan -destroy --var-file=$(KEY_VARS) --out=destroy.
 TF_DESTROY_APPLY := terraform apply destroy.tfplan
 TF_SHOW := terraform show
 TF_DESTROY_PLAN_FILE := destroy.tfplan
-export
 
 # For get-ami.sh
 COREOS_UPDATE_CHANNE=beta
@@ -26,7 +25,7 @@ AWS_ZONE=us-west-2
 VM_TYPE=hvm
 
 # Note the order of BUILD_SUBDIRS is significant, because there are dependences on destroy_all
-BUILD_SUBDIRS :=  worker etcd s3 iam route53 vpc
+BUILD_SUBDIRS :=  worker etcd elb s3 iam route53 vpc
 
 # Get goals for sub-module
 SUBGOALS := $(filter-out $(BUILD_SUBDIRS) all, $(MAKECMDGOALS))
@@ -106,6 +105,9 @@ etcd: | $(BUILD_SUBDIR) $(VPC_VARS)
 
 worker: | $(BUILD_SUBDIR) $(VPC_VARS)
 	$(MAKE) etcd
+	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
+
+elb: $(BUILD_SUBDIR)
 	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
 # Terraform Targets

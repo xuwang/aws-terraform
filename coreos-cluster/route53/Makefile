@@ -16,6 +16,7 @@ destroy: | destroy_plan
 	then \
 		$(TF_DESTROY_APPLY); \
 		rm -f $(TF_DESTROY_PLAN_FILE); \
+		rm -f $(R53_VARS); \
 	else \
 		echo "Noting to destroy"; \
 	fi

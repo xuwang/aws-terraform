@@ -1,0 +1,43 @@
+# OpenSSL configuration to generate a new key with signing requst for a x509v3 
+# multidomain certificate
+#
+# openssl req -config bla.cnf -new | tee csr.pem
+# or
+# openssl req -config bla.cnf -new -out csr.pem
+[ req ]
+default_bits       = 2048
+default_md         = sha512
+default_keyfile    = site-key.pem
+prompt             = no
+encrypt_key        = no
+
+# base request
+distinguished_name = req_distinguished_name
+
+# extensions
+req_extensions     = v3_req
+
+# distinguished_name
+[ req_distinguished_name ]
+countryName            = "US"                     # C=
+stateOrProvinceName    = "CA"                     # ST=
+localityName           = "Half Moon Bay"          # L=
+postalCode             = "94019"                  # L/postalcode=
+organizationName       = "Dockerage"              # O=
+organizationalUnitName = "IT Department"          # OU=
+commonName             = "*.dockerage.com"      # CN=
+emailAddress           = "admin@dockerage.com"  # CN/emailAddress=
+
+# req_extensions
+[ v3_req ]
+# The subject alternative name extension allows various literal values to be 
+# included in the configuration file
+# http://www.openssl.org/docs/apps/x509v3_config.html
+
+keyUsage = keyEncipherment, dataEncipherment, digitalSignature
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = dockerage.com
+DNS.2 = *.dockerage.com

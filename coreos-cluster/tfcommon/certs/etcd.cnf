@@ -1,0 +1,37 @@
+# OpenSSL configuration to generate a new key with signing requst for a x509v3 
+# multidomain certificate
+#
+# openssl req -config bla.cnf -new | tee csr.pem
+# or
+# openssl req -config bla.cnf -new -out csr.pem
+[ req ]
+default_bits       = 2048
+default_md         = sha512
+default_keyfile    = etcd-key.pem
+prompt             = no
+encrypt_key        = no
+
+# base request
+distinguished_name = req_distinguished_name
+
+# extensions
+req_extensions     = v3_req
+
+# distinguished_name
+[ req_distinguished_name ]
+commonName             = "etcd.dockerage.com"      # CN=
+emailAddress           = "admin@dockerage.com"     # CN/emailAddress=
+
+# req_extensions
+[ v3_req ]
+# The subject alternative name extension allows various literal values to be 
+# included in the configuration file
+# http://www.openssl.org/docs/apps/x509v3_config.html
+
+keyUsage = keyEncipherment, dataEncipherment, digitalSignature
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[alt_names]
+# ETCD servers ip
+IP.1 = 127.0.0.1

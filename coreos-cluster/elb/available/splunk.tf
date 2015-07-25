@@ -26,6 +26,7 @@ resource "aws_security_group" "splunk_elb_sg"  {
 
 resource "aws_elb" "splunk_elb" {
   name = "splunk-elb"
+  depends_on = "aws_iam_server_certificate.wildcard"
   
   security_groups = [ "${aws_security_group.splunk_elb_sg.id}" ]
   subnets = ["${var.subnet_elb-us-west-2a}","${var.subnet_elb-us-west-2b}","${var.subnet_elb-us-west-2c}"]
@@ -36,7 +37,7 @@ resource "aws_elb" "splunk_elb" {
     lb_protocol = "https"
     instance_port = 8081
     instance_protocol = "https"
-    ssl_certificate_id = "${var.elb_wildcard_cert}"
+    ssl_certificate_id = "${aws_iam_server_certificate.wildcard.arn}"
   }
 
   health_check {
@@ -46,11 +47,16 @@ resource "aws_elb" "splunk_elb" {
     target = "TCP:8081"
     interval = 30
   }
+}
 
-  # Workaround for Alias type
-  provisioner "local-exec" {
-      command = <<CMD_DATA
-         ./update-route53.sh ${var.aws_route53_zone_id_primary} ${aws_elb.splunk_elb.name} splunk.mylab.example.com
-CMD_DATA
-    }
+resource "aws_route53_record" "splunk" {
+  zone_id = "${var.aws_route53_primary_zone_id}"
+  name = "splunk"
+  type = "A"
+  
+  alias {
+    name = "${aws_elb.splunk_elb.dns_name}"
+    zone_id = "${aws_elb.splunk_elb.zone_id}"
+    evaluate_target_health = true
+  }
 }

@@ -1,4 +1,11 @@
 To build:
 
-    tfp --var-file=../tfcommon/network.tfvars --var-file=../tfcommon/route53.tfvars
-    tfa --var-file=../tfcommon/network.tfvars --var-file=../tfcommon/route53.tfvars
+    terraform plan \
+        --var-file=../tfcommon/key.tfvars \
+        --var-file=../tfcommon/vpc.tfvars \
+        --var-file=../tfcommon/route53.tfvars
+        
+    terraform apply \
+        --var-file=../tfcommon/key.tfvars \
+        --var-file=../tfcommon/vpc.tfvars \
+        --var-file=../tfcommon/route53.tfvars

@@ -16,8 +16,8 @@ destroy: | destroy_plan
 	then \
 		$(TF_DESTROY_APPLY); \
 		rm -f $(TF_DESTROY_PLAN_FILE); \
-		cat /dev/null > $(TF_COMMON)/vpc.tf; \
-		cat /dev/null > $(VPC_VARS); \
+		rm -f $(TF_COMMON)/vpc.tf; \
+		rm -f $(VPC_VARS); \
 	else \
 		echo "Noting to destroy"; \
 	fi

@@ -9,7 +9,7 @@ resource "aws_route53_zone" "primary" {
     command = <<CMD_DATA
 cat > ../tfcommon/route53-vars.tfvars <<TFVARS
 # Generated primary zone id
-aws_route53_primary.zone_id  = "${aws_route53_zone.primary.zone_id}"
+aws_route53_primary_zone_id  = "${aws_route53_zone.primary.zone_id}"
 TFVARS
 CMD_DATA
     }
@@ -34,4 +34,5 @@ TFVARS
 CMD_DATA
     }
 }
+
 
