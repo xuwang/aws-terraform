@@ -46,8 +46,6 @@
         EnvironmentFile=/etc/environment
         TimeoutStartSec=10min
         ExecStart=/opt/bin/git-sync.sh
-        [Install]
-        WantedBy=multi-user.target
     - name: git-sync.timer
       command: start
       content: |      
@@ -57,9 +55,6 @@
         [Timer]
         OnCalendar=*:*:00
         #OnUnitActiveSec=30
-        
-        [Install]
-        WantedBy=multi-user.target
     - name: post-provisioning.service
       command: start
       content: |       
@@ -74,5 +69,3 @@
         RemainAfterExit=true
         EnvironmentFile=/etc/environment
         ExecStart=/opt/bin/post-provision.sh
-        [Install]
-        WantedBy=multi-user.target

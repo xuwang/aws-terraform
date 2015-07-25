@@ -38,6 +38,8 @@ write_files:
         # This script gets excecuted on each reboot. 
         # It can be an additional config you want to set after CoreOS's cloud-config.
         post_provision='/var/lib/apps/post_provision'
+        # wait until the post_provision is downloaded from git/s3
+        until [ -d $post_provision ]; do sleep 3; done;
         if [ -d $post_provision ]
         then
             for i in $post_provision/*.sh
