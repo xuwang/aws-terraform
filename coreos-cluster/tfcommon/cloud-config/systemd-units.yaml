@@ -40,6 +40,7 @@
       content: |
         [Unit]
         Description=git-sync
+        ConditionPathExists=/opt/bin/git-sync.sh
         
         [Service]
         EnvironmentFile=/etc/environment
@@ -66,12 +67,12 @@
         Description=A hook to excute bootstrap script at boot
         Wants=git-sync.service
         After=git-sync.service
+        ConditionPathExists=/opt/bin/post-provision.sh
         
         [Service]
         Type=oneshot
         RemainAfterExit=true
         EnvironmentFile=/etc/environment
-        ExecStartPre=/usr/bin/bash -c "until [ -f /var/lib/apps/bin/post-provisioning ]; do sleep 3; done; chmod a+x /var/lib/apps/bin/*"
-        ExecStart=/var/lib/apps/bin/post-provisioning
+        ExecStart=/opt/bin/post-provision.sh
         [Install]
         WantedBy=multi-user.target

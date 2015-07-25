@@ -30,6 +30,22 @@ write_files:
         docker history $IMAGE > /dev/null 2>&1 || docker pull $IMAGE
         # sync s3 apps to
         docker run --rm --name s3sync -v ${DST}:${DST} --env-file=$AWS_CONFIG_ENV $IMAGE /bin/bash -c "$CMD"
+  - path: /opt/bin/post-provision.sh
+    permissions: 0700
+    owner: root
+    content: |
+        #!/usr/bin/bash
+        # This script gets excecuted on each reboot. 
+        # It can be an additional config you want to set after CoreOS's cloud-config.
+        post_provision='/var/lib/apps/post_provision'
+        if [ -d $post_provision ]
+        then
+            for i in $post_provision/*.sh
+            do
+              /bin/bash -x $i
+            done
+        fi
+        exit 0
   - path: /opt/bin/update-window.sh
     permissions: 0700
     owner: root

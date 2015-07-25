@@ -24,8 +24,9 @@ coreos:
       content: |
         [Unit]
         Description=Reboot if an update has been downloaded
+        ConditionPathExists=/opt/bin/update-window.sh
         [Service]
-        ExecStart=/bin/bash /opt/bin/update-window.sh
+        ExecStart=/opt/bin/update-window.sh
     - name: update-window.timer
       command: start
       content: |
