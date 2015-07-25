@@ -19,3 +19,17 @@ coreos:
             EnvironmentFile=/etc/sysconfig/initial-cluster
     - name: fleet.service
       command: start
+    - name: update-window.service
+      command: start
+      content: |
+        [Unit]
+        Description=Reboot if an update has been downloaded
+        [Service]
+        ExecStart=/bin/bash /opt/bin/update-window.sh
+    - name: update-window.timer
+      command: start
+      content: |
+        [Unit]
+        Description=Reboot timer
+        [Timer]
+        OnCalendar=*-*-* 05,06:00/30:00
