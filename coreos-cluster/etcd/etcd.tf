@@ -28,7 +28,7 @@ output "aws-autoscaling-group-id" {
 resource "aws_launch_configuration" "etcd" {
   name = "etcd"
   image_id = "${lookup(var.amis, var.aws_region)}"
-  instance_type = "${var.aws_instance_type}"
+  instance_type = "${var.aws_instance_type.etcd}"
   iam_instance_profile = "${var.iam_instance_profile.etcd}"
   security_groups = [ "${var.security_group_etcd}" ]
   key_name = "${var.aws_ec2_keypair.etcd}"  

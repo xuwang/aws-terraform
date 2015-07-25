@@ -4,8 +4,12 @@ variable "aws_secret_key" {}
 variable "environment" {
   default = "green"
 }
+
 variable "aws_instance_type" {
-  default = "t2.micro"
+  default = {
+    etcd = "t2.micro"
+    worker = "t2.micro"
+  }
 }
 
 variable "aws_region" {

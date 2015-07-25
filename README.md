@@ -89,7 +89,8 @@ MACHINE     IP      METADATA
 
 The number of etcd nodes and worker nodes are defined in *coreos-cluster/tfcommon/override.tf*.
 
-Change the cluster_coapacity in the file to build multi-nodes etcd/worker cluster:
+Change the cluster_coapacity in the file to build multi-nodes etcd/worker cluster,
+for example, from 1 to 3:
 
 ```
 # etcd_cluster_capacity should be in odd number, e.g. 3, 5, 9
@@ -109,6 +110,19 @@ variable "worker_cluster_capacity" {
   }
 }
 ```
+
+You should also change the [aws_instance_type](http://aws.amazon.com/ec2/instance-types) 
+from "micro" to "large" if heave docker image to be hosted the nodes, for example:
+
+```
+variable "aws_instance_type" {
+  default = {
+    etcd = "t2.micro"
+    worker = "t2.large"
+  }
+}
+```
+
 To build:
 
 ```
