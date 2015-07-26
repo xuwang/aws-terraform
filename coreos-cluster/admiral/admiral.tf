@@ -1,20 +1,20 @@
 #
-# Docker auto autoscale group configurations
+# Admiral auto autoscale group configurations
 #
-resource "aws_autoscaling_group" "admiral2" {
-  name = "docker-admiral2"
+resource "aws_autoscaling_group" "admiral" {
+  name = "docker-admiral"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
-  max_size = 1
-  min_size = 1
-  desired_capacity = 1
+  min_size = "${var.admiral_cluster_capacity.min_size}"
+  max_size = "${var.admiral_cluster_capacity.max_size}"
+  desired_capacity = "${var.admiral_cluster_capacity.desired_capacity}"
   health_check_type = "EC2"
   force_delete = true
-  launch_configuration = "${aws_launch_configuration.admiral2.name}"
+  launch_configuration = "${aws_launch_configuration.admiral.name}"
   vpc_zone_identifier = ["${var.subnet_admiral-us-west-2a}", "${var.subnet_admiral-us-west-2b}","${var.subnet_admiral-us-west-2c}"]
 
   tag {
     key = "Name"
-    value = "admiral2"
+    value = "admiral"
     propagate_at_launch = true
   }
   tag {
@@ -25,10 +25,10 @@ resource "aws_autoscaling_group" "admiral2" {
   # Workround to implement tagging for the time being: Tag: Key = mylab:billing Value = swsplatform
 }
 
-resource "aws_launch_configuration" "admiral2" {
-  name = "docker-admiral2"
+resource "aws_launch_configuration" "admiral" {
+  name = "docker-admiral"
   image_id = "${lookup(var.amis, var.aws_region)}"
-  instance_type = "${var.aws_instance_type}"
+  instance_type = "${var.aws_instance_type.admiral}"
   iam_instance_profile = "${var.iam_instance_profile.admiral}"
   security_groups = [ "${var.security_group_admiral}"]
   key_name = "${var.aws_ec2_keypair.admiral}" 
@@ -51,9 +51,7 @@ resource "aws_launch_configuration" "admiral2" {
     volume_size = "120"
   }
   
-  user_data = <<USER_DATA
-${file("../../scripts/s3-cloudconfig-bootstrap.sh")}
-USER_DATA
+  user_data = "${file("../../scripts/s3-cloudconfig-bootstrap.sh")}"
 }
 
 resource "aws_iam_instance_profile" "admiral" {
@@ -74,14 +72,14 @@ resource "aws_iam_role_policy" "admiral_policy" {
 }
 
 output "aws-launch-configuration-id" {
-    value = "${aws_launch_configuration.admiral2.id}"
+    value = "${aws_launch_configuration.admiral.id}"
 }
 output "aws-launch-configuration-name" {
-    value = "${aws_launch_configuration.admiral2.name}"
+    value = "${aws_launch_configuration.admiral.name}"
 }
 output "aws-autoscaling-group-id" {
-    value = "${aws_autoscaling_group.admiral2.id}"
+    value = "${aws_autoscaling_group.admiral.id}"
 }
 output "aws-autoscaling-group-name" {
-    value = "${aws_autoscaling_group.admiral2.name}"
+    value = "${aws_autoscaling_group.admiral.name}"
 }

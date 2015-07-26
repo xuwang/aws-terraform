@@ -8,7 +8,9 @@ variable "environment" {
 variable "aws_instance_type" {
   default = {
     etcd = "t2.micro"
-    worker = "t2.micro"
+    worker = "t2.medium"
+    dockerhub = "t2.medium"
+    admiral = "t2.medium"
   }
 }
 
@@ -33,6 +35,22 @@ variable "worker_cluster_capacity" {
     min_size = 3
     max_size = 3
     desired_capacity = 3
+  }
+}
+
+variable "dockerhub_cluster_capacity" {
+  default = {
+    min_size = 2
+    max_size = 2
+    desired_capacity = 2
+  }
+}
+
+variable "admiral_cluster_capacity" {
+  default = {
+    min_size = 2
+    max_size = 2
+    desired_capacity = 2
   }
 }
 

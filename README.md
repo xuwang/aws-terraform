@@ -112,13 +112,13 @@ variable "worker_cluster_capacity" {
 ```
 
 You should also change the [aws_instance_type](http://aws.amazon.com/ec2/instance-types) 
-from "micro" to "large" if heave docker image to be hosted the nodes, for example:
+from "micro" to "medium" if heave docker image to be hosted the nodes, for example:
 
 ```
 variable "aws_instance_type" {
   default = {
     etcd = "t2.micro"
-    worker = "t2.large"
+    worker = "t2.medium"
   }
 }
 ```
