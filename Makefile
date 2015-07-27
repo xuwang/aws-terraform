@@ -1,9 +1,9 @@
 ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 PROFILE_NAME := coreos-cluster
 PROFILE := "profile $(PROFILE_NAME)"
-SRC := $(ROOT_DIR)/coreos-cluster
-BUILD := $(ROOT_DIR)/build
-SCRIPTS := $(ROOT_DIR)/scripts
+SRC := $(ROOT_DIR)coreos-cluster
+BUILD := $(ROOT_DIR)build
+SCRIPTS := $(ROOT_DIR)scripts
 # Terraform dirs and var files
 TF_COMMON := $(BUILD)/tfcommon
 KEY_VARS := $(TF_COMMON)/keys.tfvars

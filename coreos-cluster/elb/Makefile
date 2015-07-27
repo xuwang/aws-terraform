@@ -9,8 +9,7 @@ clean:
 plan: | init
 	$(TF_PLAN) --var-file=$(VPC_VARS) --var-file=$(R53_VARS)
 
-
-apply: | plan
+apply: | init
 	# terraform apply
 	$(TF_APPLY) --var-file=$(VPC_VARS) --var-file=$(R53_VARS)
 
