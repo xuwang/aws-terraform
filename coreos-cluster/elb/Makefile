@@ -46,4 +46,4 @@ $(VPC_VARS):
 $(SITE_CERT):
 	$(MAKE) -C $(TF_COMMON)/certs site
 
-.PHONY: all apply destroy_plan destroy show show_ip show_ip refresh init
+.PHONY: all apply destroy_plan destroy show show_ip refresh init

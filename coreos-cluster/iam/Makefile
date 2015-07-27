@@ -5,7 +5,7 @@ all: apply
 plan: | init
 	$(TF_PLAN)
 
-apply: | plan
+apply: | init
 	$(TF_APPLY)
 	# Generate cloudinit file for aws envvars 
 	$(SCRIPTS)/gen-cloudinit-aws-env.sh >> $(TF_COMMON)/cloud-config/files.yaml

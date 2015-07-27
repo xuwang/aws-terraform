@@ -75,6 +75,7 @@ clean clean_all:
 destroy_all:
 	cd build; for dir in $(BUILD_SUBDIRS); do \
         test -d $$dir && $(MAKE) -C $$dir destroy ; \
+        rm -rf $$dir; \
     done
 	rm -rf $(BUILD)
 
@@ -91,19 +92,15 @@ iam: | $(BUILD_SUBDIR)
 s3: | $(BUILD_SUBDIR)
 	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
-route53: | $(VPC_VARS) $(BUILD_SUBDIR)
+route53: | $(BUILD_SUBDIR)
 	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
-# This goal is needed because some other goals dependents on $(R53_VARS)
-$(R53_VARS):
-	$(MAKE) route53 apply
-
-etcd: | $(BUILD_SUBDIR) $(VPC_VARS)
+etcd: | $(BUILD_SUBDIR)
 	$(MAKE) s3
 	$(MAKE) iam
 	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
-worker: | $(BUILD_SUBDIR) $(VPC_VARS)
+worker: | $(BUILD_SUBDIR)
 	$(MAKE) etcd
 	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 

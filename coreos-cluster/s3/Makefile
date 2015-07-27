@@ -5,7 +5,7 @@ all: apply
 plan: | init
 	$(TF_PLAN)
 
-apply: | plan
+apply: | init
 	$(TF_APPLY)
 
 destroy_plan: | init

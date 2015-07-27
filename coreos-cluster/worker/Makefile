@@ -7,7 +7,7 @@ clean:
 plan: | init
 	$(TF_PLAN)  --var-file=$(VPC_VARS)
 
-apply: | plan
+apply: | init
 	# create ec2 keypaire and upload to s3://AWS_ACCOUNT-coreos-cluster-config/keypairs/
 	$(SCRIPTS)/create-and-upload-keypair.sh $(GOAL)
 	# create user-data and upload to s3://AWS_ACCOUNT-coreos-cluster-config/worker/cloud-config.yaml
@@ -38,7 +38,7 @@ show_ip:
 refresh: | init
 	$(TF_REFRESH) --var-file=$(VPC_VARS)
 
-init: 
+init: | $(VPC_VARS)
 	ln -s -f $(TF_COMMON)/override.tf override.tf
 	ln -s -f $(TF_COMMON)/variables.tf variables.tf
 	ln -s -f $(TF_COMMON)/provider.tf provider.tf
@@ -46,4 +46,7 @@ init:
 	# fix AWS-ACCOUNT with aws account id in all tf and json files
 	$(SCRIPTS)/substitute-AWS-ACCOUNT.sh
 
-.PHONY: all apply destroy_plan destroy show show_ip show_ip refresh init
+$(VPC_VARS):
+	$(MAKE) -C $(ROOT_DIR) vpc apply
+
+.PHONY: all apply destroy_plan destroy show show_ip refresh init $(VPC_VARS)

@@ -5,7 +5,7 @@ all: apply
 plan: | init
 	$(TF_PLAN)
 
-apply: | plan
+apply: | init
 	$(TF_APPLY); $(SCRIPTS)/gen-vpc-vars.sh
 
 destroy_plan: | init
