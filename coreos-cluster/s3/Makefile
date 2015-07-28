@@ -4,6 +4,8 @@ all: apply
 # Terraform Targets
 plan: | init
 	$(TF_PLAN)
+	# wait for a while for s3 to propagate
+	# sleep 180
 
 apply: | init
 	$(TF_APPLY)

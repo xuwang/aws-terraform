@@ -438,6 +438,14 @@ resource "aws_security_group" "dockerhub_sg"  {
       protocol = "tcp"
       cidr_blocks = [ "${var.vpc.cidr}", "${var.allow_from_myip}"]
     }
+    
+    ingress {
+      from_port = 22
+      to_port = 22
+      protocol = "tcp"
+      cidr_blocks = ["10.0.0.0/16", "${var.allow_from_myip}"]
+      security_groups = ["${aws_security_group.etcd_sg.id}"]
+    }
 
     tags {
         Name = "worker_sg"

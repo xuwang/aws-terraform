@@ -62,7 +62,7 @@ resource "aws_iam_role" "worker" {
 }
 
 resource "aws_iam_role_policy" "worker_policy" {
-    name = "worker_policy"
+    name = "worker"
     role = "${aws_iam_role.worker.id}"
     policy = "${file(\"worker_policy.json\")}"
 }

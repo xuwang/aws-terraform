@@ -25,7 +25,7 @@ AWS_ZONE=us-west-2
 VM_TYPE=hvm
 
 # Note the order of BUILD_SUBDIRS is significant, because there are dependences on destroy_all
-BUILD_SUBDIRS :=  worker etcd elb s3 iam route53 vpc
+BUILD_SUBDIRS := worker dockerhub etcd elb s3 iam route53 vpc
 
 # Get goals for sub-module
 SUBGOALS := $(filter-out $(BUILD_SUBDIRS) all, $(MAKECMDGOALS))
@@ -58,7 +58,9 @@ init_build:
 	cp -Rf  $(SRC)/tfcommon $(BUILD)
 	# Generate default AMI id
 	$(SCRIPTS)/get-ami.sh >> $(TF_COMMON)/override.tf
-	# Generate keys.tfvars from AWS credentials
+	# Generate aws envvars and append to cloud-config/files.yaml to make them available in EC2s
+	$(SCRIPTS)/gen-cloudinit-aws-env.sh >> $(TF_COMMON)/cloud-config/files.yaml
+	# Generate $(KEY_VARS) file
 	echo aws_access_key = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/credentials $(PROFILE_NAME) aws_access_key_id)\" > $(KEY_VARS)
 	echo aws_secret_key = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/credentials $(PROFILE_NAME) aws_secret_access_key)\" >> $(KEY_VARS)	
 	echo aws_region = \"$(shell $(SCRIPTS)/read_cfg.sh $(HOME)/.aws/config $(PROFILE) region)\" >> $(KEY_VARS)
@@ -102,6 +104,11 @@ etcd: | $(BUILD_SUBDIR)
 
 worker: | $(BUILD_SUBDIR)
 	$(MAKE) etcd
+	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
+
+dockerhub: | $(BUILD_SUBDIR)
+	$(MAKE) etcd
+	$(MAKE) elb
 	$(MAKE) -C $(BUILD_SUBDIR) $(SUBGOALS)
 
 elb: $(BUILD_SUBDIR)

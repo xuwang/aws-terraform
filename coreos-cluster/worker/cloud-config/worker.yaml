@@ -1,6 +1,6 @@
 #cloud-config
 
-# Workers cloud-config: run fleetd only
+# Workers cloud-config
 coreos:
   etcd2:
     proxy: on

@@ -2,7 +2,7 @@ resource "aws_route53_zone" "primary" {
     name = "${var.project_tags.public_domain}"
 
     tags {
-        Name = "dockerage.com"
+        Name = "${var.project_tags.public_domain}"
     }
 
     provisioner "local-exec" {
@@ -21,7 +21,7 @@ resource "aws_route53_zone" "private" {
     vpc_id = "${var.vpc_id}"
 
     tags {
-        Name = "coreos-cluster.local"
+        Name = "${var.project_tags.private_domain}"
         Billing = "${var.project_tags.coreos_cluster}"
     }
 

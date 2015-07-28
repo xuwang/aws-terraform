@@ -80,7 +80,7 @@ create_string_to_sign
 signature=$(/bin/echo -n "$stringToSign" | openssl sha1 -hmac ${s3Secret} -binary | base64)
 filePath=${cloudConfigYaml}
 debug_log
-curl -s -H "Host: ${bucket}.s3.amazonaws.com" \
+curl -L -s -H "Host: ${bucket}.s3.amazonaws.com" \
   -H "Content-Type: ${contentType}" \
   -H "Authorization: AWS ${s3Key}:${signature}" \
   -H "x-amz-security-token:${s3Token}" \
@@ -95,7 +95,7 @@ create_string_to_sign
 signature=$(/bin/echo -n "$stringToSign" | openssl sha1 -hmac ${s3Secret} -binary | base64)
 filePath=${initialCluster}
 debug_log
-curl -s -O -H "Host: ${bucket}.s3.amazonaws.com" \
+curl -s -L -O -H "Host: ${bucket}.s3.amazonaws.com" \
   -H "Content-Type: ${contentType}" \
   -H "Authorization: AWS ${s3Key}:${signature}" \
   -H "x-amz-security-token:${s3Token}" \
