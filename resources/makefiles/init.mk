@@ -24,4 +24,7 @@ show_state: | $(BUILD)
 graph: | $(BUILD)
 	cd $(BUILD); $(TF_GRAPH)
 
-.PHONY: all init show show_state graph destroy refresh $(BUILD) $(KEY_VARS) $(AMI_VARS)
+refresh: | $(BUILD)
+	cd $(BUILD); $(TF_REFRESH)
+
+.PHONY: init show show_state graph refresh

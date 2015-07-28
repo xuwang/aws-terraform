@@ -2,6 +2,6 @@ build
 *.pem
 *.key
 .DS_Store
-.vagrant
 .git
-coreos-cluster/apps
+.terraform
+coreos-cluster

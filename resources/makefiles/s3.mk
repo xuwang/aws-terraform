@@ -1,6 +1,6 @@
 s3: | $(TF_PORVIDER)
 	cd $(BUILD); \
-	cp $(RESOURCES)/s3.tf .; \
+	cp $(TF_RESOURCES)/s3.tf .; \
 	$(TF_GET); \
 	$(TF_APPLY) -target module.s3
 

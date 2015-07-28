@@ -1,6 +1,6 @@
 iam: | $(TF_PORVIDER)
 	cd $(BUILD); \
-	cp $(RESOURCES)/iam.tf .; \
+	cp $(TF_RESOURCES)/iam.tf .; \
 	$(TF_GET); \
 	$(TF_APPLY) -target module.iam
 

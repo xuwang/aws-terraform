@@ -3,10 +3,11 @@ PROFILE := coreos-cluster
 
 # Working Directories
 ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+SCRIPTS := $(ROOT_DIR)scripts
 MODULES := $(ROOT_DIR)modules
 RESOURCES := $(ROOT_DIR)resources
+TF_RESOURCES := $(ROOT_DIR)resources/terraforms
 BUILD := $(ROOT_DIR)build
-SCRIPTS := $(ROOT_DIR)scripts
 CONFIG := $(BUILD)/cloud-config
 CERTS := $(BUILD)/certs
 
@@ -41,6 +42,6 @@ destroy:
 	echo "Eg. make destroy_worker"
 
 # Load all resouces makefile
-include mk/*.mk
+include resources/makefiles/*.mk
 
 .PHONY: all destroy
