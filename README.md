@@ -6,7 +6,7 @@ The entire infrastructure is managed by Terraform.
 
 AWS compoments includes: VPC, security groups, IAM, S3, ELB, Route53, Autoscaling, RDS etc. 
 
-AWS resources are defined in Terraform resource folders. The build process will copy all resources defined in the repository to a *build* directory. The view, plan, apply, and destroy operations are performed under *build*, keepting the original Terraform files in the repo intact. The *build* directory is ignored in .gitignore so that you don't accidentally checkin sensitive data. 
+AWS resources are defined in Terraform resource folders. The build process will copy all resources defined in the repository to a *build* directory. The view, plan, apply, and destroy operations are performed under *build*, keepting the original Terraform files in the repo intact. The *build* directory is ignored in .gitignore so that you don't accidentally checkin sensitive data.
 
 
 **WIP**
@@ -112,7 +112,7 @@ variable "worker_cluster_capacity" {
 ```
 
 You should also change the [aws_instance_type](http://aws.amazon.com/ec2/instance-types) 
-from "micro" to "medium" if heave docker image to be hosted the nodes, for example:
+from "micro" to a larger AMI to host services that require more CPU and memory, for example:
 
 ```
 variable "aws_instance_type" {
@@ -168,7 +168,7 @@ fa9f4ea7... 10.0.5.140  disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,re
 $ make destroy_all
 ```
 
-This will destroy ALL resources created by 
+This will destroy ALL resources created by this project! 
 
 ## Create Individual Platform Resources
 
