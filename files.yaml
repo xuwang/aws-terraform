@@ -1,4 +1,0 @@
-Getting AWS account number...
-  - path: /etc/aws/account.envvars
-    content: |
-        AWS_ACCOUNT="733169451172"
