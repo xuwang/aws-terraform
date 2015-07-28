@@ -1,0 +1,28 @@
+# OpenSSL configuration to generate a new key with signing requst for a x509v3 
+# multidomain certificate
+#
+# openssl req -config bla.cnf -new | tee csr.pem
+# or
+# openssl req -config bla.cnf -new -out csr.pem
+
+[ req ]
+default_bits       = 2048
+default_md         = sha512
+default_keyfile    = rootCA-key.pem
+prompt             = no
+encrypt_key        = no
+
+# base request
+distinguished_name = req_distinguished_name
+
+# distinguished_name
+[ req_distinguished_name ]
+countryName            = "US"                     # C=
+stateOrProvinceName    = "CA"                     # ST=
+localityName           = "Half Moon Bay"          # L=
+postalCode             = "94019"                  # L/postalcode=
+organizationName       = "Dockerage"              # O=
+organizationalUnitName = "IT Department"          # OU=
+commonName             = "ca.dockerage.com"        # CN=
+emailAddress           = "admin@ca.dockerage.com"    # CN/emailAddress=
+

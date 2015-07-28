@@ -1,0 +1,71 @@
+
+# coreos.units.* components
+    - name: format-disk.service
+      command: start
+      content: |
+        [Unit]
+        Description=Formats the disk drive
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        Environment="LABEL=var-lib-docker"
+        Environment="DEV=/dev/xvdb"
+        # Do not wipe the disk if it's already being used, so the docker images persistent cross reboot.
+        ExecStart=-/bin/bash -c "if ! findfs LABEL=$LABEL > /tmp/label.$LABEL; then wipefs -a -f $DEV && mkfs.ext4 -T news -F -L $LABEL $DEV && echo wiped; fi"
+    - name: var-lib-docker.mount
+      command: start
+      content: |
+        [Unit]
+        Description=Mount disk to /var/lib/docker
+        Requires=format-disk.service
+        After=format-disk.service
+        Before=docker.service
+        [Mount]
+        What=/dev/xvdb
+        Where=/var/lib/docker
+        Type=ext4
+    - name: docker.service
+      command: start
+      drop-ins:
+        - name: 60-docker-wait-for-var-lib.conf
+          content: |
+              [Unit]
+              Requires=var-lib-docker.mount
+              After=var-lib-docker.mount
+              [Service]
+              Restart=always
+              RestartSec=5        
+    - name: git-sync.service
+      command: start
+      content: |
+        [Unit]
+        Description=git-sync
+        ConditionPathExists=/opt/bin/git-sync.sh
+        
+        [Service]
+        EnvironmentFile=/etc/environment
+        TimeoutStartSec=10min
+        ExecStart=/opt/bin/git-sync.sh
+    - name: git-sync.timer
+      command: start
+      content: |      
+        [Unit]
+        Description=git-sync timer
+        
+        [Timer]
+        OnCalendar=*:*:00
+        #OnUnitActiveSec=30
+    - name: post-provisioning.service
+      command: start
+      content: |       
+        [Unit]
+        Description=A hook to excute bootstrap script at boot
+        Wants=git-sync.service
+        After=git-sync.service
+        ConditionPathExists=/opt/bin/post-provision.sh
+        
+        [Service]
+        Type=oneshot
+        RemainAfterExit=true
+        EnvironmentFile=/etc/environment
+        ExecStart=/opt/bin/post-provision.sh
