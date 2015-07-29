@@ -1,8 +1,11 @@
-# Create build dir and copy tfcommon to build
-$(BUILD):
+# Create build dir and copy resources 
+init: |
 	mkdir -p $(BUILD)
 	cp -rf $(RESOURCES)/cloud-config $(BUILD)
 	cp -rf $(RESOURCES)/certs $(BUILD)
+	cp -rf $(RESOURCES)/terraforms/module* $(BUILD)
+	# Generate aws key files
+	$(SCRIPTS)/gen-provider.sh > $(TF_PORVIDER)
 
 $(TF_PORVIDER): | $(BUILD)
 	# Generate aws key files
@@ -11,9 +14,6 @@ $(TF_PORVIDER): | $(BUILD)
 $(AMI_VARS): | $(BUILD)
 	# Generate default AMI ids
 	$(SCRIPTS)/get-ami.sh >> $(AMI_VARS)
-
-init: 
-	rm -f $(TF_PORVIDER) $(AMI_VARS)
 
 show: | $(BUILD)
 	cd $(BUILD); $(TF_SHOW)
@@ -26,5 +26,7 @@ graph: | $(BUILD)
 
 refresh: | $(BUILD)
 	cd $(BUILD); $(TF_REFRESH)
+
+$(BUILD): init
 
 .PHONY: init show show_state graph refresh
