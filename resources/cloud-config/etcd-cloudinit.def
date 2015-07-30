@@ -1,4 +1,4 @@
-# user-date segment files, relative to build dir
+# Etcd ec2 user-date segment files, relative to build dir
 cloud-config/etcd-aws-cluster.yaml
 cloud-config/systemd-units.yaml
 cloud-config/files.yaml
