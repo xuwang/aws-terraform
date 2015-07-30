@@ -6,35 +6,34 @@
 # The cloud-config will be processed by coreos-cloudinit to bootstrap the machine. 
 
 # aws profile
-profile=$1
+AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
+AWS_USER=${AWS_USER:-coreos-cluster}
+CLOUDINIT_BUCKET=${CLOUDINIT_BUCKET:-coreos-cluster-cloudinit}
 
 # Role to be used by the instance
-role=$2
+AWS_ROLE=$1
+# A file that contains a list of cloudinit files
+CLOUDINIT_DEF=$2
 
-bucket=coreos-cluster-cloudinit
-
-if [[ "X$role" = "X" ]] && [[ "X$profile" = "X" ]];
+if [[ "X$AWS_ROLE" = "X" ]] && [[ -f "$USER_DATA_DEF" ]];
 then
-    echo "  Usage: $0 <profile> <role>"
-    echo "Example: $0 coreos-cluster worker"
+    echo "  Usage: $0 <role> <user-data.def>"
+    echo "Example: $0 worker etcd-user-data.def"
     exit 1
 fi
 
+AWS_ACCOUNT=$(aws --profile ${AWS_PROFILE} iam get-user --user-name=${AWS_USER} \
+      | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')
+BUCKET_URL="s3://${AWS_ACCOUNT}-${CLOUDINIT_BUCKET}"
+YAML="${AWS_ROLE}/cloud-config.yaml"
+TMP_DIR="user-data"
+mkdir -p ${TMP_DIR}/${AWS_ROLE}
+
+echo cloudinit is defined in ${CLOUDINIT_DEF}
 # Upload to cloud-config location for bootstrapping
-if [ -f "user-data.files" ];
+grep '.yaml' ${CLOUDINIT_DEF} | xargs cat > ${TMP_DIR}/${YAML}
+if ! aws --profile ${AWS_PROFILE} s3 ls ${BUCKET_URL} > /dev/null 2>&1 ;
 then
-  files=$(cat user-data.files)
-  cat $files > /tmp/${role}-cloud-config.yaml
-  accountId=$(aws --profile coreos-cluster iam get-user --user-name=coreos-cluster \
-      | jq ".User.Arn" \
-      | grep -Eo '[[:digit:]]{12}')
-  if ! aws --profile $profile s3 ls s3://${accountId}-${bucket} > /dev/null 2>&1 ;
-  then
-     aws --profile $profile s3 mb s3://${accountId}-${bucket}
-  fi
-  aws --profile $profile s3 cp /tmp/${role}-cloud-config.yaml s3://${accountId}-${bucket}/$role/cloud-config.yaml
-else
-  echo "user-data.files doesn't exist"
-  exit 1
+   aws --profile ${AWS_PROFILE} s3 mb ${BUCKET_URL}
 fi
-exit 0
+aws --profile ${AWS_PROFILE} s3 cp ${TMP_DIR}/${YAML} ${BUCKET_URL}/${YAML}

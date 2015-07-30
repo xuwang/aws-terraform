@@ -1,8 +1,0 @@
-alias tf='terraform'
-alias tfp='tf plan --var-file=../tfcommon/keys.tfvars --var-file=../tfcommon/network.tfvars'
-alias tfr='tf refresh --var-file=../tfcommon/keys.tfvars --var-file=../tfcommon/network.tfvars '
-alias tfdp='tf plan -destroy --var-file=../tfcommon/keys.tfvars  --var-file=../tfcommon/network.tfvars --out=destroy.tfplan'
-alias tfa='tf apply --var-file=../tfcommon/keys.tfvars --var-file=../tfcommon/network.tfvars'
-alias tfda='tf apply destroy.tfplan '
-alias tfg='tf graph'
-alias tfs='tf show terraform.tfstate'

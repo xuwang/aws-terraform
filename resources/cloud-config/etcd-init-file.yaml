@@ -1,3 +1,4 @@
+
   - path: /opt/bin/etcd-init.sh
     permissions: 0700
     owner: root
@@ -11,4 +12,4 @@
       
       # upload etcd initial-cluster urls to s3 bucket for worker cluster's etcd_proxy
       /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ $image /etcd-aws-proxy
-      
+

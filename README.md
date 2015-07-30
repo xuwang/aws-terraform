@@ -63,11 +63,11 @@ AWS resources are defined in Terraform resource folders. The build process will 
 ```
 $ git clone git@github.com:xuwang/aws-terraform.git
 $ cd aws-terraform
-$ make all
+$ make
 ... build steps info ...
 ... at last, shows the worker's ip:
-    worker public ips: 52.27.156.202
-    ...
+worker public ips: 52.27.156.202
+...
 ```
 
 This will create a vpc, s3 buckets, iam roles and keys, a etcd node, and a worker node.
@@ -87,40 +87,22 @@ MACHINE     IP      METADATA
 
 ### Build multi-nodes cluster
 
-The number of etcd nodes and worker nodes are defined in *coreos-cluster/tfcommon/override.tf*.
+The number of etcd nodes and worker nodes are defined in *resource/terraform/module-etcd.tf* and *resource/terraform/module-wrker.tf*
 
-Change the cluster_coapacity in the file to build multi-nodes etcd/worker cluster,
-for example, from 1 to 3:
+Change the cluster_desired_capacity in the file to build multi-nodes etcd/worker cluster,
+for example, change to 3:
 
 ```
-# etcd_cluster_capacity should be in odd number, e.g. 3, 5, 9
-variable "etcd_cluster_capacity" {
-  default = {
-    min_size = 3
-    max_size = 3
-    desired_capacity = 3
-  }
-}
-
-variable "worker_cluster_capacity" {
-  default = {
-    min_size = 3
-    max_size = 3
-    desired_capacity = 3
-  }
-}
+    cluster_desired_capacity = 3
 ```
+
+Note: etcd cluster_desired_capacity should be in odd number, e.g. 3, 5, 9
 
 You should also change the [aws_instance_type](http://aws.amazon.com/ec2/instance-types) 
-from "micro" to "medium" if heave docker image to be hosted the nodes, for example:
+from "micro" to "medium" if heavy docker containers to be hosted the nodes:
 
 ```
-variable "aws_instance_type" {
-  default = {
-    etcd = "t2.micro"
-    worker = "t2.medium"
-  }
-}
+    image_type = "t2.medium"
 ```
 
 To build:
@@ -129,8 +111,8 @@ To build:
 $ make all
 ... build steps info ...
 ... at last, shows the worker's ip:
-    worker public ips:  52.26.32.57 52.10.147.7 52.27.156.202
-    ...
+worker public ips:  52.26.32.57 52.10.147.7 52.27.156.202
+...
 ```
 
 This will create 3 etcd nodes, and 3 worker nodes.
@@ -182,22 +164,14 @@ Resource | Description
 *route53* | Setup public and private hosted zones on Route53 DNS service
 *etcd* | Setup ETCD2 cluster
 *worker* | Setup application docker hosting cluster
-*elb* | Setup predefined ELBs
-*admiral* | Central service cluster (Jenkins, fleet-ui, monitoring, logging, etc)
-*dockerhub* | Private docker registry cluster
-*rds* | RDS servers
+*admiral* | TODO: Central service cluster (Jenkins, fleet-ui, monitoring, logging, etc)
+*dockerhub* | TODO: Private docker registry cluster
+*rds* | TODO: RDS servers
 
 ### To build:
 
 ```
 $ make <resource>
-```
-
-or step-by-step:
-```
-$ make <resource> plan
-$ make <resource> apply
-$ make <resource> show
 ```
 
 This will create a build/<resource> directory, copy all terraform files to the build dir, 
@@ -206,5 +180,5 @@ and execute correspondent terraform cmd to build the resource on AWS.
 ### To destroy:
 
 ```
-$ make <resource> destroy
+$ make destroy_<resource> 
 ```

@@ -4,10 +4,15 @@
 # to form policy documents, resource names etc, with the aws account number as part of a string.
 
 # AWS account number - getting it from an existing user resource
-echo "Getting AWS account number..."
-AWS_ACCOUNT=$(aws --profile coreos-cluster iam get-user --user-name=coreos-cluster | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')
+# 
+AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
+AWS_USER=${AWS_USER:-coreos-cluster}
 
-files=$(grep -s -l AWS-ACCOUNT -r  *.tf  *.json)
+echo "Getting AWS account number..."
+AWS_ACCOUNT=$(aws --profile ${AWS_PROFILE} iam get-user --user-name=${AWS_USER} \
+        | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')
+
+files=$(grep -s -l AWS-ACCOUNT -r $@)
 if [ "X$files" != "X" ];
 then
   for f in $files

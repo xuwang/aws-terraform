@@ -1,0 +1,4 @@
+# user-date segment files, relative to build dir
+cloud-config/worker.yaml
+cloud-config/systemd-units.yaml
+cloud-config/files.yaml
