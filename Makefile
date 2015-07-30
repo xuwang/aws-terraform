@@ -48,6 +48,8 @@ destroy:
 destroy_all: destroy_worker destroy_etcd destroy_iam destroy_route53 destroy_s3 destroy_vpc
 
 clean_all: clean_worker clean_etcd clean_iam clean_route53 clean_s3 clean_vpc
+	rm -f $(BUILD)/*.tf 
+	#rm -f $(BUILD)/terraform.tfstate
 
 # Load all resouces makefile
 include resources/makefiles/*.mk
