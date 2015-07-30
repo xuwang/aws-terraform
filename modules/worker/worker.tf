@@ -23,7 +23,8 @@ resource "aws_autoscaling_group" "worker" {
 }
 
 resource "aws_launch_configuration" "worker" {
-  name = "worker"
+  # use system generated name to allow changes of launch_configuration
+  # name = "workder-${var.ami}"
   image_id = "${var.ami}"
   instance_type = "${var.image_type}"
   iam_instance_profile = "${aws_iam_instance_profile.worker.name}"

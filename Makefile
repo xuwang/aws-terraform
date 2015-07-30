@@ -38,12 +38,12 @@ export
 all: worker
 
 help:
-	echo "Usage: make (<resource> | destroy_<resource> | plan_<resource> | refresh_<resource> | show | graph )"
-	echo "Eg. make worker"
+	@echo "Usage: make (<resource> | destroy_<resource> | plan_<resource> | refresh_<resource> | show | graph )"
+	@echo "Eg. make worker"
 
 destroy: 
-	echo "Usage: make destroy_<resource>"
-	echo "Eg. make destroy_worker"
+	@echo "Usage: make destroy_<resource>"
+	@echo "Eg. make destroy_worker"
 
 destroy_all: destroy_worker destroy_etcd destroy_iam destroy_route53 destroy_s3 destroy_vpc
 

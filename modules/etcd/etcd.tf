@@ -23,7 +23,8 @@ resource "aws_autoscaling_group" "etcd" {
 }
 
 resource "aws_launch_configuration" "etcd" {
-  name = "etcd"
+  # use system generated name to allow changes of launch_configuration
+  # name = "etcd-${var.ami}"
   image_id = "${var.ami}"
   instance_type = "${var.image_type}"
   iam_instance_profile = "${aws_iam_instance_profile.etcd.name}"

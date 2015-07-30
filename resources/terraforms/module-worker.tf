@@ -11,5 +11,6 @@ module "worker" {
     keypair = "worker"
     image_type = "t2.micro"
     cluster_desired_capacity = 1
-    image_type = "t2.micro"
+    root_volume_size =  8
+    ebs_volume_size =  12
 }
