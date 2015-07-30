@@ -1,3 +1,0 @@
-cloud-config/admiral.yaml
-../common/cloud-config2/systemd-units.yaml
-../common/cloud-config2/files.yaml

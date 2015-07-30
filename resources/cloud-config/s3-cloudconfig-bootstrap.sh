@@ -103,9 +103,9 @@ curl -s -L -O -H "Host: ${bucket}.s3.amazonaws.com" \
   https://${bucket}.s3.amazonaws.com/${initialCluster}
 
 # Copy initial-cluster to the volume that will be picked up by etcd boostraping
-if [ -f ${workDir}/initial-cluster ];
+if [ -f ${workDir}/initial-cluster ] && grep -q ETCD_INITIAL_CLUSTER ${workDir}/initial-cluster ;
 then
-  mkdir -p /etc/sysconfig
+  mkdir -p /etc/sysconfig/
   cp ${workDir}/initial-cluster /etc/sysconfig/initial-cluster
 fi
 
