@@ -44,7 +44,7 @@ resource "aws_launch_configuration" "etcd" {
     volume_size = "${var.ebs_volume_size}" 
   }
   
-  user_data = "${file("${var.build_dir}/cloud-config/s3-cloudconfig-bootstrap.sh")}"
+  user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
 }
 
 # setup the etcd ec2 profile, role and polices
@@ -57,14 +57,14 @@ resource "aws_iam_instance_profile" "etcd" {
 resource "aws_iam_role_policy" "etcd_policy" {
     name = "etcd_policy"
     role = "${aws_iam_role.etcd.id}"
-    policy = "${file(\"${var.build_dir}/policies/etcd_policy.json\")}"
+    policy = "${file(\"policies/etcd_policy.json\")}"
     depends_on = [ "aws_iam_role.etcd" ]
 }
 
 resource "aws_iam_role" "etcd" {
     name = "etcd"
     path = "/"
-    assume_role_policy =  "${file(\"${var.build_dir}/policies/assume_role_policy.json\")}"
+    assume_role_policy =  "${file(\"policies/assume_role_policy.json\")}"
 }
 
 

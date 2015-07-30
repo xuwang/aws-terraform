@@ -12,7 +12,6 @@ variable "cluster_desired_capacity" { default = 3 }
 variable "keypair" { default = "etcd" }
 variable "root_volume_size" { default = 8 }
 variable "ebs_volume_size" { default = 8 }
-variable "build_dir" { }
 
 variable "etcd_net" {
     default = {

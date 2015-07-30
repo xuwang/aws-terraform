@@ -9,7 +9,6 @@ module "etcd" {
     aws_region = "us-west-2"
     ami = "${lookup(var.amis, "us-west-2")}"
     keypair = "etcd"
-    build_dir = "${var.build_dir}"
 
     # etcd cluster_desired_capacity should be in odd numbers, e.g. 3, 5, 9
     cluster_desired_capacity = 1

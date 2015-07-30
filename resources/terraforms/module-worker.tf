@@ -9,7 +9,6 @@ module "worker" {
     aws_region = "us-west-2"
     ami = "${lookup(var.amis, "us-west-2")}"
     keypair = "worker"
-    build_dir = "${var.build_dir}"
     image_type = "t2.micro"
     cluster_desired_capacity = 1
     image_type = "t2.micro"

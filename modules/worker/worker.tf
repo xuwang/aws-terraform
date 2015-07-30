@@ -43,7 +43,7 @@ resource "aws_launch_configuration" "worker" {
     volume_size = "${var.ebs_volume_size}" 
   }
 
-  user_data = "${file("${var.build_dir}/cloud-config/s3-cloudconfig-bootstrap.sh")}"
+  user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
 }
 
 resource "aws_iam_instance_profile" "worker" {
@@ -54,11 +54,11 @@ resource "aws_iam_instance_profile" "worker" {
 resource "aws_iam_role_policy" "worker_policy" {
     name = "worker"
     role = "${aws_iam_role.worker.id}"
-    policy = "${file(\"${var.build_dir}/policies/worker_policy.json\")}"
+    policy = "${file(\"policies/worker_policy.json\")}"
 }
 
 resource "aws_iam_role" "worker" {
     name = "worker"
     path = "/"
-    assume_role_policy =  "${file(\"${var.build_dir}/policies/assume_role_policy.json\")}"
+    assume_role_policy =  "${file(\"policies/assume_role_policy.json\")}"
 }
