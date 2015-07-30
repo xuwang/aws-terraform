@@ -154,6 +154,14 @@ This will destroy ALL resources created by
 
 ## Create Individual Platform Resources
 
+```
+$ make help
+
+Usage: make (<resource> | destroy_<resource> | plan_<resource> | refresh_<resource> | show | graph )
+Available resources: vpc s3 route53 iam etcd worker
+For example: make worker
+```
+
 Currently defined resources:
   
 Resource | Description

@@ -39,11 +39,13 @@ all: worker
 
 help:
 	@echo "Usage: make (<resource> | destroy_<resource> | plan_<resource> | refresh_<resource> | show | graph )"
-	@echo "Eg. make worker"
+	@echo "Available resources: vpc s3 route53 iam etcd worker"
+	@echo "For example: make worker"
 
 destroy: 
 	@echo "Usage: make destroy_<resource>"
-	@echo "Eg. make destroy_worker"
+	@echo "For example: make destroy_worker"
+	@echo "Node: destroy may fail because of outstanding dependences"
 
 destroy_all: destroy_worker destroy_etcd destroy_iam destroy_route53 destroy_s3 destroy_vpc
 
