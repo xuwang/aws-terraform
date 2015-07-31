@@ -246,10 +246,21 @@ To destroy a resource:
 $ make destroy_<resource> 
 ```
 ## Technical notes
-* Makefiles define resource dependencies and use scripts to generate necessart Terraform variables and configurations. This provides stream-lined build automation. 
-* Etcd forms cluster by self-discovery through its autoscaling group. A initial-cluster file is upload to s3://ACCOUNT-NUMBER-coreos-cluster-cloundinit bucket.
-* Worker nodes download initial-cluster file from the s3 bucket and join the cluster. Worker nodes run in etcd proxy mode.
-* All nodes use a common bootstrap shell script as user-data, which downloads initial-cluster file and nodes specific cloud-config.yaml to configure the node. If cloud-config changes, no need to rebuild an instance. Just reboot it to pick up the change.
+* Makefiles define resource dependencies and use scripts to generate necessart Terraform variables and configurations. 
+This provides stream-lined build automation. 
+* Etcd forms cluster by self-discovery through its autoscaling group. 
+A initial-cluster file is upload to s3://ACCOUNT-NUMBER-coreos-cluster-cloundinit bucket.
+* Worker nodes download initial-cluster file from the s3 bucket and join the cluster. 
+Worker nodes run in etcd proxy mode.
+* All nodes use a common bootstrap shell script as user-data, which downloads initial-cluster file 
+and nodes specific cloud-config.yaml to configure the node. If cloud-config changes, no need to rebuild an instance. 
+Just reboot it to pick up the change.
 * CoreOS AMI is generated on the fly to keep it up-to-data.
-* We use Terraform auto-generated launch configuration name so when the image or other configuration change, Terraform can manage creating new LC, associating it with the coresponding auto-scaling group, and desctroying old LC. You still need to manage instance-refresh to pick up new LC, e.g. terminate instance to let AWS create new instance, but it is easy to build this into Makefile for further automation.
+* We use Terraform auto-generated launch configuration name so when the image or other configuration change, 
+Terraform can manage creating new LC, associating it with the coresponding auto-scaling group, and desctroying old LC. 
+You still need to manage instance-refresh to pick up new LC, e.g. terminate instance to let AWS create new instance, 
+but it is easy to build this into Makefile for further automation.
+* Although etcd cluster is on an autoscaling group but it should be set 
+a fixed, odd number cluster_desired_capacity=min_size=max_size, 
+it could be dynamically increased be launch configuration but it should **never be decreased** on a live system.
 
