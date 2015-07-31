@@ -58,7 +58,10 @@ AWS resources are defined in Terraform resource folders. The build process will 
 
 ## Quick Start
 
-### To build:
+This default build will create one etcd node and one worker node cluster in a VPC, with application buckets for data, necessary iam roles, polices, keypairs and keys. The nodes are t2.micro instance and run the latest CoreOS beta release.
+Reources are defined under aws-terraform/resources/terraform directory. You should review and make changes there if needed. 
+
+To build:
 
 ```
 $ git clone git@github.com:xuwang/aws-terraform.git
@@ -69,8 +72,12 @@ $ make
 worker public ips: 52.27.156.202
 ...
 ```
-
-This will create a vpc, s3 buckets, iam roles and keys, a etcd node, and a worker node.
+To see the list of resources created:
+```
+$ cd build
+$ terraform show -module-depth=1
+```
+Here is the output example that shows [resources created](simple-build.txt)
 
 Login to the worker node:
 
@@ -85,7 +92,7 @@ MACHINE     IP      METADATA
 
 ```
 
-### Build multi-nodes cluster
+## Build multi-nodes cluster
 
 The number of etcd nodes and worker nodes are defined in *resource/terraform/module-etcd.tf* and *resource/terraform/module-wrker.tf*
 
@@ -114,8 +121,6 @@ $ make all
 worker public ips:  52.26.32.57 52.10.147.7 52.27.156.202
 ...
 ```
-
-This will create 3 etcd nodes, and 3 worker nodes.
 
 Login to a worker node:
 
