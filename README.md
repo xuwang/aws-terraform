@@ -134,8 +134,8 @@ $ ssh -A core@52.27.156.202
 CoreOS beta (723.3.0)
 core@ip-52.24.xxx.xxx ~ $ fleetctl list-machines
 MACHINE     IP      METADATA
-289a6ba7... 10.0.1.141  disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
-320bd4ac... 10.0.5.50   disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
+289a6ba7... 10.0.1.141  env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
+320bd4ac... 10.0.5.50   env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
 
 ```
 ## Build multi-node cluster
@@ -186,12 +186,12 @@ ab930e93b1d5946c: name=i-ecfa0d1a peerURLs=http://10.0.1.45:2380 clientURLs=http
 
 core@ip-52.27.156.202 ~ $ fleetctl list-machines
 MACHINE     IP      METADATA
-0d16eb52... 10.0.1.92   disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
-d320718e... 10.0.1.185  disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
-f0bea88e... 10.0.1.45   disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
-0cb636ac... 10.0.5.4    disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
-4acc8d6e... 10.0.5.112  disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
-fa9f4ea7... 10.0.5.140  disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
+0d16eb52... 10.0.1.92   env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
+d320718e... 10.0.1.185  env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
+f0bea88e... 10.0.1.45   env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
+0cb636ac... 10.0.5.4    env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
+4acc8d6e... 10.0.5.112  env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
+fa9f4ea7... 10.0.5.140  env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
 ```
 
 ## Destroy all resources
