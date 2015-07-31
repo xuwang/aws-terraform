@@ -11,7 +11,7 @@
 - [Build multi-node cluster](#build-multi-node-cluster)
 - [Destroy all resources](#destroy-all-resources)
 - [Manage individual platform resources](#manage-individual-platform-resources)
-- [How does it work](#how-does-it-work)
+- [Technical notes](#technical-notes)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -245,7 +245,7 @@ To destroy a resource:
 ```
 $ make destroy_<resource> 
 ```
-## How does it work
+## Technical notes
 * Makefiles define resource dependencies and use scripts to generate necessart Terraform variables and configurations. This provides stream-lined build automation. 
 * Etcd forms cluster by self-discovery through its autoscaling group. A initial-cluster file is upload to s3://ACCOUNT-NUMBER-coreos-cluster-cloundinit bucket.
 * Worker nodes download initial-cluster file from the s3 bucket and join the cluster. Worker nodes run in etcd proxy mode.
