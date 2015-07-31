@@ -260,7 +260,7 @@ Just reboot it to pick up the change.
 Terraform can manage creating new LC, associating it with the coresponding auto-scaling group, and desctroying old LC. 
 You still need to manage instance-refresh to pick up new LC, e.g. terminate instance to let AWS create new instance, 
 but it is easy to build this into Makefile for further automation.
-* Although etcd cluster is on an autoscaling group but it should be set 
+* Although etcd cluster is on an autoscaling group but it should be set with
 a fixed, odd number cluster_desired_capacity=min_size=max_size, 
 it could be dynamically increased be launch configuration but it should **never be decreased** on a live system.
 
