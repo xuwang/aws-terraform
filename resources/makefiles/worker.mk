@@ -1,22 +1,22 @@
 worker: init_worker upload_worker_userdata
 	cd $(BUILD); \
-	$(SCRIPTS)/create-and-upload-keypair.sh worker; \
-	$(TF_APPLY) -target module.worker; \
-	@$(MAKE) etcd_ips
+		$(SCRIPTS)/create-and-upload-keypair.sh worker; \
+		$(TF_APPLY) -target module.worker
+	@$(MAKE) worker_ips
 
 plan_worker: init_worker
 	cd $(BUILD); \
-	$(TF_PLAN) -target module.worker;
+		$(TF_PLAN) -target module.worker;
 
 refresh_worker: | $(TF_PORVIDER)
 	cd $(BUILD); \
-	$(TF_REFRESH) -target module.worker
+		$(TF_REFRESH) -target module.worker
 
 destroy_worker: | $(TF_PORVIDER)
 	cd $(BUILD); \
-	$(TF_DESTROY) -target module.worker.aws_autoscaling_group.worker; \
-	$(TF_DESTROY) -target module.worker.aws_launch_configuration.worker; \
-	$(TF_DESTROY) -target module.worker 
+		$(TF_DESTROY) -target module.worker.aws_autoscaling_group.worker; \
+		$(TF_DESTROY) -target module.worker.aws_launch_configuration.worker; \
+		$(TF_DESTROY) -target module.worker 
 
 clean_worker: destroy_worker
 	rm -f $(BUILD)/module-worker.tf
@@ -30,6 +30,6 @@ worker_ips:
 
 upload_worker_userdata:
 	cd $(BUILD); \
-	$(SCRIPTS)/gen-userdata.sh worker $(CONFIG)/worker-cloudinit.def
+		$(SCRIPTS)/gen-userdata.sh worker $(CONFIG)/worker-cloudinit.def
 
 .PHONY: worker destroy_worker refresh_worker plan_worker init_worker clean_worker upload_worker_userdata worker_ips
