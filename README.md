@@ -201,7 +201,7 @@ $ make destroy_all
 
 This will destroy ALL resources created by this project. 
 
-## Create Individual Platform Resources
+## Manage Individual Platform Resources
 
 You can create individual resources and the automated-scripts will create resources automatically based on dependencies. 
 ```
