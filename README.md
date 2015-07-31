@@ -1,16 +1,13 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+**Table of Contents** 
 
-- [AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)](#aws-coreos-cluster-provisioning-with-terraformhttpwwwterraformiodownloadshtml)
-  - [Install Tools and Setup AWS credentials](#install-tools-and-setup-aws-credentials)
-  - [Quick Start](#quick-start)
-    - [To build:](#to-build)
-    - [Build multi-nodes cluster](#build-multi-nodes-cluster)
-    - [To destroy:](#to-destroy)
-  - [Create Individual Platform Resources](#create-individual-platform-resources)
-    - [To build:](#to-build-1)
-    - [To destroy:](#to-destroy-1)
+- [Overview: AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)](#overview-aws-coreos-cluster-provisioning-with-terraformhttpwwwterraformiodownloadshtml)
+- [Install Tools and Setup AWS credentials](#install-tools-and-setup-aws-credentials)
+- [Quick Start](#quick-start)
+- [Build multi-node cluster](#build-multi-node-cluster)
+- [Destroy all resources](#destroy-all-resources)
+- [Manage Individual Platform Resources](#manage-individual-platform-resources)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
