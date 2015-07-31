@@ -197,9 +197,13 @@ fa9f4ea7... 10.0.5.140  disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,re
 $ make destroy_all
 ```
 
-This will destroy ALL resources created by this project. 
+This will destroy ALL resources created by this project. The follow command shows no resources:
 
-## Manage Individual Platform Resources
+```
+$ make show
+```
+
+## Manage individual platform resources
 
 You can create individual resources and the automated-scripts will create resources automatically based on dependencies. 
 ```
@@ -245,4 +249,4 @@ $ make destroy_<resource>
 * All nodes use a common bootstrap shell script as user-data, which download initial cluster file and cloud-config.yaml file to configure itself. If cloud-config changes, no need to rebuild an instance. Just reboot it to pick up the change.
 * CoreOS AMI is generated on the fly to keep it up-to-data.
 * We use Terraform auto-generated launch configuration name so when the image or other configuration change, Terraform can manage creating new LC, associate it with the coresponding auto-scaling group, and desctroy old LC. You will still need manage instance-refresh to pick up new LC, e.g. terminate instance to let AWS create new instance.
-* 
+
