@@ -3,17 +3,16 @@
 #
 resource "aws_autoscaling_group" "etcd" {
   name = "etcd"
-  availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c"]
+  availability_zones = [ "${var.etcd_subnet_az_a}", "${var.etcd_subnet_az_b}", "${var.etcd_subnet_az_c}"]
   min_size = "${var.cluster_min_size}"
   max_size = "${var.cluster_max_size}"
   desired_capacity = "${var.cluster_desired_capacity}"
-  depends_on = [ "aws_launch_configuration.etcd", "aws_subnet.etcd-a", "aws_subnet.etcd-b", "aws_subnet.etcd-c" ]
   
   health_check_type = "EC2"
   force_delete = true
   
   launch_configuration = "${aws_launch_configuration.etcd.name}"
-  vpc_zone_identifier = ["${aws_subnet.etcd-a.id}","${aws_subnet.etcd-b.id}","${aws_subnet.etcd-c.id}"]
+  vpc_zone_identifier = ["${var.etcd_subnet_a_id}","${var.etcd_subnet_b_id}","${var.etcd_subnet_c_id}"]
   
   tag {
     key = "Name"
