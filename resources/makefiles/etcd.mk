@@ -2,7 +2,7 @@ etcd: init_etcd upload_etcd_userdata
 	cd $(BUILD); \
 	$(SCRIPTS)/create-and-upload-keypair.sh etcd; \
 	$(TF_APPLY) -target module.etcd; \
-	echo "etcd public ips: " `$(SCRIPTS)/get-ec2-public-id.sh etcd`
+	@$(MAKE) etcd_ips
 
 plan_etcd: init_etcd
 	cd $(BUILD); \
@@ -30,6 +30,6 @@ upload_etcd_userdata:
 	$(SCRIPTS)/gen-userdata.sh etcd $(CONFIG)/etcd-cloudinit.def
 
 etcd_ips:
-	echo "worker public ips: " `$(SCRIPTS)/get-ec2-public-id.sh etcd`
+	@echo "etcd public ips: " `$(SCRIPTS)/get-ec2-public-id.sh etcd`
 
 .PHONY: etcd destroy_etcd refresh_etcd plan_etcd init_etcd clean_etcd upload_etcd_userdata etcd_ips

@@ -2,7 +2,7 @@ worker: init_worker upload_worker_userdata
 	cd $(BUILD); \
 	$(SCRIPTS)/create-and-upload-keypair.sh worker; \
 	$(TF_APPLY) -target module.worker; \
-	echo "worker public ips: " `$(SCRIPTS)/get-ec2-public-id.sh worker`
+	@$(MAKE) etcd_ips
 
 plan_worker: init_worker
 	cd $(BUILD); \
@@ -26,7 +26,7 @@ init_worker: etcd
 	cd $(BUILD); $(TF_GET);
 
 worker_ips:
-	echo "worker public ips: " `$(SCRIPTS)/get-ec2-public-id.sh worker`
+	@echo "worker public ips: " `$(SCRIPTS)/get-ec2-public-id.sh worker`
 
 upload_worker_userdata:
 	cd $(BUILD); \
