@@ -4,11 +4,11 @@
 
 - [Overview: AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)](#overview-aws-coreos-cluster-provisioning-with-terraformhttpwwwterraformiodownloadshtml)
 - [Install tools and setup AWS credentials](#install-tools-and-setup-aws-credentials)
-- [Quick Start](#quick-start)
+- [Quick start](#quick-start)
 - [Build multi-node cluster](#build-multi-node-cluster)
 - [Destroy all resources](#destroy-all-resources)
 - [Manage individual platform Resources](#manage-individual-platform-resources)
-- [How Does it work](#how-does-it-work)
+- [How does it work](#how-does-it-work)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -69,7 +69,7 @@ AWS resources are defined in Terraform resource folders. The build process will 
     ```
 
 
-## Quick Start
+## Quick start
 
 This default build will create one etcd node and one worker node cluster in a VPC, with application buckets for data, necessary iam roles, polices, keypairs and keys. The nodes are t2.micro instance and run the latest CoreOS beta release.
 Reources are defined under aws-terraform/resources/terraform directory. You should review and make changes there if needed. 
