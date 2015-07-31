@@ -14,7 +14,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)
+## Overview: AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)
 
 This is a practical implementation of [CoreOS cluster achirtecture] (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS. The cluster follows CoreOS production cluster model that contains 3-node etcd cluster in an autoscalting group, a central service node that you can run shared services such as CI, logging and monigoring, a private docker registry, and a fleet of workers to run other service containers. 
 
@@ -26,7 +26,6 @@ AWS resources are defined in Terraform resource folders. The build process will 
 
 
 **WIP**
-
 
 ## Install Tools and Setup AWS credentials
 
@@ -78,7 +77,6 @@ This default build will create one etcd node and one worker node cluster in a VP
 Reources are defined under aws-terraform/resources/terraform directory. You should review and make changes there if needed. 
 
 To build:
-
 ```
 $ git clone git@github.com:xuwang/aws-terraform.git
 $ cd aws-terraform
@@ -139,10 +137,9 @@ MACHINE     IP      METADATA
 320bd4ac... 10.0.5.50   disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
 
 ```
+## Build multi-node cluster
 
-## Build multi-nodes cluster
-
-The number of etcd nodes and worker nodes are defined in *resource/terraform/module-etcd.tf* and *resource/terraform/module-wrker.tf*
+The number of etcd nodes and worker nodes are defined in *resource/terraform/module-etcd.tf* and *resource/terraform/module-worker.tf*
 
 Change the cluster_desired_capacity in the file to build multi-nodes etcd/worker cluster,
 for example, change to 3:
@@ -151,7 +148,7 @@ for example, change to 3:
     cluster_desired_capacity = 3
 ```
 
-Note: etcd cluster_desired_capacity should be in odd number, e.g. 3, 5, 9
+Note: etcd minimum, maximum and cluster_desired_capacity should be the same and in odd number, e.g. 3, 5, 9
 
 You should also change the [aws_instance_type](http://aws.amazon.com/ec2/instance-types) 
 from "micro" to "medium" if heavy docker containers to be hosted the nodes:
@@ -161,7 +158,6 @@ from "micro" to "medium" if heavy docker containers to be hosted the nodes:
 ```
 
 To build:
-
 ```
 $ make all
 ... build steps info ...
@@ -197,16 +193,17 @@ f0bea88e... 10.0.1.45   disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,re
 fa9f4ea7... 10.0.5.140  disk=ssd,env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
 ```
 
-### To destroy:
+## Destroy all resources
 
 ```
 $ make destroy_all
 ```
 
-This will destroy ALL resources created by 
+This will destroy ALL resources created by this project. 
 
 ## Create Individual Platform Resources
 
+You can create individual resources and the automated-scripts will create resources automatically based on dependencies. 
 ```
 $ make help
 
@@ -229,7 +226,7 @@ Resource | Description
 *dockerhub* | TODO: Private docker registry cluster
 *rds* | TODO: RDS servers
 
-### To build:
+To build a resource:
 
 ```
 $ make <resource>
@@ -238,7 +235,7 @@ $ make <resource>
 This will create a build/<resource> directory, copy all terraform files to the build dir, 
 and execute correspondent terraform cmd to build the resource on AWS.
 
-### To destroy:
+To destroy a resource:
 
 ```
 $ make destroy_<resource> 
