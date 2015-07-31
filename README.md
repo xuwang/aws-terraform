@@ -1,19 +1,20 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents** 
+##Table of Contents##
 
 - [Overview: AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)](#overview-aws-coreos-cluster-provisioning-with-terraformhttpwwwterraformiodownloadshtml)
-- [Install Tools and Setup AWS credentials](#install-tools-and-setup-aws-credentials)
+- [Install tools and setup AWS credentials](#install-tools-and-setup-aws-credentials)
 - [Quick Start](#quick-start)
 - [Build multi-node cluster](#build-multi-node-cluster)
 - [Destroy all resources](#destroy-all-resources)
-- [Manage Individual Platform Resources](#manage-individual-platform-resources)
+- [Manage individual platform Resources](#manage-individual-platform-resources)
+- [How Does it work](#how-does-it-work)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Overview: AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)
 
-This is a practical implementation of [CoreOS cluster achirtecture] (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS. The cluster follows CoreOS production cluster model that contains 3-node etcd cluster in an autoscalting group, a central service node that you can run shared services such as CI, logging and monigoring, a private docker registry, and a fleet of workers to run other service containers. 
+This is a practical implementation of [CoreOS cluster architectures ] (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS. The cluster follows CoreOS production cluster model that contains 3-node etcd cluster in an autoscalting group, a central service node that you can run shared services such as CI, logging and monigoring, a private docker registry, and a fleet of workers to run other service containers. 
 
 The entire infrastructure is managed by Terraform. 
 
@@ -237,3 +238,11 @@ To destroy a resource:
 ```
 $ make destroy_<resource> 
 ```
+## How does it work
+* Makefiles define resource dependencies and use scripts to generate many Terraform variables and configurations. It provides stream-lined build automation. 
+* Etcd cluster self-discovery through autoscaling group and upload initial cluster IPs to s3 buckket.
+* Work nodes download initial cluster from the s3 bucket and join the cluster. Worker nodes run in etcd proxy mode.
+* All nodes use a common bootstrap shell script as user-data, which download initial cluster file and cloud-config.yaml file to configure itself. If cloud-config changes, no need to rebuild an instance. Just reboot it to pick up the change.
+* CoreOS AMI is generated on the fly to keep it up-to-data.
+* We use Terraform auto-generated launch configuration name so when the image or other configuration change, Terraform can manage creating new LC, associate it with the coresponding auto-scaling group, and desctroy old LC. You will still need manage instance-refresh to pick up new LC, e.g. terminate instance to let AWS create new instance.
+* 
