@@ -75,9 +75,41 @@ worker public ips: 52.27.156.202
 To see the list of resources created:
 ```
 $ cd build
-$ terraform show -module-depth=1
+$ terraform show
+ module.etcd
+  12 resource(s)
+module.iam
+  3 resource(s)
+module.s3
+  5 resource(s)
+module.vpc
+  3 resource(s)
+module.worker
+  12 resource(s)
 ```
-Here is the output example that shows [resources created](simple-build.txt)
+To see details of each resource:
+```
+$ cd build
+$ terraform show -module-depth=1
+  module.etcd.aws_autoscaling_group.etcd:
+  id = etcd
+  availability_zones.# = 3
+  availability_zones.2050015877 = us-west-2c
+  availability_zones.221770259 = us-west-2b
+  availability_zones.2487133097 = us-west-2a
+  default_cooldown = 300
+  desired_capacity = 1
+  force_delete = true
+  health_check_grace_period = 0
+  health_check_type = EC2
+  launch_configuration = terraform-4wjntqyn7rbfld5qa4qj6s3tie
+  load_balancers.# = 0
+  max_size = 9
+  min_size = 1
+  name = etcd
+  tag.# = 1
+....
+```
 
 Login to the worker node:
 
