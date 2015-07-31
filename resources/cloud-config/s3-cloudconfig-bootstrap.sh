@@ -68,7 +68,8 @@ s3Token=$(get_value "Token")
 s3Key=$(get_value "AccessKeyId")
 s3Secret=$(get_value "SecretAccessKey")
 
-workDir="/tmp"
+workDir="/root/cloudinit"
+mkdir -m 700 -p ${workDir}
 cd ${workDir}
 
 # Download coreos-cluster-cloudinit/<profile>/clould-config.yaml
