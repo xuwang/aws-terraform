@@ -1,3 +1,19 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)](#aws-coreos-cluster-provisioning-with-terraformhttpwwwterraformiodownloadshtml)
+  - [Install Tools and Setup AWS credentials](#install-tools-and-setup-aws-credentials)
+  - [Quick Start](#quick-start)
+    - [To build:](#to-build)
+    - [Build multi-nodes cluster](#build-multi-nodes-cluster)
+    - [To destroy:](#to-destroy)
+  - [Create Individual Platform Resources](#create-individual-platform-resources)
+    - [To build:](#to-build-1)
+    - [To destroy:](#to-destroy-1)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)
 
 This is a practical implementation of [CoreOS cluster achirtecture] (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS. The cluster follows CoreOS production cluster model that contains 3-node etcd cluster in an autoscalting group, a central service node that you can run shared services such as CI, logging and monigoring, a private docker registry, and a fleet of workers to run other service containers. 
