@@ -1,0 +1,5 @@
+# Dockerhub ec2 user-date segment files, relative to build dir
+cloud-config/admiral.yaml
+cloud-config/systemd-units.yaml
+cloud-config/files.yaml
+cloud-config/aws-files.yaml

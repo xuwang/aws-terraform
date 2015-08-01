@@ -15,10 +15,10 @@ AWS_ROLE=$1
 # A file that contains a list of cloudinit files
 CLOUDINIT_DEF=$2
 
-if [[ "X$AWS_ROLE" = "X" ]] && [[ -f "$USER_DATA_DEF" ]];
+if [[ "X$AWS_ROLE" = "X" ]] && [[ -f "$CLOUDINIT_DEF" ]];
 then
-    echo "  Usage: $0 <role> <user-data.def>"
-    echo "Example: $0 worker etcd-user-data.def"
+    echo "  Usage: $0 <role> <cloudinit.def>"
+    echo "Example: $0 worker cloudinit-etcd.def"
     exit 1
 fi
 

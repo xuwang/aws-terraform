@@ -8,7 +8,8 @@ variable "cluster_max_size" { default = 9 }
 variable "cluster_desired_capacity" { default = 3 }
 variable "keypair" { default = "worker" }
 variable "root_volume_size" { default = 12 }
-variable "ebs_volume_size" { default = 80 }
+variable "docker_volume_size" { default = 12 }
+variable "data_volume_size" { default = 12 }
 
 # networking vars set by module.vpc
 variable "vpc_id" { }

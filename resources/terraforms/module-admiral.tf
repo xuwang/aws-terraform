@@ -4,7 +4,8 @@ module "admiral" {
     image_type = "t2.micro"
     cluster_desired_capacity = 1
     root_volume_size =  8
-    ebs_volume_size =  12
+    docker_volume_size =  12
+    data_volume_size =  12
     keypair = "admiral"
     allow_ssh_cidr="0.0.0.0/0"
 

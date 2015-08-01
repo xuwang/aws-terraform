@@ -6,7 +6,7 @@ variable "image_type" { default = "t2.micro" }
 variable "cluster_min_size" { default = 1 }
 variable "cluster_max_size" { default = 9 }
 variable "cluster_desired_capacity" { default = 3 }
-variable "keypair" { default = "dockerhub" }
+variable "keypair" { default = "admiral" }
 variable "root_volume_size" { default = 12 }
 variable "docker_volume_size" { default = 12 }
 variable "data_volume_size" { default = 12 }
@@ -14,9 +14,9 @@ variable "data_volume_size" { default = 12 }
 # networking vars set by module.vpc
 variable "vpc_id" { }
 variable "vpc_cidr" { }
-variable "dockerhub_subnet_a_id" { }
-variable "dockerhub_subnet_b_id" { }
-variable "dockerhub_subnet_c_id" { }
-variable "dockerhub_subnet_az_a" { }
-variable "dockerhub_subnet_az_b" { }
-variable "dockerhub_subnet_az_c" { }
+variable "admiral_subnet_a_id" { }
+variable "admiral_subnet_b_id" { }
+variable "admiral_subnet_c_id" { }
+variable "admiral_subnet_az_a" { }
+variable "admiral_subnet_az_b" { }
+variable "admiral_subnet_az_c" { }

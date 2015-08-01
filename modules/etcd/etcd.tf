@@ -41,7 +41,7 @@ resource "aws_launch_configuration" "etcd" {
   ebs_block_device = {
     device_name = "/dev/sdb"
     volume_type = "gp2"
-    volume_size = "${var.ebs_volume_size}" 
+    volume_size = "${var.docker_volume_size}" 
   }
   
   user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"

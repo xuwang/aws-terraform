@@ -10,7 +10,8 @@ plan_etcd: init_etcd
 
 refresh_etcd: | $(TF_PORVIDER)
 	cd $(BUILD); \
-	$(TF_REFRESH) -target module.etcd
+		$(TF_REFRESH) -target module.etcd
+	@$(MAKE) etcd_ips
 
 destroy_etcd: | $(TF_PORVIDER)
 	cd $(BUILD); \
@@ -27,7 +28,7 @@ init_etcd: vpc s3 iam
 
 upload_etcd_userdata:
 	cd $(BUILD); \
-		$(SCRIPTS)/gen-userdata.sh etcd $(CONFIG)/etcd-cloudinit.def
+		$(SCRIPTS)/gen-userdata.sh etcd $(CONFIG)/cloudinit-etcd.def
 
 etcd_ips:
 	@echo "etcd public ips: " `$(SCRIPTS)/get-ec2-public-id.sh etcd`

@@ -7,8 +7,8 @@
         "s3:*"
       ],
       "Resource": [
-        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster/dockerhub",
-        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster/dockerhub/*"
+        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-dockerhub",
+        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-dockerhub/*"
       ]
     },
     {

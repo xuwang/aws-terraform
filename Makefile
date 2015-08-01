@@ -29,7 +29,7 @@ TF_DESTROY := terraform destroy -force
 
 # For get-ami.sh
 COREOS_UPDATE_CHANNE=beta
-AWS_ZONE=us-west-2
+AWS_REGION=us-west-2
 VM_TYPE=hvm
 AMI_VARS=$(BUILD)/ami.tf
 

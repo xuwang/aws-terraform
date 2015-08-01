@@ -11,6 +11,7 @@ plan_dockerhub: init_dockerhub
 refresh_dockerhub: | $(TF_PORVIDER)
 	cd $(BUILD); \
 		$(TF_REFRESH) -target module.dockerhub
+	@$(MAKE) dockerhub_ips
 
 destroy_dockerhub: | $(TF_PORVIDER)
 	cd $(BUILD); \
@@ -30,7 +31,7 @@ dockerhub_ips:
 
 upload_dockerhub_userdata:
 	cd $(BUILD); \
-		$(SCRIPTS)/gen-userdata.sh dockerhub $(CONFIG)/dockerhub-cloudinit.def
+		$(SCRIPTS)/gen-userdata.sh dockerhub $(CONFIG)/cloudinit-dockerhub.def
 
 .PHONY: dockerhub destroy_dockerhub refresh_dockerhub plan_dockerhub init_dockerhub 
 .PHONY: clean_dockerhub upload_dockerhub_userdata dockerhub_ips

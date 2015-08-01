@@ -11,6 +11,7 @@ plan_worker: init_worker
 refresh_worker: | $(TF_PORVIDER)
 	cd $(BUILD); \
 		$(TF_REFRESH) -target module.worker
+	@$(MAKE) worker_ips
 
 destroy_worker: | $(TF_PORVIDER)
 	cd $(BUILD); \
@@ -30,6 +31,6 @@ worker_ips:
 
 upload_worker_userdata:
 	cd $(BUILD); \
-		$(SCRIPTS)/gen-userdata.sh worker $(CONFIG)/worker-cloudinit.def
+		$(SCRIPTS)/gen-userdata.sh worker $(CONFIG)/cloudinit-worker.def
 
 .PHONY: worker destroy_worker refresh_worker plan_worker init_worker clean_worker upload_worker_userdata worker_ips
