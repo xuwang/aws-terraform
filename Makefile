@@ -54,13 +54,13 @@ destroy_all: \
 	destroy_worker \
 	destroy_etcd \
 	destroy_elb \
-	destroy_rdb \
+	destroy_rds \
 	destroy_iam \
 	destroy_route53 \
 	destroy_s3 \
 	destroy_vpc
 
-clean_all: clean_worker clean_etcd clean_iam clean_route53 clean_s3 clean_vpc
+clean_all: destroy_all
 	rm -f $(BUILD)/*.tf 
 	#rm -f $(BUILD)/terraform.tfstate
 
