@@ -17,6 +17,7 @@ POLICIES := $(BUILD)/policies
 TF_PORVIDER := $(BUILD)/provider.tf
 TF_DESTROY_PLAN := $(BUILD)/destroy.tfplan
 TF_APPLY_PLAN := $(BUILD)/destroy.tfplan
+TF_STATE := $(BUILD)/terraform.tfstate
 
 # Terraform commands
 TF_GET := terraform get -update
@@ -39,7 +40,7 @@ all: worker
 
 help:
 	@echo "Usage: make (<resource> | destroy_<resource> | plan_<resource> | refresh_<resource> | show | graph )"
-	@echo "Available resources: vpc s3 route53 iam etcd worker"
+	@echo "Available resources: vpc s3 route53 iam elb etcd worker dockerhub admiral rds"
 	@echo "For example: make worker"
 
 destroy: 
@@ -47,13 +48,32 @@ destroy:
 	@echo "For example: make destroy_worker"
 	@echo "Node: destroy may fail because of outstanding dependences"
 
-destroy_all: destroy_dockerhub destroy_elb destroy_worker destroy_etcd destroy_iam destroy_route53 destroy_s3 destroy_vpc
+destroy_all: \
+	destroy_admiral \
+	destroy_dockerhub \
+	destroy_worker \
+	destroy_etcd \
+	destroy_elb \
+	destroy_rdb \
+	destroy_iam \
+	destroy_route53 \
+	destroy_s3 \
+	destroy_vpc
 
 clean_all: clean_worker clean_etcd clean_iam clean_route53 clean_s3 clean_vpc
 	rm -f $(BUILD)/*.tf 
 	#rm -f $(BUILD)/terraform.tfstate
 
+# TODO: Push/Pull terraform states from a tf state repo
+pull_tf_state:
+	mkdir -p $(BUILD)
+	@echo pull terraform state from ....
+
+push_tf_state:
+	@echo push terraform state to ....
+
+
 # Load all resouces makefile
 include resources/makefiles/*.mk
 
-.PHONY: all destroy destroy_all clean_all help
+.PHONY: all destroy destroy_all clean_all help pull_tf_state push_tf_state
