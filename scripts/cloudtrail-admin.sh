@@ -97,28 +97,18 @@ delete(){
     [ $dryrun -eq 0 ] && $cmd
   done
   
-  # Delete sqs?
-  answer='N'
+  # Delete sqs
   queuename=${accountname}-cloudtrail
-  if aws --profile $profile sqs get-queue-url --queue-name $queuename > /dev/null 2>&1; then
-    echo -n "Do you want to delete SQS $queuename? [Y/N]"
-    read answer
-    echo ""
-    if [ "X$answer" != "XY" ]; then
-      echo "Do nothing. Quit."
-      exit 0
-    else
-      queueurl=$(aws --profile $profile sqs get-queue-url --queue-name $queuename --query QueueUrl | sed 's/\"//g')
-      cmd="aws --profile $profile sqs delete-queue --queue-url $queueurl"
-      [ $dryrun -eq 0 ] && $cmd
-    fi
-  fi
+  queueurl=$(aws --profile $profile sqs get-queue-url --queue-name $queuename --query QueueUrl | sed 's/\"//g')
+  cmd="aws --profile $profile sqs delete-queue --queue-url $queueurl"
+  echo $cmd
+  [ $dryrun -eq 0 ] && $cmd
 }
 
 help(){
   echo "create-cloudtrail [-p <profile>] -b <bucket> -r region -n"
   echo ""
-  echo " -a <create|delete>: action. create or delete everthing."
+  echo " -a <create|show|delete>: action. create or delete everthing."
   echo " -p <aws profile>: authenticate as this profile."
   echo " -b <bucket>: optional. bucket name to get all trail reports."
   echo " -r <region>: region to get AWS global events, e.g. IAM"
@@ -183,7 +173,7 @@ if [ -z "$accountname" ]; then
   echo "Cannot find AWS account number."
   exit 1
 else 
-  if [ $interactive -ne 0 ]; then
+  if [[ $interactive -ne 0 && $action != "show" ]]; then
     answer='N'
     echo -n "Do you accept the $accountname SNA and cloudtrail bucket prefix? [Y/N]"
     read answer
@@ -220,7 +210,7 @@ case $action in
     ;;
   'delete')
     trail=$(aws --profile $profile cloudtrail describe-trails --region us-west-2 | jq --raw-output '.trailList[].Name')
-    if [ $? -eq 1 ];
+    if [ -z $trail ];
     then
       echo "$accountname does not have CloudTrail."
       exit 1
