@@ -1,17 +1,18 @@
 #
-# Dockerhub auto autoscale group configurations
+# Dockerhub autoscale group configurations
 #
 resource "aws_autoscaling_group" "dockerhub" {
   name = "dockerhub"
-  availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
-  min_size = "${var.dockerhub_cluster_capacity.min_size}"
-  max_size = "${var.dockerhub_cluster_capacity.max_size}"
-  desired_capacity = "${var.dockerhub_cluster_capacity.desired_capacity}"
+  availability_zones = [ "${var.dockerhub_subnet_az_a}", "${var.dockerhub_subnet_az_b}", "${var.dockerhub_subnet_az_c}"]
+  min_size = "${var.cluster_min_size}"
+  max_size = "${var.cluster_max_size}"
+  desired_capacity = "${var.cluster_desired_capacity}"
+  
   health_check_type = "EC2"
   force_delete = true
   
   launch_configuration = "${aws_launch_configuration.dockerhub.name}"
-  vpc_zone_identifier = ["${var.subnet_admiral-us-west-2a}", "${var.subnet_admiral-us-west-2b}","${var.subnet_admiral-us-west-2c}"]
+  vpc_zone_identifier = ["${var.dockerhub_subnet_a_id}","${var.dockerhub_subnet_b_id}","${var.dockerhub_subnet_c_id}"]
   
   tag {
     key = "Name"
@@ -19,28 +20,29 @@ resource "aws_autoscaling_group" "dockerhub" {
     propagate_at_launch = true
   }
 }
-
 resource "aws_launch_configuration" "dockerhub" {
-  name = "docker-dockerhub"
-  image_id = "${lookup(var.amis, var.aws_region)}"
-  instance_type = "${var.aws_instance_type.dockerhub}"
-  iam_instance_profile = "${var.iam_instance_profile.dockerhub}"
-  security_groups = [ "${var.security_group_dockerhub}"]
-  key_name = "${var.aws_ec2_keypair.dockerhub}"
-  
+  # use system generated name to allow changes of launch_configuration
+  # name = "workder-${var.ami}"
+  image_id = "${var.ami}"
+  instance_type = "${var.image_type}"
+  iam_instance_profile = "${aws_iam_instance_profile.dockerhub.name}"
+  security_groups = [ "${aws_security_group.dockerhub.id}" ]
+  key_name = "${var.keypair}"
+  lifecycle { create_before_destroy = true }
+
   # /root
   root_block_device = {
     volume_type = "gp2"
-    volume_size = "8"
+    volume_size = "${var.root_volume_size}" 
   }
   # /var/lib/docker
   ebs_block_device = {
     device_name = "/dev/sdb"
     volume_type = "gp2"
-    volume_size = "12"
+    volume_size = "${var.ebs_volume_size}" 
   }
-  
-  user_data = "${file("../tfcommon/cloud-config/s3-cloudconfig-bootstrap.sh")}"
+
+  user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
 }
 
 resource "aws_iam_instance_profile" "dockerhub" {
@@ -48,27 +50,14 @@ resource "aws_iam_instance_profile" "dockerhub" {
     roles = ["${aws_iam_role.dockerhub.name}"]
 }
 
+resource "aws_iam_role_policy" "dockerhub_policy" {
+    name = "dockerhub"
+    role = "${aws_iam_role.dockerhub.id}"
+    policy = "${file(\"policies/dockerhub_policy.json\")}"
+}
+
 resource "aws_iam_role" "dockerhub" {
     name = "dockerhub"
     path = "/"
-    assume_role_policy =  "${file(\"../tfcommon/assume_role_policy.json\")}"
-}
-
-resource "aws_iam_role_policy" "dockerhub" {
-    name = "dockerhub"
-    role = "${aws_iam_role.dockerhub.id}"
-    policy = "${file(\"dockerhub_policy.json\")}"
-}
-  
-output "aws-launch-configuration-id" {
-    value = "${aws_launch_configuration.dockerhub.id}"
-}
-output "aws-launch-configuration-name" {
-    value = "${aws_launch_configuration.dockerhub.name}"
-}
-output "aws-autoscaling-group-id" {
-    value = "${aws_autoscaling_group.dockerhub.id}"
-}
-output "aws-autoscaling-group-name" {
-    value = "${aws_autoscaling_group.dockerhub.name}"
+    assume_role_policy =  "${file(\"policies/assume_role_policy.json\")}"
 }

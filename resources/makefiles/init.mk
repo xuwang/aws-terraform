@@ -32,6 +32,15 @@ update_ami:	| $(BUILD)
 update_provider: | $(BUILD)
 	# Generate tf provider
 	$(SCRIPTS)/gen-provider.sh > $(TF_PORVIDER)
-	
 
+gen_certs:
+	if [ ! -f "$(SITE_CERT)" ] ; \
+	then \
+		$(MAKE) -C $(CERTS) ; \
+	fi
+
+clean_certs:
+	rm -f $(CERTS)/*.pem
+	
 .PHONY: init show show_state graph refresh update_ami update_provider init_build_dir
+.PHONY: gen_certs clean_certs

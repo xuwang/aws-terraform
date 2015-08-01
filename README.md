@@ -225,10 +225,11 @@ Resource | Description
 *s3* | S3 buckets
 *iam* | Setup a deployment user and deployment keys
 *route53* | Setup public and private hosted zones on Route53 DNS service
+*elb* | Setup application ELBs
 *etcd* | Setup ETCD2 cluster
 *worker* | Setup application docker hosting cluster
 *admiral* | TODO: Central service cluster (Jenkins, fleet-ui, monitoring, logging, etc)
-*dockerhub* | TODO: Private docker registry cluster
+*dockerhub* | Private docker registry cluster
 *rds* | TODO: RDS servers
 
 To build a resource:

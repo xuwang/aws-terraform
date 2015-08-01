@@ -11,8 +11,8 @@ TF_RESOURCES := $(ROOT_DIR)resources/terraforms
 BUILD := $(ROOT_DIR)build
 CONFIG := $(BUILD)/cloud-config
 CERTS := $(BUILD)/certs
+SITE_CERT := $(CERTS)/site.pem
 POLICIES := $(BUILD)/policies
-
 # Terraform files
 TF_PORVIDER := $(BUILD)/provider.tf
 TF_DESTROY_PLAN := $(BUILD)/destroy.tfplan
@@ -47,7 +47,7 @@ destroy:
 	@echo "For example: make destroy_worker"
 	@echo "Node: destroy may fail because of outstanding dependences"
 
-destroy_all: destroy_worker destroy_etcd destroy_iam destroy_route53 destroy_s3 destroy_vpc
+destroy_all: destroy_dockerhub destroy_elb destroy_worker destroy_etcd destroy_iam destroy_route53 destroy_s3 destroy_vpc
 
 clean_all: clean_worker clean_etcd clean_iam clean_route53 clean_s3 clean_vpc
 	rm -f $(BUILD)/*.tf 

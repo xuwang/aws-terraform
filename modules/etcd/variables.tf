@@ -12,8 +12,7 @@ variable "ebs_volume_size" { default = 8 }
 
 # networking vars set by module.vpc
 variable "vpc_id" { }
-variable "vpc_cidr" { default = "10.0.0.0/16" }
-variable "vpc_route_table" { }
+variable "vpc_cidr" { }
 variable "etcd_subnet_a_id" { }
 variable "etcd_subnet_b_id" { }
 variable "etcd_subnet_c_id" { }

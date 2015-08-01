@@ -1,8 +1,8 @@
 # subnet for worker cluster
 
-variable "worker_subnet_a" { default = "10.0.200.0/24" }
-variable "worker_subnet_b" { default = "10.0.201.0/24" }
-variable "worker_subnet_c" { default = "10.0.202.0/24" }
+variable "worker_subnet_a" { default = "10.0.20.0/24" }
+variable "worker_subnet_b" { default = "10.0.21.0/24" }
+variable "worker_subnet_c" { default = "10.0.22.0/24" }
 variable "worker_subnet_az_a" { default = "us-west-2a" }
 variable "worker_subnet_az_b" { default = "us-west-2b" }
 variable "worker_subnet_az_c" { default = "us-west-2c" }

@@ -16,7 +16,6 @@ module "worker" {
     # vpc
     vpc_id = "${module.vpc.vpc_id}"
     vpc_cidr = "${module.vpc.vpc_cidr}"
-    vpc_route_table = "${module.vpc.vpc_route_table}"
     worker_subnet_a_id = "${module.vpc.worker_subnet_a_id}"
     worker_subnet_b_id = "${module.vpc.worker_subnet_b_id}"
     worker_subnet_c_id = "${module.vpc.worker_subnet_c_id}"

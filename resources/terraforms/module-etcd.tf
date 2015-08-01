@@ -15,7 +15,6 @@ module "etcd" {
     # vpc
     vpc_id = "${module.vpc.vpc_id}"
     vpc_cidr = "${module.vpc.vpc_cidr}"
-    vpc_route_table = "${module.vpc.vpc_route_table}"
     etcd_subnet_a_id = "${module.vpc.etcd_subnet_a_id}"
     etcd_subnet_b_id = "${module.vpc.etcd_subnet_b_id}"
     etcd_subnet_c_id = "${module.vpc.etcd_subnet_c_id}"
