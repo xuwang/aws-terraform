@@ -7,7 +7,7 @@ regions="us-east-1 us-west-1 us-west-2 eu-west-1 sa-east-1 ap-northeast-1 ap-sou
 regionRegexp='+(us-east-1|us-west-1|us-west-2|eu-west-1|sa-east-1|ap-northeast-1|ap-southeast-1|ap-southeast-2)'
 
 # Script actions
-actionsRegexp='+(create|delete)'
+actionsRegexp='+(create|delete|show)'
 
 # Create trails for all supported regions and create SNS topics
 create(){
@@ -56,6 +56,23 @@ create(){
     cmd="aws --profile $profile sqs create-queue --queue-name $queuename --region ${region}"
     [ $dryrun -eq 0 ] && $cmd
   fi
+}
+
+show(){
+  echo "Trails" 
+  for i in $regions
+  do 
+    aws --profile $profile cloudtrail describe-trails --region $i | jq --raw-output '.trailList[].Name'
+  done
+
+  echo "SNS"
+  for i in $regions
+  do
+    aws --profile $profile sns list-topics --region $i | jq --raw-output '.Topics[].TopicArn' | grep "$profile-cloudtrail"
+  done
+
+  echo "SQS"
+  aws --profile coreos-cluster sqs list-queues --queue-name-prefix $accountname | jq --raw-output  '.QueueUrls[]'
 }
 
 delete(){
@@ -111,7 +128,9 @@ help(){
 
 # Main
 dryrun=0
-while getopts "a:p:b:r:hn" OPTION
+interactive=1
+
+while getopts "a:p:b:r:hny" OPTION
 do
   case $OPTION in
     a)
@@ -143,6 +162,9 @@ do
     n)
       dryrun=1
       ;;
+    y)
+      interactive=0
+      ;;
     [h?])
       help
       exit
@@ -159,17 +181,16 @@ echo "Getting AWS account number ..."
 accountname=$(aws --profile $profile iam get-user | jq '.User.Arn' | grep -Eo '[[:digit:]]{12}')
 if [ -z "$accountname" ]; then
   echo "Cannot find AWS account number."
+  exit 1
 else 
-  answer='N'
-  echo -n "Do you accept the $accountname SNA and cloudtrail bucket prefix? [Y/N]"
-  read answer
-  echo ""
-  if [ "X$answer" != "XY" ]; then
-    echo "Do nothing. Quit."
-    exit 0
+  if [ $interactive -ne 0 ]; then
+    answer='N'
+    echo -n "Do you accept the $accountname SNA and cloudtrail bucket prefix? [Y/N]"
+    read answer
+    echo ""
+    [ "X$answer" != "XY" ] && echo "Do nothing. Quit."&&  exit 0
   fi
 fi
-
 # Don't exist on non-zero code because the following aws commmands exit code
 # is '1' on sucess.
 set +e 
@@ -185,12 +206,32 @@ else
   bucketopt="s3-use-bucket"
 fi
 
-if [ $action = 'create' ]; 
-then
-  create
-else
-  delete
-fi
+# Call functions based on action 
+case $action in
+  'create')
+    trail=$(aws --profile $profile cloudtrail describe-trails --region us-west-2 | jq --raw-output '.trailList[].Name')
+    if [ $? -eq 0 ];
+    then
+      echo "$accountname already has CloudTrail setup: $trail."
+      exit 0
+    else
+      create
+    fi
+    ;;
+  'delete')
+    trail=$(aws --profile $profile cloudtrail describe-trails --region us-west-2 | jq --raw-output '.trailList[].Name')
+    if [ $? -eq 1 ];
+    then
+      echo "$accountname does not have CloudTrail."
+      exit 1
+    else
+      delete
+    fi
+    ;; 
+  'show')
+    show
+    ;;
+esac
 
 [ $dryrun -eq 1 ] && echo "Dryrun mode. Nothing is changed."
 
