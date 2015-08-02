@@ -19,6 +19,7 @@ provider "aws" {
   access_key = "$TF_VAR_aws_access_key"
   secret_key = "$TF_VAR_aws_secret_key"
   region = "$TF_VAR_aws_region"
+  allowed_account_ids = [ "$TF_VAR_aws_account" ]
 }
 variable "aws_account" {
     default = {
