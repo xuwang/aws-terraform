@@ -81,6 +81,13 @@ Clone the repo:
 $ git clone git@github.com:xuwang/aws-terraform.git
 $ cd aws-terraform
 ```
+Edit the following lines in _Makefile_ at the top level to match the AWS profile and the user name for the profile if you use a different profile name than "coreos-cluster":
+
+```
+# Profile/Cluster name
+AWS_PROFILE := coreos-cluster
+AWS_USER := coreos-cluster
+```
 
 Just print out build targets and module dependencies:
 ```
