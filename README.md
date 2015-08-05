@@ -246,11 +246,16 @@ Resource | Description
 *rds* | RDS servers
 *cloudtrail* | Setup AWS CloudTrail
 
-To build a resource:
+For example, to build the cluster by step to build the cluster:
 
 ```
-$ make <resource>
+$ make init
+$ make vpc
+$ make etcd
+$ make worker
 ```
+
+Make commands can be re-run. If a resource already exists, it just refreshes the terraform status.
 
 This will create a build/<resource> directory, copy all terraform files to the build dir, 
 and execute correspondent terraform cmd to build the resource on AWS.
