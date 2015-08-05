@@ -71,16 +71,23 @@ AWS resources are defined in Terraform resource folders. The build process will 
     $ aws configure --profile coreos-cluster
     ```
 
-
 ## Quick start
 
 This default build will create one etcd node and one worker node cluster in a VPC, with application buckets for data, necessary iam roles, polices, keypairs and keys. The nodes are t2.micro instance and run the latest CoreOS beta release.
 Reources are defined under aws-terraform/resources/terraform directory. You should review and make changes there if needed. 
 
-To build:
+Clone the repo:
 ```
 $ git clone git@github.com:xuwang/aws-terraform.git
 $ cd aws-terraform
+```
+
+Just print out build targets and module dependencies:
+```
+$ make --dry-run
+```
+To build:
+```
 $ make
 ... build steps info ...
 ... at last, shows the worker's ip:
