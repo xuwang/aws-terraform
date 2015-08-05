@@ -246,7 +246,7 @@ Resource | Description
 *rds* | RDS servers
 *cloudtrail* | Setup AWS CloudTrail
 
-For example, to build the cluster by step to build the cluster:
+To build the cluster step by step by step:
 
 ```
 $ make init
