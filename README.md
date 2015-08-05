@@ -25,9 +25,6 @@ AWS compoments includes: VPC, security groups, IAM, S3, ELB, Route53, Autoscalin
 
 AWS resources are defined in Terraform resource folders. The build process will copy all resources defined in the repository to a *build* directory. The view, plan, apply, and destroy operations are performed under *build*, keepting the original Terraform files in the repo intact. The *build* directory is ignored in .gitignore so that you don't accidentally checkin sensitive data. 
 
-
-**WIP**
-
 ## Install Tools and Setup AWS credentials
 
 1. Install [Terraform](http://www.terraform.io/downloads.html)
@@ -81,12 +78,14 @@ Clone the repo:
 $ git clone git@github.com:xuwang/aws-terraform.git
 $ cd aws-terraform
 ```
-Edit the following lines in _Makefile_ at the top level to match the AWS profile and the user name for the profile if you use a different profile name than "coreos-cluster":
+
+Customize the following lines in _Makefile_ at the top to match your configuration
 
 ```
 # Profile/Cluster name
 AWS_PROFILE := coreos-cluster
 AWS_USER := coreos-cluster
+CLUSTER_NAME := coreos-cluster
 ```
 
 Just print out build targets and module dependencies:
