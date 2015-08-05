@@ -6,7 +6,7 @@ coreos:
     proxy: on
   fleet:
     public-ip: $private_ipv4
-    metadata: "env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker"
+    metadata: "env=CLUSTER-NAME,platform=ec2,provider=aws,region=us-west-2,role=worker"
   update:
     reboot-strategy: off
   units:

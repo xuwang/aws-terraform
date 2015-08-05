@@ -8,7 +8,7 @@ variable "etcd_subnet_az_b" { default = "us-west-2b" }
 variable "etcd_subnet_az_c" { default = "us-west-2c" }
 
 resource "aws_subnet" "etcd_a" {
-    vpc_id = "${aws_vpc.coreos_cluster.id}"
+    vpc_id = "${aws_vpc.cluster_vpc.id}"
     availability_zone = "${var.etcd_subnet_az_a}"
     cidr_block = "${var.etcd_subnet_a}"
     map_public_ip_on_launch = "true"
@@ -19,11 +19,11 @@ resource "aws_subnet" "etcd_a" {
 
 resource "aws_route_table_association" "etcd_rt_a" {
     subnet_id = "${aws_subnet.etcd_a.id}"
-    route_table_id = "${aws_route_table.coreos_cluster.id}"
+    route_table_id = "${aws_route_table.cluster_vpc.id}"
 }
 
 resource "aws_subnet" "etcd_b" {
-    vpc_id = "${aws_vpc.coreos_cluster.id}"
+    vpc_id = "${aws_vpc.cluster_vpc.id}"
     availability_zone = "${var.etcd_subnet_az_b}"
     cidr_block = "${var.etcd_subnet_b}"
     map_public_ip_on_launch = "true"
@@ -34,11 +34,11 @@ resource "aws_subnet" "etcd_b" {
 
 resource "aws_route_table_association" "etcd_rt_b" {
     subnet_id = "${aws_subnet.etcd_b.id}"
-    route_table_id = "${aws_route_table.coreos_cluster.id}"
+    route_table_id = "${aws_route_table.cluster_vpc.id}"
 }
 
 resource "aws_subnet" "etcd_c" {
-    vpc_id = "${aws_vpc.coreos_cluster.id}"
+    vpc_id = "${aws_vpc.cluster_vpc.id}"
     availability_zone = "${var.etcd_subnet_az_c}"
     cidr_block = "${var.etcd_subnet_c}"
     map_public_ip_on_launch = "true"
@@ -49,7 +49,7 @@ resource "aws_subnet" "etcd_c" {
 
 resource "aws_route_table_association" "etcd_rt_c" {
     subnet_id = "${aws_subnet.etcd_c.id}"
-    route_table_id = "${aws_route_table.coreos_cluster.id}"
+    route_table_id = "${aws_route_table.cluster_vpc.id}"
 }
 
 output "etcd_subnet_a_id" { value = "${aws_subnet.etcd_a.id}" }

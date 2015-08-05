@@ -7,10 +7,10 @@
         "s3:*"
       ],
       "Resource": [
-        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-cloudinit",
-        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-cloudinit/*",
-        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-config",
-        "arn:aws:s3:::AWS-ACCOUNT-coreos-cluster-config/*"
+        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-cloudinit",
+        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-cloudinit/*",
+        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-config",
+        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-config/*"
       ]
     },
     {

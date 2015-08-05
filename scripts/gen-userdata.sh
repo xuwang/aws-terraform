@@ -8,7 +8,9 @@
 # aws profile
 AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
 AWS_USER=${AWS_USER:-coreos-cluster}
-CLOUDINIT_BUCKET=${CLOUDINIT_BUCKET:-coreos-cluster-cloudinit}
+CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
+
+CLOUDINIT_BUCKET=${CLOUDINIT_BUCKET:-${CLUSTER_NAME}-cloudinit}
 
 # Role to be used by the instance
 AWS_ROLE=$1

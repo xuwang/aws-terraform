@@ -1,3 +1,4 @@
+# deployment user for elb registrations etc.
 resource "aws_iam_user" "deployment" {
     name = "${var.deployment_user}"
     path = "/system/"
@@ -22,6 +23,7 @@ cat > "${var.cloud_config_file_path}" <<EOF
     content: |
         AWS_ACCOUNT=${var.aws_account_id}
         AWS_DEFAULT_REGION=${var.aws_account_region}
+        CLUSTER_NAME=${var.cluster_name}
   - path: /root/.aws/envvars
     permissions: 0600
     owner: root

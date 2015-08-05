@@ -1,6 +1,7 @@
 # Profile/Cluster name
 AWS_PROFILE := coreos-cluster
 AWS_USER := coreos-cluster
+CLUSTER_NAME := coreos-cluster
 
 # Working Directories
 ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))

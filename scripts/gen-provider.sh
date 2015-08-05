@@ -7,6 +7,7 @@ BUILD=${BUILD:-$ROOT_DIR/build}
 
 AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
 AWS_USER=${AWS_USER:-coreos-cluster}
+CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
 
 TF_VAR_aws_access_key=$($DIR/read_cfg.sh $HOME/.aws/credentials $AWS_PROFILE aws_access_key_id)
 TF_VAR_aws_secret_key=$($DIR/read_cfg.sh $HOME/.aws/credentials $AWS_PROFILE aws_secret_access_key)
@@ -27,6 +28,9 @@ variable "aws_account" {
         user = "$PROFILE"
         defualt_region = "$TF_VAR_aws_region"
     }
+}
+variable "cluster_name" {
+    default = "${CLUSTER_NAME}"
 }
 variable "build_dir" {
     default = "${BUILD}"

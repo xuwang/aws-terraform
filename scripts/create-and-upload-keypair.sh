@@ -5,6 +5,7 @@ key=${1:-coreos-cluster}
 
 AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
 AWS_USER=${AWS_USER:-coreos-cluster}
+CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
 
 TMP_DIR=keypairs
 
@@ -19,7 +20,7 @@ else
     mkdir -p ${TMP_DIR}
     echo "Creating ${key} and uploading to s3"
     aws --profile ${AWS_PROFILE} ec2 create-key-pair --key-name ${key} --query 'KeyMaterial' --output text > ${TMP_DIR}/${key}.pem
-    aws --profile ${AWS_PROFILE} s3 cp ${TMP_DIR}/${key}.pem s3://${AWS_ACCOUNT}-coreos-cluster-config/keypairs/${key}.pem
+    aws --profile ${AWS_PROFILE} s3 cp ${TMP_DIR}/${key}.pem s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-config/keypairs/${key}.pem
     # copy the key to user's home .ssh
     cp ${TMP_DIR}/${key}.pem ${HOME}/.ssh; chmod 600 ${HOME}/.ssh/${key}.pem
     echo "ssh-add ${HOME}/.ssh/${key}.pem"

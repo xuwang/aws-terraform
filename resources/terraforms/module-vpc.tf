@@ -1,6 +1,7 @@
 module "vpc" {
     source = "../modules/vpc"
     vpc_cidr = "10.0.0.0/16"
+    vpc_name = "${var.cluster_name}"
 /*
 # can be configured:
     variable "etcd_subnet_a" { default = "10.0.1.0/26" }

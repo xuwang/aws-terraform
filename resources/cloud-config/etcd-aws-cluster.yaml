@@ -6,7 +6,7 @@ coreos:
     listen-client-urls: http://0.0.0.0:2379
     listen-peer-urls: http://$private_ipv4:2380
   fleet:
-    metadata: env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
+    metadata: env=CLUSTER-NAME,platform=ec2,provider=aws,region=us-west-2,role=etcd2
     public-ip: $private_ipv4
   units:
     - name: etcd2.service
