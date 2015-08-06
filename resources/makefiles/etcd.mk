@@ -1,6 +1,6 @@
 etcd: init_etcd upload_etcd_userdata
 	cd $(BUILD); \
-		$(SCRIPTS)/aws-keypairs.sh -c etcd; \
+		$(SCRIPTS)/aws-keypair.sh -c etcd; \
 		$(TF_APPLY) -target module.etcd
 	@$(MAKE) etcd_ips
 
@@ -15,7 +15,7 @@ refresh_etcd: | $(TF_PORVIDER)
 
 destroy_etcd: | $(TF_PORVIDER)
 	cd $(BUILD); \
-	  $(SCRIPTS)/aws-keypairs.sh -d etcd; \
+	  $(SCRIPTS)/aws-keypair.sh -d etcd; \
 		$(TF_DESTROY) -target module.etcd.aws_autoscaling_group.etcd; \
 		$(TF_DESTROY) -target module.etcd.aws_launch_configuration.etcd; \
 		$(TF_DESTROY) -target module.etcd 
