@@ -140,7 +140,7 @@ for example, change to 3:
 Note: etcd minimum, maximum and cluster_desired_capacity should be the same and in odd number, e.g. 3, 5, 9
 
 You should also change the [aws_instance_type](http://aws.amazon.com/ec2/instance-types) 
-from `micro` to `medium` or `large` if heavy docker containers to be hosted the nodes:
+from `micro` to `medium` or `large` if heavy docker containers to be hosted on the nodes:
 
 ```
     image_type = "t2.medium"
