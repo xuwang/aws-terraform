@@ -32,7 +32,7 @@ TF_STATE := $(BUILD)/terraform.tfstate
 
 # Terraform commands
 TF_GET := terraform get -update
-TF_SHOW := terraform show
+TF_SHOW := terraform show -module-depth=1
 TF_GRAPH := terraform graph -draw-cycles -verbose
 TF_PLAN := terraform plan
 TF_APPLY := terraform apply
