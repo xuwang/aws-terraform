@@ -60,7 +60,7 @@ AWS resources are defined in Terraform resource folders. The build process will 
     ```
 
 1. Setup AWS Credentials at [AWS Console](https://console.aws.amazon.com/)
-    1. Create a group `coreos-cluster` with `AaminstratorAccess` policy.
+    1. Create a group `coreos-cluster` with `AdministratorAccess` policy.
     2. Create a user `coreos-cluster` and download user credentials.
     3. Add user `coreos-cluster` to group `coreos-cluster`.
 
