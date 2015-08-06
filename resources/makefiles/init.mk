@@ -1,10 +1,10 @@
-show: init
+show: | $(BUILD)
 	cd $(BUILD); $(TF_SHOW)
 
 show_state: init
 	cat $(BUILD)/terraform.tfstate
 
-graph: init
+graph: | $(BUILD)
 	cd $(BUILD); $(TF_GRAPH)
 
 refresh: init
