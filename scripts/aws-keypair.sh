@@ -55,17 +55,18 @@ destroy(){
 
 while getopts ":c:d:h" OPTION
 do
+  key=$OPTARG
   case $OPTION in
     c)
-      key=$OPTARG
       create
       ;;
     d)
-      key=$OPTARG
       destroy
       ;;
     *)
-      echo "Unknown options"
+      echo "Usage: $(basename $0) -c|-d keyname"
+      exit 1
       ;;
   esac
 done
+exit 0
