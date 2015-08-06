@@ -1,7 +1,15 @@
+###################
+## Customization ##
+###################
 # Profile/Cluster name
 AWS_PROFILE := coreos-cluster
 AWS_USER := coreos-cluster
 CLUSTER_NAME := coreos-cluster
+
+# For get-ami.sh
+COREOS_UPDATE_CHANNE=beta
+AWS_REGION=us-west-2
+VM_TYPE=hvm
 
 # Working Directories
 ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
@@ -14,6 +22,8 @@ CONFIG := $(BUILD)/cloud-config
 CERTS := $(BUILD)/certs
 SITE_CERT := $(CERTS)/site.pem
 POLICIES := $(BUILD)/policies
+AMI_VARS=$(BUILD)/ami.tf
+
 # Terraform files
 TF_PORVIDER := $(BUILD)/provider.tf
 TF_DESTROY_PLAN := $(BUILD)/destroy.tfplan
@@ -28,12 +38,9 @@ TF_PLAN := terraform plan
 TF_APPLY := terraform apply
 TF_REFRESH := terraform refresh
 TF_DESTROY := terraform destroy -force
-
-# For get-ami.sh
-COREOS_UPDATE_CHANNE=beta
-AWS_REGION=us-west-2
-VM_TYPE=hvm
-AMI_VARS=$(BUILD)/ami.tf
+##########################
+## End of customization ##
+##########################
 
 export
 
@@ -72,7 +79,6 @@ pull_tf_state:
 
 push_tf_state:
 	@echo push terraform state to ....
-
 
 # Load all resouces makefile
 include resources/makefiles/*.mk
