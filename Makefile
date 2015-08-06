@@ -74,7 +74,7 @@ clean_all: destroy_all
 
 # TODO: Push/Pull terraform states from a tf state repo
 pull_tf_state:
-	mkdir -p $(BUILD)
+	@mkdir -p $(BUILD)
 	@echo pull terraform state from ....
 
 push_tf_state:

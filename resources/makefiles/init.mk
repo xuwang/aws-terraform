@@ -19,12 +19,12 @@ $(TF_PORVIDER): update_provider
 $(AMI_VARS): update_ami
 
 init_build_dir:
-	mkdir -p $(BUILD)
-	cp -rf $(RESOURCES)/cloud-config $(BUILD)
-	cp -rf $(RESOURCES)/certs $(BUILD)
-	cp -rf $(RESOURCES)/policies $(BUILD)
-	$(SCRIPTS)/substitute-AWS-ACCOUNT.sh $(POLICIES)/*.json
-	$(SCRIPTS)/substitute-CLUSTER-NAME.sh $(CONFIG)/*.yaml $(POLICIES)/*.json
+	@mkdir -p $(BUILD)
+	@cp -rf $(RESOURCES)/cloud-config $(BUILD)
+	@cp -rf $(RESOURCES)/certs $(BUILD)
+	@cp -rf $(RESOURCES)/policies $(BUILD)
+	@$(SCRIPTS)/substitute-AWS-ACCOUNT.sh $(POLICIES)/*.json
+	@$(SCRIPTS)/substitute-CLUSTER-NAME.sh $(CONFIG)/*.yaml $(POLICIES)/*.json
 
 update_ami:	| $(BUILD)
 	# Generate default AMI ids
@@ -35,7 +35,7 @@ update_provider: | $(BUILD)
 	$(SCRIPTS)/gen-provider.sh > $(TF_PORVIDER)
 
 gen_certs:
-	if [ ! -f "$(SITE_CERT)" ] ; \
+	@if [ ! -f "$(SITE_CERT)" ] ; \
 	then \
 		$(MAKE) -C $(CERTS) ; \
 	fi
