@@ -1,6 +1,6 @@
 # Profile/Cluster name
 AWS_PROFILE := coreos-cluster
-AWS_USER := coreos-cluster
+AWS_USER := sfeng
 CLUSTER_NAME := coreos-cluster
 
 # Working Directories

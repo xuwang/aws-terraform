@@ -1,6 +1,6 @@
 admiral: init_admiral upload_admiral_userdata
 	cd $(BUILD); \
-		$(SCRIPTS)/create-and-upload-keypair.sh admiral; \
+		$(SCRIPTS)/aws-keypair.sh -c admiral; \
 		$(TF_APPLY) -target module.admiral
 	@$(MAKE) admiral_ips
 
@@ -15,6 +15,7 @@ refresh_admiral: | $(TF_PORVIDER)
 
 destroy_admiral: | $(TF_PORVIDER)
 	cd $(BUILD); \
+		$(SCRIPTS)/aws-keypair.sh -d admiral; \
 		$(TF_DESTROY) -target module.admiral.aws_autoscaling_group.admiral; \
 		$(TF_DESTROY) -target module.admiral.aws_launch_configuration.admiral; \
 		$(TF_DESTROY) -target module.admiral 

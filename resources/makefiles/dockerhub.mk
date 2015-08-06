@@ -1,6 +1,6 @@
 dockerhub: init_dockerhub upload_dockerhub_userdata
 	cd $(BUILD); \
-		$(SCRIPTS)/create-and-upload-keypair.sh dockerhub; \
+		$(SCRIPTS)/aws-keypair.sh -c dockerhub; \
 		$(TF_APPLY) -target module.dockerhub
 	@$(MAKE) dockerhub_ips
 
@@ -15,6 +15,7 @@ refresh_dockerhub: | $(TF_PORVIDER)
 
 destroy_dockerhub: | $(TF_PORVIDER)
 	cd $(BUILD); \
+		$(SCRIPTS)/aws-keypair.sh -d dockerhub; \
 		$(TF_DESTROY) -target module.dockerhub.aws_autoscaling_group.dockerhub; \
 		$(TF_DESTROY) -target module.dockerhub.aws_launch_configuration.dockerhub; \
 		$(TF_DESTROY) -target module.dockerhub 

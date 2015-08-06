@@ -1,6 +1,6 @@
 worker: init_worker upload_worker_userdata
 	cd $(BUILD); \
-		$(SCRIPTS)/create-and-upload-keypair.sh worker; \
+		$(SCRIPTS)/aws-keypairs.sh -c worker; \
 		$(TF_APPLY) -target module.worker
 	@$(MAKE) worker_ips
 
@@ -15,6 +15,7 @@ refresh_worker: | $(TF_PORVIDER)
 
 destroy_worker: | $(TF_PORVIDER)
 	cd $(BUILD); \
+	  $(SCRIPTS)/aws-keypairs.sh -d worker; \
 		$(TF_DESTROY) -target module.worker.aws_autoscaling_group.worker; \
 		$(TF_DESTROY) -target module.worker.aws_launch_configuration.worker; \
 		$(TF_DESTROY) -target module.worker 
