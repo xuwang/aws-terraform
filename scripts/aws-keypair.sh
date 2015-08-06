@@ -20,7 +20,7 @@ create(){
   else
     mkdir -p ${TMP_DIR}
     chmod 700 ${TMP_DIR}
-    echo "Creating ${key} and uploading to s3"
+    echo "Creating keypair ${key} and uploading to s3"
     aws --profile ${AWS_PROFILE} ec2 create-key-pair --key-name ${key} --query 'KeyMaterial' --output text > ${TMP_DIR}/${key}.pem
     aws --profile ${AWS_PROFILE} s3 cp ${TMP_DIR}/${key}.pem s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-config/keypairs/${key}.pem
     # copy the key to user's home .ssh
@@ -42,10 +42,9 @@ destroy(){
     then
       echo "Remove from ssh agent"
       ssh-add -L |grep "${TMP_DIR}/${key}.pem" > ${TMP_DIR}/${key}.pub
-      [ -f ${TMP_DIR}/${key}.pub ] && ssh-add -d ${TMP_DIR}/${key}.pub
-      echo "Delete s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-config/keypairs/${key}.pem."
+      [ -s ${TMP_DIR}/${key}.pub ] && ssh-add -d ${TMP_DIR}/${key}.pub
       aws --profile ${AWS_PROFILE} s3 rm s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-config/keypairs/${key}.pem
-      echo "Delete aws ${key}"
+      echo "Delete aws keypair ${key}"
       aws --profile ${AWS_PROFILE} ec2 delete-key-pair --key-name ${key}  
       rm -rf ${TMP_DIR}/${key}.pem
     fi
