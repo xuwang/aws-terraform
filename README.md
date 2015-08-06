@@ -120,7 +120,7 @@ Login to the worker node:
 $ ssh -A core@52.27.156.202
 
 CoreOS beta (723.3.0)
-core@ip-52.24.xxx.xxx ~ $ fleetctl list-machines
+core@ip-52.27.156.202 ~ $ fleetctl list-machines
 MACHINE     IP      METADATA
 289a6ba7... 10.0.1.141  env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
 320bd4ac... 10.0.5.50   env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
