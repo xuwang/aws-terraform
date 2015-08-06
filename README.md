@@ -144,6 +144,8 @@ from `micro` to `medium` or `large` if heavy docker containers to be hosted on t
 
 ```
     image_type = "t2.medium"
+    root_volume_size =  12
+    docker_volume_size =  120
 ```
 
 To build:
