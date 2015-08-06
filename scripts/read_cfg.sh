@@ -1,4 +1,6 @@
 #!/bin/bash
+# Read INI formatted file, return the value of a given key in a given section
+# E.g. ./read_cfg.sh FILE SECTION INI_VAR
 while [ $# -gt 0 ]
 do
     case $1 in 
@@ -24,7 +26,7 @@ done
 
 if [ -z "$INI_FILE" ] || [ -z "$INI_SECTION" ] || [ -z "$INI_VAR" ]
 then
-    echo -e "Usage: read_ini FILE SECTION INI_VAR"
+    echo -e "Usage: $(basename $0) FILE SECTION INI_VAR"
     exit 1
 fi
 
