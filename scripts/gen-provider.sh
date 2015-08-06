@@ -26,7 +26,7 @@ variable "aws_account" {
     default = {
         id = "$TF_VAR_aws_account"
         user = "$PROFILE"
-        defualt_region = "$TF_VAR_aws_region"
+        default_region = "$TF_VAR_aws_region"
     }
 }
 variable "cluster_name" {
