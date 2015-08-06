@@ -11,6 +11,7 @@
 - [Build multi-node cluster](#build-multi-node-cluster)
 - [Destroy all resources](#destroy-all-resources)
 - [Manage individual platform resources](#manage-individual-platform-resources)
+- [Use an existing AWS profile](#use-an-existing-aws-profile)
 - [Technical notes](#technical-notes)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -79,19 +80,6 @@ $ git clone git@github.com:xuwang/aws-terraform.git
 $ cd aws-terraform
 ```
 
-Customize the following lines in _Makefile_ at the top to match your configuration
-
-```
-# Profile/Cluster name
-AWS_PROFILE := coreos-cluster
-AWS_USER := coreos-cluster
-CLUSTER_NAME := coreos-cluster
-```
-
-Just print out build targets and module dependencies:
-```
-$ make --dry-run
-```
 To build:
 ```
 $ make
@@ -100,25 +88,12 @@ $ make
 worker public ips: 52.27.156.202
 ...
 ```
+
 To see the list of resources created:
+
 ```
-$ cd build
-$ terraform show
- module.etcd
-  12 resource(s)
-module.iam
-  3 resource(s)
-module.s3
-  5 resource(s)
-module.vpc
-  3 resource(s)
-module.worker
-  12 resource(s)
-```
-To see details of each resource:
-```
-$ cd build
-$ terraform show -module-depth=1
+$ make show
+...
   module.etcd.aws_autoscaling_group.etcd:
   id = etcd
   availability_zones.# = 3
@@ -212,12 +187,7 @@ fa9f4ea7... 10.0.5.140  env=coreos-cluster,platform=ec2,provider=aws,region=us-w
 ```
 $ make destroy_all
 ```
-
-This will destroy ALL resources created by this project. The follow command shows no resources:
-
-```
-$ make show
-```
+This will destroy ALL resources created by this project.
 
 ## Manage individual platform resources
 
@@ -265,6 +235,18 @@ To destroy a resource:
 ```
 $ make destroy_<resource> 
 ```
+
+### Use an existing AWS profile
+AWS profile, user, and cluster name are defined at the top of  _Makefile_:
+
+```
+# Profile/Cluster name
+AWS_PROFILE := coreos-cluster
+AWS_USER := coreos-cluster
+CLUSTER_NAME := coreos-cluster
+```
+These can be changed to match your AWS profile and cluster name.
+
 ## Technical notes
 * Makefiles define resource dependencies and use scripts to generate necessart Terraform variables and configurations. 
 This provides stream-lined build automation. 
