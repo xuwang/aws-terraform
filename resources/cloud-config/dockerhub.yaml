@@ -4,6 +4,7 @@
 coreos:
   etcd2:
     proxy: on
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
   fleet:
     public-ip: $private_ipv4
     metadata: "env=CLUSTER-NAME,platform=ec2,provider=aws,region=us-west-2,role=dockerhub"
