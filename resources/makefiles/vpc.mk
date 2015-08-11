@@ -2,7 +2,7 @@ vpc: init_vpc
 	cd $(BUILD); \
 	$(TF_APPLY) -target module.vpc 
 	# Wait for vpc/subnets to be ready
-	sleep 10
+	sleep 5
 
 plan_vpc: init_vpc
 	cd $(BUILD); \

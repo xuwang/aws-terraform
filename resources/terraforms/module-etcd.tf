@@ -12,6 +12,11 @@ module "etcd" {
     aws_region = "us-west-2"
     ami = "${lookup(var.amis, "us-west-2")}"
 
+    # Note: currently etcd launch_configuration devices can NOT be changed after etcd cluster is up
+    # See https://github.com/hashicorp/terraform/issues/2910
+    docker_volume_size = 12
+    root_volume_size = 12
+
     # vpc
     vpc_id = "${module.vpc.vpc_id}"
     vpc_cidr = "${module.vpc.vpc_cidr}"
