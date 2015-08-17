@@ -262,7 +262,7 @@ and nodes specific cloud-config.yaml to configure the node. If cloud-config chan
 no need to rebuild an instance.
 Just reboot it to pick up the change.
 * CoreOS AMI is generated on the fly to keep it up-to-data.
-*Terraform auto-generated launch configuration name and DBC feature is used 
+*Terraform auto-generated launch configuration name and CBD feature is used 
 to allow change of launch configuration on a live autoscaling group, e.g. ami id, image type, cluster size, etc.
 However, exisiting ec2 instances in the autoscaling group has to be recycled to pick up new LC, e.g. 
 terminate instance to let AWS create a new instance.
