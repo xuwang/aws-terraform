@@ -74,10 +74,6 @@ For other plantforms, follow the tool links and instructions on tool sites.
 
 ##Quick start
 
-This default build will create one web node and one app node cluster in a VPC, with application buckets for data, necessary iam roles, polices, keypairs and keys. The instance type for the nodes is t2.micro, the default image is he default image is Red Hat Enterprise Linux 7. 
-
-Resources are defined under aws-terraform/resources/terraform directory. You should review and make changes there if needed.
-
 ###Clone the repo:
 ```
 $ git clone git@github.com:xuwang/aws-linux-cluster.git
@@ -103,6 +99,12 @@ when prompted.
 
 
 ###To build:
+
+This default build will create one etcd node and one worker node cluster in a VPC, 
+with application buckets for data, necessary iam roles, polices, keypairs and keys. 
+The instance type for the nodes is t2.micro. You can review the configuration and 
+make changes there if needed. See [Customization](#customization) for details.
+
 ```
 $ make
 ... build steps info ...
