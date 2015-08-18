@@ -282,7 +282,7 @@ $ make destroy_<resource>
 ```
 
 ## Technical notes
-* AWS resources are defined in Terraform resource folders. 
+* AWS resources are defined in resources and modules directories.
 The build process will copy all resource files from _resources_ to a _build_ directory. 
 The terraform actions are performed under _build_, which is ignored in .gitignore,
 keepting the original Terraform files in the repo intact. 
@@ -297,4 +297,6 @@ to allow change of launch configuration on a live autoscaling group,
 however running ec2 instances in the autoscaling group has to be recycled to pick up new LC.
 * Although etcd cluster is on an autoscaling group but it should be set with
 a fixed, odd number cluster_desired_capacity=min_size=max_size.
+* For a production system, the securitey groups defined in etcd, worker, and admiral module 
+should be carefully reviewed and tightened.
 
