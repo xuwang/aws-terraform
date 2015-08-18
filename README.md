@@ -297,6 +297,6 @@ to allow change of launch configuration on a live autoscaling group,
 however running ec2 instances in the autoscaling group has to be recycled to pick up new LC.
 * Although etcd cluster is on an autoscaling group but it should be set with
 a fixed, odd number cluster_desired_capacity=min_size=max_size.
-* For a production system, the securitey groups defined in etcd, worker, and admiral module 
+* For a production system, the security groups defined in etcd, worker, and admiral module 
 should be carefully reviewed and tightened.
 
