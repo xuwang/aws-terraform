@@ -4,4 +4,5 @@ build
 .DS_Store
 .git
 .terraform
+.vagrant
 coreos-cluster
