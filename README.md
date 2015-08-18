@@ -75,13 +75,13 @@ For other plantforms, follow the tool links and instructions on tool sites.
 
 ## Quick start
 
-### Clone the repo:
+#### Clone the repo:
 ```
 $ git clone git@github.com:xuwang/aws-linux-cluster.git
 $ cd aws-lunix-cluster
 ```
 
-### Run Vagrant ubuntu box with terraform installed (Optional)
+#### Run Vagrant ubuntu box with terraform installed (Optional)
 If you use Vagrant, instead of install tools on your host machine,
 there is Vagranetfile for a Ubuntu box with all the necessary tools installed:
 ```
@@ -90,7 +90,7 @@ $ vagrant ssh
 $ cd aws-lunix-cluster
 ```
 
-### Configure AWS profile with `coreos-cluster` credentials
+#### Configure AWS profile with `coreos-cluster` credentials
 
 ```
 $ aws configure --profile coreos-cluster
@@ -99,7 +99,7 @@ Use the [downloaded aws user credentials](#setup-aws-credentials)
 when prompted.
 
 
-### To build:
+#### To build:
 
 This default build will create one etcd node and one worker node cluster in a VPC, 
 with application buckets for data, necessary iam roles, polices, keypairs and keys. 
@@ -114,7 +114,7 @@ worker public ips: 52.27.156.202
 ...
 ```
 
-### To see the list of resources created:
+#### To see the list of resources created:
 
 ```
 $ make show
@@ -139,7 +139,7 @@ $ make show
 ....
 ```
 
-### Login to the worker node:
+#### Login to the worker node:
 
 ```
 $ ssh -A core@52.27.156.202
@@ -152,7 +152,7 @@ MACHINE     IP      METADATA
 
 ```
 
-### Destroy all resources
+#### Destroy all resources
 
 ```
 $ make destroy_all
