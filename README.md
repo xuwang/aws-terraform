@@ -29,9 +29,9 @@ The entire infrastructure is managed by [Terraform](https://www.terraform.io/int
 
 Go to [AWS Console](https://console.aws.amazon.com/)
 
-1. Create a group `mycluster` with `AdministratorAccess` policy.
-2. Create a user `mycluster` and __Download__ the user credentials.
-3. Add user `mycluster` to group `mycluster`.
+1. Create a group `coreos-cluster` with `AdministratorAccess` policy.
+2. Create a user `coreos-cluster` and __Download__ the user credentials.
+3. Add user `coreos-cluster` to group `coreos-cluster`.
 
 ## Install tools
 
@@ -89,10 +89,10 @@ $ vagrant ssh
 $ cd aws-lunix-cluster
 ```
 
-### Configure AWS profile with `mycluster` credentials
+### Configure AWS profile with `coreos-cluster` credentials
 
 ```
-$ aws configure --profile mycluster
+$ aws configure --profile coreos-cluster
 ```
 Use the [downloaded aws user credentials](#setup-aws-credentials)
 when prompted.
