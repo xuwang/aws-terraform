@@ -111,7 +111,7 @@ worker public ips: 52.27.156.202
 ...
 ```
 
-To see the list of resources created:
+###To see the list of resources created:
 
 ```
 $ make show
@@ -136,7 +136,7 @@ $ make show
 ....
 ```
 
-Login to the worker node:
+###Login to the worker node:
 
 ```
 $ ssh -A core@52.27.156.202
@@ -148,6 +148,7 @@ MACHINE     IP      METADATA
 320bd4ac... 10.0.5.50   env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
 
 ```
+
 ###Destroy all resources
 
 ```
@@ -230,7 +231,7 @@ f0bea88e... 10.0.1.45   env=coreos-cluster,platform=ec2,provider=aws,region=us-w
 fa9f4ea7... 10.0.5.140  env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
 ```
 
-## Manage individual platform resources
+##Manage individual platform resources
 
 You can create individual resources and the automated-scripts will create resources automatically based on dependencies. 
 ```
@@ -277,7 +278,7 @@ To destroy a resource:
 $ make destroy_<resource> 
 ```
 
-## Technical notes##Technical notes
+##Technical notes
 * AWS resources are defined in Terraform resource folders. 
 The build process will copy all resource files from _resources_ to a _build_ directory. 
 The terraform actions are performed under _build_, which is ignored in .gitignore,
