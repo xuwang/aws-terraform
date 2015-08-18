@@ -18,7 +18,7 @@
 
 ## Overview
 
-This is a practical implementation of [CoreOS cluster architectures ] (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS. The cluster follows CoreOS production cluster model that contains 3-node etcd cluster in an autoscalting group, a central service node that you can run shared services such as CI, logging and monigoring, a private docker registry, and a fleet of workers to run other service containers. 
+This is a practical implementation of [CoreOS cluster architectures ] (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS. The cluster follows CoreOS production cluster model that contains 3-node etcd cluster in an autoscalting group, a central service node that you can run shared services such as CI, logging and monitoring, a private docker registry, and a fleet of workers to run other service containers. 
 
 The entire infrastructure is managed by Terraform. 
 
