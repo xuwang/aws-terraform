@@ -1,36 +1,47 @@
 
-# AWS CoreOS cluster provisioning with [Terraform](http://www.terraform.io/downloads.html)
+#AWS CoreOS cluster provisioning with [Terraform](https://www.terraform.io/intro/index.html)
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 ##Table of Contents##
 
 - [Overview](#overview)
-- [Install tools and setup AWS credentials](#install-tools-and-setup-aws-credentials)
+- [Setup AWS credentials](#setup-aws-credentials)
+- [Install tools](#install-tools)
 - [Quick start](#quick-start)
+- [Customization](#customization)
 - [Build multi-node cluster](#build-multi-node-cluster)
-- [Destroy all resources](#destroy-all-resources)
 - [Manage individual platform resources](#manage-individual-platform-resources)
-- [Use an existing AWS profile](#use-an-existing-aws-profile)
 - [Technical notes](#technical-notes)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Overview
+##Overview
 
-This is a practical implementation of [CoreOS cluster architectures ] (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS. The cluster follows CoreOS production cluster model that contains 3-node etcd cluster in an autoscalting group, a central service node that you can run shared services such as CI, logging and monigoring, a private docker registry, and a fleet of workers to run other service containers. 
+This is a practical implementation of multi-nodes linux cluster in a vpc built on AWS. 
+The cluster follows 3-tiers architecture that contains web tier, apps tier, and database tier.
 
-The entire infrastructure is managed by Terraform. 
+AWS compoments includes: VPC, IAM, S3, Autoscaling, ELB, Route53, RDS etc. 
 
-AWS compoments includes: VPC, security groups, IAM, S3, ELB, Route53, Autoscaling, RDS etc. 
+The entire infrastructure is managed by [Terraform](https://www.terraform.io/intro/index.html).
 
-AWS resources are defined in Terraform resource folders. The build process will copy all resources defined in the repository to a *build* directory. The view, plan, apply, and destroy operations are performed under *build*, keepting the original Terraform files in the repo intact. The *build* directory is ignored in .gitignore so that you don't accidentally checkin sensitive data. 
+##Setup AWS credentials
 
-## Install Tools and Setup AWS credentials
+Go to [AWS Console](https://console.aws.amazon.com/)
+
+1. Create a group `mycluster` with `AdministratorAccess` policy.
+2. Create a user `mycluster` and __Download__ the user credentials.
+3. Add user `mycluster` to group `mycluster`.
+
+##Install tools
+
+If you use [Vagrant](https://www.vagrantup.com/), you can skip this section and go to 
+[Quick Start](#quick-start) section.
+
+Instructions for install tools on MacOS:
 
 1. Install [Terraform](http://www.terraform.io/downloads.html)
 
-    For MacOS,
     ```
     $ brew update
     $ brew install terraform
@@ -43,7 +54,12 @@ AWS resources are defined in Terraform resource folders. The build process will 
     $ unzip terraform_0.6.0_darwin_amd64.zip
     ```
 
-1. Install AWS CLI
+1. Install [Jq](http://stedolan.github.io/jq/)
+    ```
+    $ brew install jq
+    ```
+
+1. Install [AWS CLI](https://github.com/aws/aws-cli)
     ```
     $ brew install awscli
     ```
@@ -54,33 +70,39 @@ AWS resources are defined in Terraform resource folders. The build process will 
     $ sudo pip install --upgrade awscli
     ```
 
-1. Install [Jq](http://stedolan.github.io/jq/)
-    ```
-    $ brew install jq
-    ```
+For other plantforms, follow the tool links and instructions on tool sites.
 
-1. Setup AWS Credentials at [AWS Console](https://console.aws.amazon.com/)
-    1. Create a group `coreos-cluster` with `AdministratorAccess` policy.
-    2. Create a user `coreos-cluster` and download user credentials.
-    3. Add user `coreos-cluster` to group `coreos-cluster`.
+##Quick start
 
-1. Configure AWS profile with `coreos-cluster` credentials
-    ```
-    $ aws configure --profile coreos-cluster
-    ```
+This default build will create one web node and one app node cluster in a VPC, with application buckets for data, necessary iam roles, polices, keypairs and keys. The instance type for the nodes is t2.micro, the default image is he default image is Red Hat Enterprise Linux 7. 
 
-## Quick start
+Resources are defined under aws-terraform/resources/terraform directory. You should review and make changes there if needed.
 
-This default build will create one etcd node and one worker node cluster in a VPC, with application buckets for data, necessary iam roles, polices, keypairs and keys. The nodes are t2.micro instance and run the latest CoreOS beta release.
-Reources are defined under aws-terraform/resources/terraform directory. You should review and make changes there if needed. 
-
-Clone the repo:
+###Clone the repo:
 ```
-$ git clone git@github.com:xuwang/aws-terraform.git
-$ cd aws-terraform
+$ git clone git@github.com:xuwang/aws-linux-cluster.git
+$ cd aws-lunix-cluster
 ```
 
-To build:
+###Run Vagrant ubuntu box with terraform installed (Optional)
+If you use Vagrant, instead of install tools on your host machine,
+there is Vagranetfile for a Ubuntu box with all the necessary tools installed:
+```
+$ vagrant up
+$ vagrant ssh
+$ cd aws-lunix-cluster
+```
+
+###Configure AWS profile with `mycluster` credentials
+
+```
+$ aws configure --profile mycluster
+```
+Use the [downloaded aws user credentials](#setup-aws-credentials)
+when prompted.
+
+
+###To build:
 ```
 $ make
 ... build steps info ...
@@ -126,9 +148,33 @@ MACHINE     IP      METADATA
 320bd4ac... 10.0.5.50   env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
 
 ```
-## Build multi-node cluster
+###Destroy all resources
 
-The number of etcd nodes and worker nodes are defined in *resource/terraform/module-etcd.tf* and *resource/terraform/module-worker.tf*
+```
+$ make destroy_all
+```
+This will destroy ALL resources created by this project.
+
+##Customization
+
+* The default values for VPC, ec2 instance profile, policies, keys, autoscaling group, lanuch configurations etc., 
+can be override in resources/terraform/module-<resource>.tf` files.
+
+* AWS profile, user, and cluster name are defined at the top of  _Makefile_:
+
+  ```
+  AWS_PROFILE := coreos-cluster
+  AWS_USER := coreos-cluster
+  CLUSTER_NAME := coreos-cluster
+  ```
+  
+  These can also be customized to match your AWS profile and cluster name.
+
+
+##Build multi-node cluster
+
+The number of etcd nodes and worker nodes are defined in *resource/terraform/module-etcd.tf* 
+and *resource/terraform/module-worker.tf*
 
 Change the cluster_desired_capacity in the file to build multi-nodes etcd/worker cluster,
 for example, change to 3:
@@ -184,13 +230,6 @@ f0bea88e... 10.0.1.45   env=coreos-cluster,platform=ec2,provider=aws,region=us-w
 fa9f4ea7... 10.0.5.140  env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
 ```
 
-## Destroy all resources
-
-```
-$ make destroy_all
-```
-This will destroy ALL resources created by this project.
-
 ## Manage individual platform resources
 
 You can create individual resources and the automated-scripts will create resources automatically based on dependencies. 
@@ -238,35 +277,20 @@ To destroy a resource:
 $ make destroy_<resource> 
 ```
 
-### Use an existing AWS profile
-AWS profile, user, and cluster name are defined at the top of  _Makefile_:
-
-```
-# Profile/Cluster name
-AWS_PROFILE := coreos-cluster
-AWS_USER := coreos-cluster
-CLUSTER_NAME := coreos-cluster
-```
-These can be changed to match your AWS profile and cluster name.
-
-## Technical notes
-* Makefiles define resource dependencies and use scripts to generate necessart Terraform 
-variables and configurations. 
-This provides stream-lined build automation. 
-* Etcd forms cluster by self-discovery through its autoscaling group. 
-A initial-cluster file is upload to s3://ACCOUNT-NUMBER-coreos-cluster-cloundinit bucket.
-* Worker nodes run in etcd proxy mode and download initial-cluster file from the s3 bucket 
-and join the cluster at boot time. 
+## Technical notes##Technical notes
+* AWS resources are defined in Terraform resource folders. 
+The build process will copy all resource files from _resources_ to a _build_ directory. 
+The terraform actions are performed under _build_, which is ignored in .gitignore,
+keepting the original Terraform files in the repo intact. 
+* Makefiles and shell scripts are used to give us more flexibility on tasks Terraform 
+leftover. This provides stream-lined build automation. 
 * All nodes use a common bootstrap shell script as user-data, which downloads initial-cluster file 
 and nodes specific cloud-config.yaml to configure the node. If cloud-config changes, 
-no need to rebuild an instance.
-Just reboot it to pick up the change.
+no need to rebuild an instance. Just reboot it to pick up the change.
 * CoreOS AMI is generated on the fly to keep it up-to-data.
-*Terraform auto-generated launch configuration name and CBD feature is used 
-to allow change of launch configuration on a live autoscaling group, e.g. ami id, image type, cluster size, etc.
-However, exisiting ec2 instances in the autoscaling group has to be recycled to pick up new LC, e.g. 
-terminate instance to let AWS create a new instance.
+* Terraform auto-generated launch configuration name and CBD feature is used 
+to allow change of launch configuration on a live autoscaling group, 
+however running ec2 instances in the autoscaling group has to be recycled to pick up new LC.
 * Although etcd cluster is on an autoscaling group but it should be set with
 a fixed, odd number cluster_desired_capacity=min_size=max_size.
-Etcd cluster size could be dynamically increased but it should **never be decreased** on a live system.
 
