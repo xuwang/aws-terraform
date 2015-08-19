@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder ".", "/home/vagrant/aws-linux-cluster"
+  config.vm.synced_folder ".", "/home/vagrant/aws-terraform"
   config.vm.synced_folder "~/.aws", "/home/vagrant/.aws"
   config.vm.provision "file", source: "~/.gitconfig", destination: ".gitconfig"
 

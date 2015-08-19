@@ -77,8 +77,8 @@ For other plantforms, follow the tool links and instructions on tool sites.
 
 #### Clone the repo:
 ```
-$ git clone git@github.com:xuwang/aws-linux-cluster.git
-$ cd aws-lunix-cluster
+$ git clone https://github.com/xuwang/aws-terraform.git
+$ cd aws-terraform
 ```
 
 #### Run Vagrant ubuntu box with terraform installed (Optional)
@@ -87,7 +87,7 @@ there is Vagranetfile for a Ubuntu box with all the necessary tools installed:
 ```
 $ vagrant up
 $ vagrant ssh
-$ cd aws-lunix-cluster
+$ cd aws-terraform
 ```
 
 #### Configure AWS profile with `coreos-cluster` credentials
