@@ -71,7 +71,7 @@ Instructions for install tools on MacOS:
     $ sudo pip install --upgrade awscli
     ```
 
-For other plantforms, follow the tool links and instructions on tool sites.
+For other platforms, follow the tool links and instructions on tool sites.
 
 ## Quick start
 
