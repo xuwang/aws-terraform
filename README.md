@@ -22,7 +22,7 @@ This is a practical implementation of [CoreOS cluster architectures ]
 (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS. 
 The cluster follows CoreOS production cluster model that contains an autoscalting _etcd_ cluster, 
 and an autoscalting _worker_ cluster for hosted containers. You can optionally add an _admiral_ cluster for
-shared services such as CI, Private docker registry, logging and monitoring, etc.
+shared services such as CI, private docker registry, logging and monitoring, etc.
 
 The entire infrastructure is managed by [Terraform](https://www.terraform.io/intro/index.html).
 
@@ -104,7 +104,7 @@ when prompted.
 This default build will create one etcd node and one worker node cluster in a VPC, 
 with application buckets for data, necessary iam roles, polices, keypairs and keys. 
 The instance type for the nodes is t2.micro. You can review the configuration and 
-make changes there if needed. See [Customization](#customization) for details.
+make changes if needed. See [Customization](#customization) for details.
 
 ```
 $ make
@@ -261,7 +261,7 @@ Resource | Description
 *rds* | RDS servers
 *cloudtrail* | Setup AWS CloudTrail
 
-To build the cluster step by step by step:
+To build the cluster step by step:
 
 ```
 $ make init
