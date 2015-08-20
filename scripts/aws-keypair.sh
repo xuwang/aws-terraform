@@ -4,11 +4,10 @@
 key='coreos-cluster'
 
 AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
-AWS_USER=${AWS_USER:-coreos-cluster}
 CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
 
 echo "Getting AWS account number..."
-AWS_ACCOUNT=$(aws --profile ${AWS_PROFILE} iam get-user --user-name=${AWS_USER} | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')
+AWS_ACCOUNT=$(aws --profile ${AWS_PROFILE} iam get-user | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')
 echo $AWS_ACCOUNT
 
 TMP_DIR=keypairs

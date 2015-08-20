@@ -164,11 +164,10 @@ This will destroy ALL resources created by this project.
 * The default values for VPC, ec2 instance profile, policies, keys, autoscaling group, lanuch configurations etc., 
 can be override in resources/terraform/module-<resource>.tf` files.
 
-* AWS profile, user, and cluster name are defined at the top of  _Makefile_:
+* AWS profile, and cluster name are defined at the top of  _Makefile_:
 
   ```
   AWS_PROFILE := coreos-cluster
-  AWS_USER := coreos-cluster
   CLUSTER_NAME := coreos-cluster
   ```
   

@@ -7,7 +7,6 @@
 
 # aws profile
 AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
-AWS_USER=${AWS_USER:-coreos-cluster}
 CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
 
 CLOUDINIT_BUCKET=${CLOUDINIT_BUCKET:-${CLUSTER_NAME}-cloudinit}
@@ -24,8 +23,7 @@ then
     exit 1
 fi
 
-AWS_ACCOUNT=$(aws --profile ${AWS_PROFILE} iam get-user --user-name=${AWS_USER} \
-      | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')
+AWS_ACCOUNT=$(aws --profile ${AWS_PROFILE} iam get-user | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')
 BUCKET_URL="s3://${AWS_ACCOUNT}-${CLOUDINIT_BUCKET}"
 YAML="${AWS_ROLE}/cloud-config.yaml"
 TMP_DIR="user-data"

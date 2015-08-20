@@ -3,7 +3,6 @@
 ###################
 # Profile/Cluster name
 AWS_PROFILE := coreos-cluster
-AWS_USER := coreos-cluster
 CLUSTER_NAME := coreos-cluster
 
 # For get-ami.sh
