@@ -21,7 +21,14 @@ provider "aws" {
   access_key = "$TF_VAR_aws_access_key"
   secret_key = "$TF_VAR_aws_secret_key"
   region = "$TF_VAR_aws_region"
-  allowed_account_ids = [ "$TF_VAR_aws_account" ]
+  max_retries = 3
+EOF
+if [ ! -z $ALLOWED_ACCOUNT_IDS ]; then
+    echo  \ \ allowed_account_ids = [ "$ALLOWED_ACCOUNT_IDS" ]
+elif [[ ! -z $FORBIDDEN_ACCOUNT_IDS ]]; then
+    echo  \ \ forbidden_account_ids = [ "$FORBIDDEN_ACCOUNT_IDS" ]
+fi
+cat <<EOF
 }
 variable "aws_account" {
     default = {
