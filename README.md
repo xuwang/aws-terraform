@@ -98,6 +98,7 @@ $ aws configure --profile coreos-cluster
 Use the [downloaded aws user credentials](#setup-aws-credentials)
 when prompted.
 
+The above command will create a __coreos-cluster__ profile authentication section in ~/.aws/config and ~/.aws/credentials files. The build process bellow will automatically configure Terraform AWS provider credentials using this profile. 
 
 #### To build:
 
