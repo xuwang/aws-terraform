@@ -19,20 +19,23 @@
 ## Overview
 
 This is a practical implementation of [CoreOS cluster architectures ] 
-(https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS. 
+(https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS.
 The cluster follows CoreOS production cluster model that contains an autoscalting _etcd_ cluster, 
 and an autoscalting _worker_ cluster for hosted containers. You can optionally add an _admiral_ cluster for
 shared services such as CI, private docker registry, logging and monitoring, etc.
 
 The entire infrastructure is managed by [Terraform](https://www.terraform.io/intro/index.html).
 
+For other type of Unix cluster, see a similar repo [aws-linux-cluster](https://github.com/xuwang/aws-linux-cluster).
+
 ## Setup AWS credentials
 
-Go to [AWS Console](https://console.aws.amazon.com/)
+Go to [AWS Console](https://console.aws.amazon.com/).
 
+1. Signup AWS account if you don't already have one. The default EC2 instances created by this tool is covered by AWS Free Tier (https://aws.amazon.com/free/) service.
 1. Create a group `coreos-cluster` with `AdministratorAccess` policy.
-2. Create a user `coreos-cluster` and __Download__ the user credentials.
-3. Add user `coreos-cluster` to group `coreos-cluster`.
+1. Create a user `coreos-cluster` and __Download__ the user credentials.
+1. Add user `coreos-cluster` to group `coreos-cluster`.
 
 ## Install tools
 
@@ -98,6 +101,7 @@ $ aws configure --profile coreos-cluster
 Use the [downloaded aws user credentials](#setup-aws-credentials)
 when prompted.
 
+The above command will create a __coreos-cluster__ profile authentication section in ~/.aws/config and ~/.aws/credentials files. The build process bellow will automatically configure Terraform AWS provider credentials using this profile. 
 
 #### To build:
 
@@ -281,21 +285,20 @@ $ make destroy_<resource>
 ```
 
 ## Technical notes
+* Etcd cluster is on an autoscaling group. It should be set with a fixed, odd number (1,3,5..), and cluster_desired_capacity=min_size=max_size.
+* Cluster discovery is managed with [dockerage/etcd-aws-cluster](https://hub.docker.com/r/dockerage/etcd-aws-cluster/) image. etcd cluster is formed by self-discover through its auto-scaling group and then an etcd initial cluster is updated automatically to s3://AWS-ACCOUNT-CLUSTER-NAME-cloudinit/etcd/initial-cluster s3 bucket. Worker nodes join the cluster by downloading the etcd initial-cluster file from the s3 bucket during their bootstrap.
 * AWS resources are defined in resources and modules directories.
 The build process will copy all resource files from _resources_ to a _build_ directory. 
-The terraform actions are performed under _build_, which is ignored in .gitignore,
-keepting the original Terraform files in the repo intact. 
+The terraform actions are performed under _build_, which is ignored in .gitignore. The original Terraform files in the repo are kept intact. 
 * Makefiles and shell scripts are used to give us more flexibility on tasks Terraform 
 leftover. This provides stream-lined build automation. 
 * All nodes use a common bootstrap shell script as user-data, which downloads initial-cluster file 
 and nodes specific cloud-config.yaml to configure the node. If cloud-config changes, 
 no need to rebuild an instance. Just reboot it to pick up the change.
-* CoreOS AMI is generated on the fly to keep it up-to-data.
-* Terraform auto-generated launch configuration name and CBD feature is used 
-to allow change of launch configuration on a live autoscaling group, 
-however running ec2 instances in the autoscaling group has to be recycled to pick up new LC.
-* Although etcd cluster is on an autoscaling group but it should be set with
-a fixed, odd number cluster_desired_capacity=min_size=max_size.
+* CoreOS AMI is generated on the fly to keep it up-to-data. Default channel can be changed in Makefile.
+* Terraform auto-generated launch configuration name and CBD feature are used 
+to allow launch configuration update on a live autoscaling group, 
+however, running ec2 instances in the autoscaling group has to be recycled outside of the Terraform management to pick up the new LC.
 * For a production system, the security groups defined in etcd, worker, and admiral module 
 should be carefully reviewed and tightened.
 
