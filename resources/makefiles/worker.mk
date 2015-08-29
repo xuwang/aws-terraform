@@ -30,7 +30,7 @@ init_worker: etcd
 worker_ips:
 	@echo "worker public ips: " `$(SCRIPTS)/get-ec2-public-id.sh worker`
 
-upload_worker_userdata:
+upload_worker_userdata: init_build_dir
 	cd $(BUILD); \
 		$(SCRIPTS)/gen-userdata.sh worker $(CONFIG)/cloudinit-worker.def
 

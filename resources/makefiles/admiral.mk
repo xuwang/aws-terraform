@@ -30,7 +30,7 @@ init_admiral: etcd
 admiral_ips:
 	@echo "admiral public ips: " `$(SCRIPTS)/get-ec2-public-id.sh admiral`
 
-upload_admiral_userdata:
+upload_admiral_userdata: init_build_dir
 	cd $(BUILD); \
 		$(SCRIPTS)/gen-userdata.sh admiral $(CONFIG)/cloudinit-admiral.def
 

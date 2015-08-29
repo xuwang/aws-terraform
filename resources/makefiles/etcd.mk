@@ -27,7 +27,7 @@ init_etcd: vpc s3 iam
 	cp -rf $(RESOURCES)/terraforms/module-etcd.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 
-upload_etcd_userdata:
+upload_etcd_userdata: init_build_dir
 	cd $(BUILD); \
 		$(SCRIPTS)/gen-userdata.sh etcd $(CONFIG)/cloudinit-etcd.def
 

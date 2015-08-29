@@ -30,7 +30,7 @@ init_dockerhub: etcd elb
 dockerhub_ips:
 	@echo "dockerhub public ips: " `$(SCRIPTS)/get-ec2-public-id.sh dockerhub`
 
-upload_dockerhub_userdata:
+upload_dockerhub_userdata: init_build_dir
 	cd $(BUILD); \
 		$(SCRIPTS)/gen-userdata.sh dockerhub $(CONFIG)/cloudinit-dockerhub.def
 
