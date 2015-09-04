@@ -13,6 +13,7 @@ module "elb" {
 
     # route53
     #route53_public_zone_id = "${module.route53.public_zone_id}"
+    #route53_private_zone_id = "${module.route53.private_zone_id}"
     route53_public_zone_id = "not_available"
-    route53_private_zone_id = "${module.route53.private_zone_id}"
+    route53_private_zone_id = "not_available"
 }
