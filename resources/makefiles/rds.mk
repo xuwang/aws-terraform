@@ -1,8 +1,8 @@
-rds: init_rds
+rds: init_rds vpc
 	cd $(BUILD); \
 	$(TF_APPLY) -target module.rds
 
-plan_rds: init_rds
+plan_rds: init_rds plan_vpc
 	cd $(BUILD); \
 	$(TF_PLAN) -target module.rds;
 
@@ -18,7 +18,7 @@ destroy_rds: | $(TF_PORVIDER)
 clean_rds: destroy_rds
 	rm -f $(BUILD)/module-rds.tf
 
-init_rds: vpc
+init_rds:
 	cp -rf $(RESOURCES)/terraforms/module-rds.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 

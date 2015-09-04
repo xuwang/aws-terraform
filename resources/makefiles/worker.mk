@@ -1,10 +1,10 @@
-worker: init_worker upload_worker_userdata
+worker: etcd init_worker upload_worker_userdata 
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c worker; \
 		$(TF_APPLY) -target module.worker
 	@$(MAKE) worker_ips
 
-plan_worker: init_worker
+plan_worker: plan_etcd init_worker 
 	cd $(BUILD); \
 		$(TF_PLAN) -target module.worker;
 
@@ -23,7 +23,7 @@ destroy_worker: | $(TF_PORVIDER)
 clean_worker: destroy_worker
 	rm -f $(BUILD)/module-worker.tf
 
-init_worker: etcd
+init_worker:
 	cp -rf $(RESOURCES)/terraforms/module-worker.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 

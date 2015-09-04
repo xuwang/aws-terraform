@@ -20,7 +20,7 @@ destroy_elb: | $(TF_PORVIDER)
 clean_elb: destroy_elb
 	rm -f $(BUILD)/module-elb.tf
 
-init_elb: route53 | $(SITE_CERT)
+init_elb: $(SITE_CERT)
 	cp -rf $(RESOURCES)/terraforms/module-elb.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 

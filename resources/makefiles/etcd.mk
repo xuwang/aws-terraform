@@ -1,10 +1,10 @@
-etcd: init_etcd upload_etcd_userdata
+etcd: vpc s3 iam init_etcd upload_etcd_userdata
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c etcd; \
 		$(TF_APPLY) -target module.etcd
 	@$(MAKE) etcd_ips
 
-plan_etcd: init_etcd
+plan_etcd: init_etcd plan_vpc plan_s3 plan_iam
 	cd $(BUILD); \
 		$(TF_PLAN) -target module.etcd;
 
@@ -23,7 +23,7 @@ destroy_etcd: | $(TF_PORVIDER)
 clean_etcd: destroy_etcd
 	rm -f $(BUILD)/module-etcd.tf
 
-init_etcd: vpc s3 iam
+init_etcd:
 	cp -rf $(RESOURCES)/terraforms/module-etcd.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 
