@@ -1,4 +1,4 @@
-vpc: init_vpc
+vpc: plan_vpc
 	cd $(BUILD); \
 	$(TF_APPLY) -target module.vpc 
 	# Wait for vpc/subnets to be ready

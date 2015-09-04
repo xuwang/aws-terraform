@@ -1,10 +1,10 @@
-dockerhub: etcd elb init_dockerhub upload_dockerhub_userdata
+dockerhub: plan_dockerhub upload_dockerhub_userdata
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c dockerhub; \
 		$(TF_APPLY) -target module.dockerhub
 	@$(MAKE) dockerhub_ips
 
-plan_dockerhub: init_dockerhub plan_etcd plan_elb
+plan_dockerhub: init_dockerhub
 	cd $(BUILD); \
 		$(TF_PLAN) -target module.dockerhub;
 
@@ -23,7 +23,7 @@ destroy_dockerhub: | $(TF_PORVIDER)
 clean_dockerhub: destroy_dockerhub
 	rm -f $(BUILD)/module-dockerhub.tf
 
-init_dockerhub:
+init_dockerhub: init_etcd init_elb
 	cp -rf $(RESOURCES)/terraforms/module-dockerhub.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 

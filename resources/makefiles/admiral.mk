@@ -1,10 +1,10 @@
-admiral: etcd init_admiral upload_admiral_userdata
+admiral: plan_admiral upload_admiral_userdata
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c admiral; \
 		$(TF_APPLY) -target module.admiral
 	@$(MAKE) admiral_ips
 
-plan_admiral: plan_etcd init_admiral
+plan_admiral: init_admiral
 	cd $(BUILD); \
 		$(TF_PLAN) -target module.admiral;
 
@@ -23,7 +23,7 @@ destroy_admiral: | $(TF_PORVIDER)
 clean_admiral: destroy_admiral
 	rm -f $(BUILD)/module-admiral.tf
 
-init_admiral:
+init_admiral: init_etcd
 	cp -rf $(RESOURCES)/terraforms/module-admiral.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 

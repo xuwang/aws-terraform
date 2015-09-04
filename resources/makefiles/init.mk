@@ -18,6 +18,8 @@ $(TF_PORVIDER): update_provider
 
 $(AMI_VARS): update_ami
 
+$(SITE_CERT): gen_certs
+
 init_build_dir:
 	@mkdir -p $(BUILD)
 	@cp -rf $(RESOURCES)/cloud-config $(BUILD)

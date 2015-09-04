@@ -1,4 +1,4 @@
-iam: init_iam
+iam: plan_iam
 	cd $(BUILD); \
 	$(TF_APPLY) -target module.iam
 

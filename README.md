@@ -245,7 +245,7 @@ $ make help
 
 Usage: make (<resource> | destroy_<resource> | plan_<resource> | refresh_<resource> | show | graph )
 Available resources: vpc s3 route53 iam etcd worker
-For example: make worker
+For example: make worker # to show what resources are planned for worker
 ```
 
 Currently defined resources:

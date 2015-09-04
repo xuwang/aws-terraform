@@ -1,4 +1,4 @@
-s3: init_s3
+s3: plan_s3
 	cd $(BUILD); \
 	$(TF_APPLY) -target module.s3
 
