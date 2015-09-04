@@ -20,8 +20,8 @@
 
 This is a practical implementation of [CoreOS cluster architectures ] 
 (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS.
-The cluster follows CoreOS production cluster model that contains an autoscalting _etcd_ cluster, 
-and an autoscalting _worker_ cluster for hosted containers. You can optionally add an _admiral_ cluster for
+The cluster follows CoreOS production cluster model that contains an autoscaling _etcd_ cluster, 
+and an autoscaling _worker_ cluster for hosted containers. You can optionally add an _admiral_ cluster for
 shared services such as CI, private docker registry, logging and monitoring, etc.
 
 The entire infrastructure is managed by [Terraform](https://www.terraform.io/intro/index.html).
