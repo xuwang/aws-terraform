@@ -1,4 +1,4 @@
-admiral: plan_admiral upload_admiral_userdata
+admiral: etcd plan_admiral upload_admiral_userdata
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c admiral; \
 		$(TF_APPLY) -target module.admiral

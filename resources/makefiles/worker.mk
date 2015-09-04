@@ -1,4 +1,4 @@
-worker: plan_worker upload_worker_userdata 
+worker: etcd plan_worker upload_worker_userdata
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c worker; \
 		$(TF_APPLY) -target module.worker

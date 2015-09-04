@@ -1,4 +1,4 @@
-dockerhub: plan_dockerhub upload_dockerhub_userdata
+dockerhub: etcd plan_dockerhub upload_dockerhub_userdata
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c dockerhub; \
 		$(TF_APPLY) -target module.dockerhub
