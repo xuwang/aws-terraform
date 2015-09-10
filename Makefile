@@ -36,7 +36,7 @@ TF_STATE := $(BUILD)/terraform.tfstate
 TF_GET := terraform get -update
 TF_SHOW := terraform show -module-depth=1
 TF_GRAPH := terraform graph -draw-cycles -verbose
-TF_PLAN := terraform plan
+TF_PLAN := terraform plan -module-depth=1
 TF_APPLY := terraform apply
 TF_REFRESH := terraform refresh
 TF_DESTROY := terraform destroy -force
