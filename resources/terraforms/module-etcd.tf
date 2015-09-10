@@ -9,8 +9,8 @@ module "etcd" {
 
     # aws
     aws_account_id="${var.aws_account.id}"
-    aws_region = "us-west-2"
-    ami = "${lookup(var.amis, "us-west-2")}"
+    aws_region = "${var.aws_account.default_region}"
+    ami = "${var.ami}"
 
     # Note: currently etcd launch_configuration devices can NOT be changed after etcd cluster is up
     # See https://github.com/hashicorp/terraform/issues/2910
