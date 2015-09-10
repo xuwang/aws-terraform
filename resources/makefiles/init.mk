@@ -23,7 +23,6 @@ $(SITE_CERT): gen_certs
 init_build_dir:
 	@mkdir -p $(BUILD)
 	@cp -rf $(RESOURCES)/cloud-config $(BUILD)
-	@cp -rf $(RESOURCES)/certs $(BUILD)
 	@cp -rf $(RESOURCES)/policies $(BUILD)
 	@$(SCRIPTS)/substitute-AWS-ACCOUNT.sh $(POLICIES)/*.json
 	@$(SCRIPTS)/substitute-CLUSTER-NAME.sh $(CONFIG)/*.yaml $(POLICIES)/*.json
@@ -36,7 +35,8 @@ update_provider: | $(BUILD)
 	# Generate tf provider
 	$(SCRIPTS)/gen-provider.sh > $(TF_PORVIDER)
 
-gen_certs:
+gen_certs: $(BUILD)
+	@cp -rf $(RESOURCES)/certs $(BUILD)
 	@if [ ! -f "$(SITE_CERT)" ] ; \
 	then \
 		$(MAKE) -C $(CERTS) ; \
