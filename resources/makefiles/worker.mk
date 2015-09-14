@@ -4,7 +4,7 @@ worker: etcd plan_worker upload_worker_userdata
 		$(TF_APPLY) -target module.worker
 	@$(MAKE) worker_ips
 
-plan_worker: init_worker 
+plan_worker: plan_etcd init_worker 
 	cd $(BUILD); \
 		$(TF_PLAN) -target module.worker;
 

@@ -4,7 +4,7 @@ admiral: etcd plan_admiral upload_admiral_userdata
 		$(TF_APPLY) -target module.admiral
 	@$(MAKE) admiral_ips
 
-plan_admiral: init_admiral
+plan_admiral: plan_etcd init_admiral
 	cd $(BUILD); \
 		$(TF_PLAN) -target module.admiral;
 

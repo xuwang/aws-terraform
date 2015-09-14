@@ -4,7 +4,7 @@ etcd: vpc s3 iam plan_etcd upload_etcd_userdata
 		$(TF_APPLY) -target module.etcd
 	@$(MAKE) etcd_ips
 
-plan_etcd: init_etcd
+plan_etcd: plan_vpc plan_s3 plan_iam init_etcd
 	cd $(BUILD); \
 		$(TF_PLAN) -target module.etcd;
 

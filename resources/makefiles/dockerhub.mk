@@ -4,7 +4,7 @@ dockerhub: etcd plan_dockerhub upload_dockerhub_userdata
 		$(TF_APPLY) -target module.dockerhub
 	@$(MAKE) dockerhub_ips
 
-plan_dockerhub: init_dockerhub
+plan_dockerhub: plan_etcd init_dockerhub
 	cd $(BUILD); \
 		$(TF_PLAN) -target module.dockerhub;
 
