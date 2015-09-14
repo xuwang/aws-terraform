@@ -1,4 +1,4 @@
-etcd: iam plan_etcd upload_etcd_userdata
+etcd: vpc s3 iam plan_etcd upload_etcd_userdata
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c etcd; \
 		$(TF_APPLY) -target module.etcd
