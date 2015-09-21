@@ -7,7 +7,7 @@
         "s3:*"
       ],
       "Resource": [
-        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-cloudinit/",
+        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-cloudinit",
         "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-cloudinit/*",
         "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-config",
         "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-config/*",
