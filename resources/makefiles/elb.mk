@@ -1,9 +1,9 @@
-elb: plan_elb
+elb: vpc plan_elb
 	cd $(BUILD); \
 		$(TF_APPLY) -target module.elb
 	@$(MAKE) elb_names
 
-plan_elb: init_elb
+plan_elb: plan_vpc init_elb
 	cd $(BUILD); \
 		$(TF_PLAN) -target module.elb;
 
@@ -21,7 +21,7 @@ clean_elb: destroy_elb
 	rm -f $(BUILD)/module-elb.tf
 
 # init elb build dir, may add init_route53 as dependence if dns registration is needed.
-init_elb: | $(SITE_CERT)
+init_elb: | $(SITE_CERT) init
 	cp -rf $(RESOURCES)/terraforms/module-elb.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 

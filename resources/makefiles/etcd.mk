@@ -23,7 +23,7 @@ destroy_etcd: | $(TF_PORVIDER)
 clean_etcd: destroy_etcd
 	rm -f $(BUILD)/module-etcd.tf
 
-init_etcd: init_vpc init_s3 init_iam 
+init_etcd: init
 	cp -rf $(RESOURCES)/terraforms/module-etcd.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 

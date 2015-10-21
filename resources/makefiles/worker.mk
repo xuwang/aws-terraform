@@ -23,7 +23,7 @@ destroy_worker: | $(TF_PORVIDER)
 clean_worker: destroy_worker
 	rm -f $(BUILD)/module-worker.tf
 
-init_worker: init_etcd
+init_worker: init
 	cp -rf $(RESOURCES)/terraforms/module-worker.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 

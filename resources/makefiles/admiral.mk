@@ -23,7 +23,7 @@ destroy_admiral: | $(TF_PORVIDER)
 clean_admiral: destroy_admiral
 	rm -f $(BUILD)/module-admiral.tf
 
-init_admiral: init_etcd
+init_admiral: init
 	cp -rf $(RESOURCES)/terraforms/module-admiral.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 

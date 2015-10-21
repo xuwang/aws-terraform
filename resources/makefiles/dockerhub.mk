@@ -23,7 +23,7 @@ destroy_dockerhub: | $(TF_PORVIDER)
 clean_dockerhub: destroy_dockerhub
 	rm -f $(BUILD)/module-dockerhub.tf
 
-init_dockerhub: init_etcd init_elb
+init_dockerhub: init
 	cp -rf $(RESOURCES)/terraforms/module-dockerhub.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 
