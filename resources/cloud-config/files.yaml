@@ -53,15 +53,16 @@ write_files:
     owner: root
     content: |
         #!/bin/bash
-        
-        # If etcd is active, this uses locksmith. Otherwise, it randomly delays the reboot. 
+        # If etcd is active, this uses locksmith. Otherwise, it randomly delays the reboot.
         delay=$(/usr/bin/expr $RANDOM % 3600 )
         rebootflag='NEED_REBOOT'
+        hostip=$(hostname -i | tr -d ' ')
+        ismember=$(etcdctl member list |grep -Eo "(http://$hostip:2380)")
         
         if update_engine_client -status | grep $rebootflag;
         then
-            echo -n "etcd is "
-            if systemctl is-active etcd;
+            echo -n "etcd2 is "
+            if systemctl is-active etcd2 && [[ $ismember != "" ]];
             then
                 echo "Update reboot with locksmithctl."
                 locksmithctl reboot
