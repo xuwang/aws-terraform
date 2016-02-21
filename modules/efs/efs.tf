@@ -1,28 +1,28 @@
 # EFS cluster
 resource "aws_efs_file_system" "efs" {
-  reference_name = "${var.platform}-efs"
+  reference_name = "${var.vpc_name}-efs"
   tags {
-    Name = "${var.platform}-efs"
+    Name = "${var.vpc_name}-efs"
   }
   tags {
-    Billing = "${var.platform}"
+    Billing = "${var.vpc_name}"
   }
 }
 
 resource "aws_efs_mount_target" "efs-a" {
   file_system_id = "${aws_efs_file_system.efs.id}"
   subnet_id = "${var.efs_subnet_a_id}"
-  security_groups = ["${aws_security_group.efs}"]
+  security_groups = ["${aws_security_group.efs.id}"]
 }
 resource "aws_efs_mount_target" "efs-b" {
   file_system_id = "${aws_efs_file_system.efs.id}"
   subnet_id = "${var.efs_subnet_b_id}"
-  security_groups = ["${aws_security_group.efs}"]
+  security_groups = ["${aws_security_group.efs.id}"]
 }
 resource "aws_efs_mount_target" "efs-c" {
   file_system_id = "${aws_efs_file_system.efs.id}"
   subnet_id = "${var.efs_subnet_c_id}"
-  security_groups = ["${aws_security_group.efs}"]
+  security_groups = ["${aws_security_group.efs.id}"]
 }
 
 output "aws-efs-file-system-efs-id" {

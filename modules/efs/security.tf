@@ -8,7 +8,7 @@ resource "aws_security_group" "efs"  {
       from_port = 0
       to_port = 0
       protocol = "-1"
-      cidr_locks = ["0.0.0.0/0"]
+      cidr_blocks = ["0.0.0.0/0"]
     }
 
     # EFS
