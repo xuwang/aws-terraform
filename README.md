@@ -257,6 +257,7 @@ Resource | Description
 *iam* | Setup a deployment user and deployment keys
 *route53* | Setup public and private hosted zones on Route53 DNS service
 *elb* | Setup application ELBs
+*efs* | EFS cluster
 *etcd* | Setup ETCD2 cluster
 *worker* | Setup application docker hosting cluster
 *admiral* | Central service cluster (Jenkins, fleet-ui, monitoring, logging, etc)
