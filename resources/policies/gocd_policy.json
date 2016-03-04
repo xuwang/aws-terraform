@@ -1,0 +1,29 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-gocd",
+        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-gocd/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:List*",
+        "s3:Get*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-cloudinit/etcd/initial-cluster",
+        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-cloudinit/gocd",
+        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-cloudinit/gocd/*",
+        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-config",
+        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-config/*"
+      ]
+    }
+  ]
+}

@@ -35,3 +35,19 @@ coreos:
         Description=Reboot timer
         [Timer]
         OnCalendar=*-*-* 05,06:00/30:00
+    - name: gocd.service
+      command: start
+      content: |
+        [Unit]
+        Description=gocd server
+        Requires=docker.service
+        After=docker.service
+        [Service]
+        EnvironmentFile=/etc/environment
+        TimeoutStartSec=0
+        ExecStartPre=/var/lib/apps/bin/dkpull gocd/gocd-server:16.1.0
+        ExecStartPre=-/usr/bin/docker rm %n
+        ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n -p 8153:8153 -e AGENT_KEY=123456789abcdef gocd/gocd-server:16.1.0"
+        ExecStop=/usr/bin/docker stop %n
+        RestartSec=10
+        Restart=always

@@ -45,6 +45,16 @@ resource "aws_s3_bucket" "dockerhub" {
     }
 }
 
+# s3 bucket for gocd 
+resource "aws_s3_bucket" "gocd" {
+    bucket = "${var.bucket_prefix}-gocd"
+    force_destroy = true
+    acl = "private"
+    tags {
+        Name = "gocd"
+    }
+}
+
 # s3 bucket for log data backup
 resource "aws_s3_bucket" "logs" {
     bucket = "${var.bucket_prefix}-logs"
