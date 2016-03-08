@@ -371,4 +371,80 @@ introduction to systemd: https://coreos.com/docs/launching-containers/launching/
 
 introduction to fleet: https://coreos.com/fleet/docs/latest/launching-containers-fleet.html
 
+# # DONT
+
+1. Don't modify the cluster-name. If you do then please do update the "s3-cloudconfig-bootstrap.sh" as well. Specifically this path:
+
+```
+# Bucket path for the cloud-config.yaml 
+bucket=${accountId}-stakater-cloudinit
+```
+
+# Troubleshooting
+
+Two types of units can be run in your cluster — standard and global units. Standard units are long-running processes that are scheduled onto a single machine. If that machine goes offline, the unit will be migrated onto a new machine and started.
+
+Global units will be run on all machines in the cluster.
+
+1.  The fleet logs (sudo journalctl -u fleet) will provide more clarity on what’s going on under the hood.
+
+2. There are two fleetctl commands to view units in the cluster: list-unit-files, which shows the units that fleet knows about and whether or not they are global, and list-units, which shows the current state of units actively loaded into machines in the cluster. 
+
+$ fleetctl list-unit-files
+
+You can view all of the machines in the cluster by running list-machines:
+
+$ fleetctl list-machines
+
+$ fleetctl list-units
+
+
+Check the fleet service to see what errors it gives us:
+
+$ systemctl status -l fleet
+
+For each of our essential services, we should check the status and logs. The general way of doing this is:
+
+systemctl status -l <service>
+journalctl -b -u <service>
+
+
+If we check the etcd logs, we will see something like this:
+
+journalctl -b -u etcd
+
+When your CoreOS machine processes the cloud-config file, it generates stub systemd unit files that it uses to start up fleet and etcd. To see the systemd configuration files that were created and are being used to start your services, change to the directory where they were dropped:
+
+cd /run/systemd/system
+ls -F
+
+to list all units
+
+systemctl
+
+
+Services usually fail because of a missing dependency (e.g. a file or mount point), missing configuration, or incorrect permissions. In this example we see that the dev-mqueue unit with type mount fails. As the type is a mount, the reason is most likely because mounting a particular partition failed.
+
+By using the systemctl status command we can see the details of the dev-mqueue.mount unit:
+
+[root@localhost ~]# systemctl status dev-mqueue.mount
+
+online tool to validate cloud-config
+
+https://coreos.com/validate/
+
+Can you check to see if the service is enabled (systemctl is-enabled etcd2)? If it's not enabled, it may be a dependency of something that is enabled. You can test with systemctl list-dependencies etcd2 --reverse
+
+check status of a service
+
+systemctl status -l gocd
+
+
 # 
+
+There’s a few things worth pointing out:
+
+1. The container is clearly dependent on having Docker running, hence the Requires line. The After line is also needed to avoid race conditions.
+2. Before we start the container, we first stop and remove any existing container with the same name and then pull the latest version of the image. The “-” at the start means systemd won’t abort if the command fails.
+3. This means that our container will be started from scratch each time. If you want to persist data then you’ll need to do something with volumes or volume containers, or change the code to restart the old container if it exists.
+4. We’ve used TimeoutStartSec=0 to turn off timeouts, as the docker pull may take a while.

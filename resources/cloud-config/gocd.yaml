@@ -35,13 +35,38 @@ coreos:
         Description=Reboot timer
         [Timer]
         OnCalendar=*-*-* 05,06:00/30:00
+    - name: hello.service
+      command: start
+      content: |
+        [Unit]
+        Description=Hello World
+        
+        After=docker.service
+        Requires=docker.service
+        
+        # Dependency ordering
+        After=gocd.service
+        # Requirements        
+        Requires=gocd.service
+        
+        [Service]
+        # Let processes take awhile to start up (for first run Docker containers)
+        TimeoutStartSec=0
+        # Change killmode from "control-group" to "none" to let Docker remove
+        # work correctly.
+        KillMode=none
+        EnvironmentFile=/etc/environment
+        ExecStartPre=/usr/bin/etcdctl set /test/%m ${COREOS_PUBLIC_IPV4}
+        ExecStart=/usr/bin/docker run --name test --rm busybox /bin/sh -c "while true; do echo Hello World; sleep 1; done"
+        ExecStop=/usr/bin/etcdctl rm /test/%m
+        ExecStop=/usr/bin/docker kill test        
     - name: gocd.service
       command: start
       content: |
         [Unit]
         Description=gocd server
-        Requires=docker.service
         After=docker.service
+        Requires=docker.service
         [Service]
         EnvironmentFile=/etc/environment
         TimeoutStartSec=0
@@ -56,8 +81,11 @@ coreos:
       content: |
         [Unit]
         Description=gocd agent # 1
-        Requires=gocd.service
+        After=docker.service
+        Requires=docker.service
         After=gocd.service
+        Requires=gocd.service
+          
         [Service]
         EnvironmentFile=/etc/environment
         TimeoutStartSec=0
@@ -70,23 +98,3 @@ coreos:
         ExecStop=-/usr/bin/docker stop %n
         RestartSec=10
         Restart=always
-    - name: hello.service
-      command: start
-      content: |
-        [Unit]
-        Description=Hello World
-        # Requirements        
-        Requires=gocd.service
-        # Dependency ordering
-        After=gocd.service
-        [Service]
-        # Let processes take awhile to start up (for first run Docker containers)
-        TimeoutStartSec=0
-        # Change killmode from "control-group" to "none" to let Docker remove
-        # work correctly.
-        KillMode=none
-        EnvironmentFile=/etc/environment
-        ExecStartPre=/usr/bin/etcdctl set /test/%m ${COREOS_PUBLIC_IPV4}
-        ExecStart=/usr/bin/docker run --name test --rm busybox /bin/sh -c "while true; do echo Hello World; sleep 1; done"
-        ExecStop=/usr/bin/etcdctl rm /test/%m
-        ExecStop=/usr/bin/docker kill test

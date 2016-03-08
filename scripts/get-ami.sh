@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # Default Environment variables
-COREOS_UPDATE_CHANNE="${COREOS_UPDATE_CHANNE:-beta}"      # stable/beta/alpha
+COREOS_UPDATE_CHANNE="${COREOS_UPDATE_CHANNE:-stable}"        # stable/beta/alpha
 AWS_REGION=${AWS_REGION:-us-west-2}                           # us-west-1/us-west-2/...
-VM_TYPE=${VM_TYPE:-pv}                                    # hvm/pv - note: t1.micro supports only pv type
+VM_TYPE=${VM_TYPE:-pv}                                        # hvm/pv - note: t1.micro supports only pv type
 
 # Get options from the command line
 while getopts ":c:z:t:" OPTION
