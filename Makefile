@@ -61,6 +61,7 @@ destroy:
 destroy_all: \
 	destroy_admiral \
 	destroy_dockerhub \
+	destroy_gocd \
 	destroy_worker \
 	destroy_etcd \
 	destroy_efs \

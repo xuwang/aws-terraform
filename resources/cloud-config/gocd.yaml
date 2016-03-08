@@ -1,13 +1,13 @@
 #cloud-config
 
-# Dockerhub cloud-config
+# gocd cloud-config
 coreos:
   etcd2:
     proxy: on
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
   fleet:
     public-ip: $private_ipv4
-    metadata: "env=CLUSTER-NAME,platform=ec2,provider=aws,role=dockerhub"
+    metadata: "env=CLUSTER-NAME,platform=ec2,provider=aws,role=gocd"
   update:
     reboot-strategy: off
   units:
@@ -51,3 +51,42 @@ coreos:
         ExecStop=/usr/bin/docker stop %n
         RestartSec=10
         Restart=always
+    - name: gocd-agent-1.service
+      command: start
+      content: |
+        [Unit]
+        Description=gocd agent # 1
+        Requires=gocd.service
+        After=gocd.service
+        [Service]
+        EnvironmentFile=/etc/environment
+        TimeoutStartSec=0
+        # Change killmode from "control-group" to "none" to let Docker remove
+        # work correctly.
+        KillMode=none        
+        ExecStartPre=/var/lib/apps/bin/dkpull gocd/gocd-agent:16.1.0
+        ExecStartPre=-/usr/bin/docker rm %n
+        ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n -e AGENT_KEY=123456789abcdef --link gocd.service:go-server gocd/gocd-agent:16.1.0"
+        ExecStop=-/usr/bin/docker stop %n
+        RestartSec=10
+        Restart=always
+    - name: hello.service
+      command: start
+      content: |
+        [Unit]
+        Description=Hello World
+        # Requirements        
+        Requires=gocd.service
+        # Dependency ordering
+        After=gocd.service
+        [Service]
+        # Let processes take awhile to start up (for first run Docker containers)
+        TimeoutStartSec=0
+        # Change killmode from "control-group" to "none" to let Docker remove
+        # work correctly.
+        KillMode=none
+        EnvironmentFile=/etc/environment
+        ExecStartPre=/usr/bin/etcdctl set /test/%m ${COREOS_PUBLIC_IPV4}
+        ExecStart=/usr/bin/docker run --name test --rm busybox /bin/sh -c "while true; do echo Hello World; sleep 1; done"
+        ExecStop=/usr/bin/etcdctl rm /test/%m
+        ExecStop=/usr/bin/docker kill test

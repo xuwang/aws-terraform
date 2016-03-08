@@ -303,3 +303,72 @@ however, running ec2 instances in the autoscaling group has to be recycled outsi
 * For a production system, the security groups defined in etcd, worker, and admiral module 
 should be carefully reviewed and tightened.
 
+
+# First steps
+
+To control your cluster with fleet, you use the fleetctl command. As you can read here, fleet has no built-in security mechanism. If you want to use fleetctl from your workstation, you need to configure fleet to use an SSH tunnel. I found that an easy way to do this is to configure the SSH user and private key in ~/.ssh/config and then export the FLEETCTL_TUNNEL variable on the command line. Like so:
+
+Host coreos
+  User     core
+  HostName <ip-of-a-cluster-instance>
+  IdentityFile ~/.ssh/your_aws_private_key.pem
+
+And:
+
+export FLEETCTL_TUNNEL=<ip-of-a-cluster-instance>
+
+It doesn’t matter which instance you use as the other end of your SSH tunnel, as long as you use the EC2 instance’s public IP address. Of course the IP address in your SSH config must be the same as what you export in the environment variable.
+
+Also, make sure to add your private key to ssh-agent, to make sure the ssh commands work:
+
+ssh-add ~/.ssh/your_aws_private_key.pem
+
+Once you’ve done this, the following command:
+
+fleetctl list-machines
+
+Should show you the servers in your cluster:
+
+MACHINE     IP              METADATA
+015a6f3a... 10.104.242.206  -
+3588db25... 10.73.200.139   -
+
+Host coreos
+  User     core
+  HostName 52.36.252.184
+  IdentityFile /Users/rasheed/Documents/projects/stakater/aws-terraform-xuwang/aws-terraform/build/keypairs/gocd.pem
+
+export FLEETCTL_TUNNEL=52.36.252.184
+
+ssh-add /Users/rasheed/Documents/projects/stakater/aws-terraform-xuwang/aws-terraform/build/keypairs/gocd.pem
+
+# fleetctl commands
+
+fleetctl submit hello.service
+fleetctl start hello.service
+fleetctl status hello.service
+fleetctl destroy hello.service
+
+
+To see the output of the service, call:ß
+
+fleetctl journal hello.service
+
+
+Fleet is effectively a clustered layer on top of systemd. Fleet uses systemd unit files with an (optional) added section to tell fleet which machines it should run on. There is very little magic.
+
+list systemd units
+
+systemctl list-units | grep fleet
+
+systemctl restart fleet.service
+
+# systemd
+
+introduction to systemd: https://coreos.com/docs/launching-containers/launching/getting-started-with-systemd/
+
+# fleet
+
+introduction to fleet: https://coreos.com/fleet/docs/latest/launching-containers-fleet.html
+
+# 

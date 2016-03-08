@@ -1,0 +1,17 @@
+[Unit]
+Description=gocd server
+Requires=docker.service
+After=docker.service
+
+[Service]
+EnvironmentFile=/etc/environment
+EnvironmentFile=/var/lib/apps/gocd/envvars
+TimeoutStartSec=0
+ExecStartPre=/var/lib/apps/bin/dkpull ${GOCD_IMAGE}
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n ${GOCD_OPTS} ${GOCD_IMAGE}"
+ExecStartPost=/var/lib/apps/bin/dns-set gocd $COREOS_PUBLIC_IPV4
+ExecStop=/usr/bin/docker stop %n
+ExecStopPost=-/var/lib/apps/bin/dns-delete gocd
+RestartSec=10
+Restart=always

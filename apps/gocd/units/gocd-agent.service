@@ -1,0 +1,14 @@
+[Unit]
+Description=gocd agent
+Requires=gocd.service
+After=gocd.service
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutStartSec=0
+ExecStartPre=/var/lib/apps/bin/dkpull gocd/gocd-agent:16.1.0
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n -e AGENT_KEY=123456789abcdef --link gocd.service:go-server gocd/gocd-agent:16.1.0"
+ExecStop=-/usr/bin/docker stop %n
+RestartSec=10
+Restart=always
