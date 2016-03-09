@@ -448,3 +448,16 @@ There’s a few things worth pointing out:
 2. Before we start the container, we first stop and remove any existing container with the same name and then pull the latest version of the image. The “-” at the start means systemd won’t abort if the command fails.
 3. This means that our container will be started from scratch each time. If you want to persist data then you’ll need to do something with volumes or volume containers, or change the code to restart the old container if it exists.
 4. We’ve used TimeoutStartSec=0 to turn off timeouts, as the docker pull may take a while.
+
+
+# systemd unit status
+
+You can check units status by:
+
+$ sudo systemctl status gocd-agent-1
+
+Or the unit logs by:
+
+$ sudo journalctl -exu gocd-agent-1
+
+Usually, the log info will tell what's going on.

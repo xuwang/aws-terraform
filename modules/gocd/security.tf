@@ -11,6 +11,7 @@ resource "aws_security_group" "gocd"  {
       cidr_blocks = ["0.0.0.0/0"]
     }
 
+    # TODO: fix this port?
     # Open gocd port
     ingress {
       from_port = 5000
@@ -18,7 +19,6 @@ resource "aws_security_group" "gocd"  {
       protocol = "tcp"
       cidr_blocks = [ "${var.vpc_cidr}" ]
     }
-    
 
     # Allow SSH from my hosts
     ingress {
