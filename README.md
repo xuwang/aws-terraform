@@ -54,8 +54,8 @@ Instructions for install tools on MacOS:
     ```
     $ mkdir -p ~/bin/terraform
     $ cd ~/bin/terraform
-    $ curl -L -O https://releases.hashicorp.com/terraform/0.6.12/terraform_0.6.12_freebsd_amd64.zip
-    $ unzip terraform_0.6.0_darwin_amd64.zip
+    $ curl -L -O https://releases.hashicorp.com/terraform/0.6.12/terraform_0.6.12_darwin_amd64.zip
+    $ unzip terraform_0.6.12_darwin_amd64.zip
     ```
 
 1. Install [Jq](http://stedolan.github.io/jq/)
