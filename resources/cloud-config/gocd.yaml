@@ -35,7 +35,7 @@ coreos:
         Description=Reboot timer
         [Timer]
         OnCalendar=*-*-* 05,06:00/30:00
-    - name: gocd.service
+    - name: gocd-server.service
       command: start
       content: |
         [Unit]
@@ -47,19 +47,19 @@ coreos:
         TimeoutStartSec=0
         ExecStartPre=/usr/bin/docker pull gocd/gocd-server:16.1.0
         ExecStartPre=-/usr/bin/docker rm %n
-        ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n -p 8153:8153 -e AGENT_KEY=123456789abcdef gocd/gocd-server:16.1.0"
+        ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n -p 8153:8153 -e AGENT_KEY=123456789abcdef -e AGENT_KEY=123456789ghijkl -e AGENT_KEY=123456789mnopqr -e AGENT_KEY=123456789stuvwx -e AGENT_KEY=123456789yzabcd gocd/gocd-server:16.1.0"
         ExecStop=/usr/bin/docker stop %n
         RestartSec=10
         Restart=always
-    - name: gocd-agent-1.service
+    - name: gocd-agent-ci-base.service
       command: start
       content: |
         [Unit]
-        Description=gocd agent # 1
+        Description=gocd agent # 1 for continuous integration base docker images
         After=docker.service
         Requires=docker.service
-        After=gocd.service
-        Requires=gocd.service
+        After=gocd-server.service
+        Requires=gocd-server.service
           
         [Service]
         EnvironmentFile=/etc/environment
@@ -69,7 +69,95 @@ coreos:
         KillMode=none        
         ExecStartPre=/usr/bin/docker pull gocd/gocd-agent:16.1.0
         ExecStartPre=-/usr/bin/docker rm %n
-        ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n -e AGENT_KEY=123456789abcdef --link gocd.service:go-server gocd/gocd-agent:16.1.0"
+        ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n -e AGENT_KEY=123456789abcdef --link gocd-server.service:go-server gocd/gocd-agent:16.1.0"
         ExecStop=-/usr/bin/docker stop %n
         RestartSec=10
         Restart=always
+    - name: gocd-agent-ci-app.service
+      command: start
+      content: |
+        [Unit]
+        Description=gocd agent # 2 for continuous integration of app docker images
+        After=docker.service
+        Requires=docker.service
+        After=gocd-server.service
+        Requires=gocd-server.service
+          
+        [Service]
+        EnvironmentFile=/etc/environment
+        TimeoutStartSec=0
+        # Change killmode from "control-group" to "none" to let Docker remove
+        # work correctly.
+        KillMode=none        
+        ExecStartPre=/usr/bin/docker pull gocd/gocd-agent:16.1.0
+        ExecStartPre=-/usr/bin/docker rm %n
+        ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n -e AGENT_KEY=123456789ghijkl --link gocd-server.service:go-server gocd/gocd-agent:16.1.0"
+        ExecStop=-/usr/bin/docker stop %n
+        RestartSec=10
+        Restart=always        
+    - name: gocd-agent-cd-dev.service
+      command: start
+      content: |
+        [Unit]
+        Description=gocd agent # 3 for continuous deployment to DEV environment
+        After=docker.service
+        Requires=docker.service
+        After=gocd-server.service
+        Requires=gocd-server.service
+          
+        [Service]
+        EnvironmentFile=/etc/environment
+        TimeoutStartSec=0
+        # Change killmode from "control-group" to "none" to let Docker remove
+        # work correctly.
+        KillMode=none        
+        ExecStartPre=/usr/bin/docker pull gocd/gocd-agent:16.1.0
+        ExecStartPre=-/usr/bin/docker rm %n
+        ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n -e AGENT_KEY=123456789mnopqr --link gocd-server.service:go-server gocd/gocd-agent:16.1.0"
+        ExecStop=-/usr/bin/docker stop %n
+        RestartSec=10
+        Restart=always        
+    - name: gocd-agent-cd-test.service
+      command: start
+      content: |
+        [Unit]
+        Description=gocd agent # 4 for continuous deployment to TEST environment
+        After=docker.service
+        Requires=docker.service
+        After=gocd-server.service
+        Requires=gocd-server.service
+          
+        [Service]
+        EnvironmentFile=/etc/environment
+        TimeoutStartSec=0
+        # Change killmode from "control-group" to "none" to let Docker remove
+        # work correctly.
+        KillMode=none        
+        ExecStartPre=/usr/bin/docker pull gocd/gocd-agent:16.1.0
+        ExecStartPre=-/usr/bin/docker rm %n
+        ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n -e AGENT_KEY=123456789stuvwx --link gocd-server.service:go-server gocd/gocd-agent:16.1.0"
+        ExecStop=-/usr/bin/docker stop %n
+        RestartSec=10
+        Restart=always
+    - name: gocd-agent-cd-prod.service
+      command: start
+      content: |
+        [Unit]
+        Description=gocd agent # 4 for continuous deployment to PROD environment
+        After=docker.service
+        Requires=docker.service
+        After=gocd-server.service
+        Requires=gocd-server.service
+          
+        [Service]
+        EnvironmentFile=/etc/environment
+        TimeoutStartSec=0
+        # Change killmode from "control-group" to "none" to let Docker remove
+        # work correctly.
+        KillMode=none        
+        ExecStartPre=/usr/bin/docker pull gocd/gocd-agent:16.1.0
+        ExecStartPre=-/usr/bin/docker rm %n
+        ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n -e AGENT_KEY=123456789yzabcd --link gocd-server.service:go-server gocd/gocd-agent:16.1.0"
+        ExecStop=-/usr/bin/docker stop %n
+        RestartSec=10
+        Restart=always                
