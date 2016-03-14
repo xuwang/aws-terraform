@@ -461,3 +461,7 @@ Or the unit logs by:
 $ sudo journalctl -exu gocd-agent-1
 
 Usually, the log info will tell what's going on.
+
+# to see the docker logs
+
+docker logs <IMAGE_NAME>
