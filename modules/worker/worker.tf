@@ -36,6 +36,7 @@ resource "aws_launch_configuration" "worker" {
     volume_type = "gp2"
     volume_size = "${var.root_volume_size}" 
   }
+  
   # /var/lib/docker
   ebs_block_device = {
     device_name = "/dev/sdb"

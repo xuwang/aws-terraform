@@ -36,18 +36,21 @@ resource "aws_launch_configuration" "admiral" {
     volume_type = "gp2"
     volume_size = "${var.root_volume_size}" 
   }
+
   # /var/lib/docker
   ebs_block_device = {
     device_name = "/dev/sdb"
     volume_type = "gp2"
     volume_size = "${var.docker_volume_size}" 
   }
+
   # /opt/data
   ebs_block_device = {
     device_name = "/dev/sdc"
     volume_type = "gp2"
     volume_size = "${var.data_volume_size}" 
   }
+  
   user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
 }
 
