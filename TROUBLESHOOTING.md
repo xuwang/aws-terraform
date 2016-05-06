@@ -24,3 +24,21 @@ systemctl status gocd-agent-1
 journalctl --since "2015-03-20 08:49"
 ```
 
+# How to list systemd units?
+
+```
+list systemd units
+```
+
+list specific units
+
+```
+systemctl list-units | grep fleet
+```
+
+# How to restart a particular systemd unit?
+
+```
+systemctl restart fleet.service
+```
+
