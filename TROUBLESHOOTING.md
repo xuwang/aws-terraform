@@ -12,6 +12,16 @@ or
 journalctl -exu gocd-agent-cd-prod.service
 ```
 
+For each of our essential services, we should check the status and logs. The general way of doing this is:
+
+```
+systemctl status -l <service>
+```
+
+```
+journalctl -b -u <service>
+```
+
 # How to check `systemd` unit status?
 
 ```
@@ -41,4 +51,35 @@ systemctl list-units | grep fleet
 ```
 systemctl restart fleet.service
 ```
+
+# What are unit types?
+
+
+Two types of units can be run in your cluster — standard and global units. Standard units are long-running processes that are scheduled onto a single machine. If that machine goes offline, the unit will be migrated onto a new machine and started.
+
+Global units will be run on all machines in the cluster.
+
+# What are `fleet` commands?
+
+```
+fleetctl submit hello.service
+```
+
+```
+fleetctl start hello.service
+```
+
+```
+fleetctl status hello.service
+```
+
+To see the output of the service, call:ß
+```
+fleetctl journal hello.service
+```
+
+```
+fleetctl destroy hello.service
+```
+
 
