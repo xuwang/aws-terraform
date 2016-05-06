@@ -1,3 +1,9 @@
+# How to get into the CoreOS machine?
+
+```
+ssh -i <key pem file> core@<public-ip>
+```
+
 # Check logs of particular container/service or systemd unit status?
 
 e.g.
@@ -73,7 +79,7 @@ fleetctl start hello.service
 fleetctl status hello.service
 ```
 
-To see the output of the service, call:ß
+To see the output of the service, call:
 ```
 fleetctl journal hello.service
 ```

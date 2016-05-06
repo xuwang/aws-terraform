@@ -1,5 +1,6 @@
 
 # AWS CoreOS cluster provisioning with [Terraform](https://www.terraform.io/intro/index.html)
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
@@ -20,9 +21,8 @@
 
 This is a practical implementation of [CoreOS cluster architectures ] 
 (https://coreos.com/os/docs/latest/cluster-architectures.html) built on AWS.
-The cluster follows CoreOS production cluster model that contains an autoscaling _etcd_ cluster, 
-and an autoscaling _worker_ cluster for hosted containers. You can optionally add an _admiral_ cluster for
-shared services such as CI, private docker registry, logging and monitoring, etc.
+
+The cluster follows CoreOS production cluster model that contains an autoscaling _etcd_ cluster, and an autoscaling _worker_ cluster for hosted containers. You can optionally add an _admiral_ cluster for shared services such as CI, private docker registry, logging and monitoring, etc.
 
 The entire infrastructure is managed by [Terraform](https://www.terraform.io/intro/index.html).
 
@@ -58,12 +58,12 @@ Instructions for install tools on MacOS:
     $ unzip terraform_0.6.0_darwin_amd64.zip
     ```
 
-1. Install [Jq](http://stedolan.github.io/jq/)
+2. Install [Jq](http://stedolan.github.io/jq/)
     ```
     $ brew install jq
     ```
 
-1. Install [AWS CLI](https://github.com/aws/aws-cli)
+3. Install [AWS CLI](https://github.com/aws/aws-cli)
     ```
     $ brew install awscli
     ```
@@ -85,8 +85,8 @@ $ cd aws-terraform
 ```
 
 #### Run Vagrant ubuntu box with terraform installed (Optional)
-If you use Vagrant, instead of install tools on your host machine,
-there is Vagranetfile for a Ubuntu box with all the necessary tools installed:
+If you use Vagrant, instead of install tools on your host machine, there is Vagranetfile for a Ubuntu box with all the necessary tools installed:
+
 ```
 $ vagrant up
 $ vagrant ssh
@@ -98,8 +98,8 @@ $ cd aws-terraform
 ```
 $ aws configure --profile coreos-cluster
 ```
-Use the [downloaded aws user credentials](#setup-aws-credentials)
-when prompted.
+
+Use the [downloaded aws user credentials](#setup-aws-credentials) when prompted.
 
 The above command will create a __coreos-cluster__ profile authentication section in ~/.aws/config and ~/.aws/credentials files. The build process bellow will automatically configure Terraform AWS provider credentials using this profile. 
 
