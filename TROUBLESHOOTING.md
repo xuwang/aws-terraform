@@ -18,3 +18,9 @@ journalctl -exu gocd-agent-cd-prod.service
 systemctl status gocd-agent-1
 ```
 
+# How to check full system journal logs?
+
+```
+journalctl --since "2015-03-20 08:49"
+```
+
