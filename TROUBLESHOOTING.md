@@ -1,4 +1,4 @@
-# Check logs of particular container/service?
+# Check logs of particular container/service or systemd unit status?
 
 e.g.
 
@@ -10,5 +10,11 @@ or
 
 ```
 journalctl -exu gocd-agent-cd-prod.service
+```
+
+# How to check `systemd` unit status?
+
+```
+systemctl status gocd-agent-1
 ```
 
