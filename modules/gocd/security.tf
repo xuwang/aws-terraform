@@ -14,8 +14,8 @@ resource "aws_security_group" "gocd"  {
     # TODO: fix this port?
     # Open gocd port
     ingress {
-      from_port = 5000
-      to_port = 8080
+      from_port = 8153
+      to_port = 8153
       protocol = "tcp"
       cidr_blocks = [ "${var.vpc_cidr}" ]
     }
