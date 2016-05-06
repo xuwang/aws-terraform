@@ -465,3 +465,27 @@ Usually, the log info will tell what's going on.
 # to see the docker logs
 
 docker logs <IMAGE_NAME>
+
+------------
+
+I don't know what is SIGKILL'ing the process. Perhaps there is something in the full system journal around that time that might indicate journalctl --since "2015-03-20 08:49"? Try running dmesg too? Maybe the kernel is killing it?
+
+-------------
+
+Step 1: get into the coreos machine:
+
+ssh -i /home/vagrant/aws-terraform/build/keypairs/gocd.pem core@<public-ip>
+
+Step 2: get list of running docker containers
+
+docker ps
+
+Step 3: to check logs of particular container/service
+
+journalctl -exu gocd-agent-1
+
+or 
+
+journalctl -exu gocd-agent-cd-prod.service
+
+Step 4: 
