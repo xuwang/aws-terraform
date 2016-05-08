@@ -45,3 +45,6 @@ module-<module-name>.tf
 <module-name>.mk
 
 `elk.mk`
+
+# Step 6: Upload configurations
+

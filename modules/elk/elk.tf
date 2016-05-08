@@ -39,14 +39,15 @@ resource "aws_launch_configuration" "elk" {
   
   # /var/lib/docker
   ebs_block_device = {
-    device_name = "/dev/sdb"
+    device_name = "/dev/sdf"
+    # General Purpose SSD
     volume_type = "gp2"
     volume_size = "${var.docker_volume_size}" 
   }
 
   # /opt/data
   ebs_block_device = {
-    device_name = "/dev/sdc"
+    device_name = "/dev/sdg"
     volume_type = "gp2"
     volume_size = "${var.data_volume_size}" 
   }

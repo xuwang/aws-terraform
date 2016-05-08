@@ -88,4 +88,9 @@ fleetctl journal hello.service
 fleetctl destroy hello.service
 ```
 
+# How to make a new shell script executable?
+
+```
+sudo chmod a+x script-name.sh
+```
 

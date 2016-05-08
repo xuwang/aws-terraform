@@ -1,4 +1,4 @@
-elk: etcd plan_elk upload_elk_userdata
+elk: etcd plan_elk upload_configs upload_elk_userdata
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c elk; \
 		$(TF_APPLY) -target module.elk
@@ -34,5 +34,12 @@ upload_elk_userdata: init_build_dir
 	cd $(BUILD); \
 		$(SCRIPTS)/gen-userdata.sh elk $(CONFIG)/cloudinit-elk.def
 
+# upload_confs
+# uploads confing folder to config s3 bucket; by keeping the folder structure
+
+upload_configs:
+	$(SCRIPTS)/upload-config.sh elk $(MODULES)/elk/config/logstash.conf
+
 .PHONY: elk destroy_elk refresh_elk plan_elk init_elk 
 .PHONY: clean_elk upload_elk_userdata elk_ips
+.PHONY: upload_configs

@@ -72,6 +72,9 @@ workDir="/root/cloudinit"
 mkdir -m 700 -p ${workDir}
 cd ${workDir}
 
+# Copy configuration files from s3 bucket and store under etc/
+
+
 # Download coreos-cluster-cloudinit/<profile>/clould-config.yaml
 # 
 # And replace ipv4 vars in clould-config.yaml
