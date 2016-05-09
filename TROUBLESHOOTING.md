@@ -94,3 +94,9 @@ fleetctl destroy hello.service
 sudo chmod a+x script-name.sh
 ```
 
+# How to show all installed unit files?
+
+```
+systemctl list-unit-files
+```
+
