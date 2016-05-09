@@ -55,6 +55,7 @@ accountId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/docu
 	| grep -Eo '([[:digit:]]{12})')
 
 # Bucket path for the cloud-config.yaml 
+# TODO: coreos-cluster shouldn't be hardcoded
 bucket=${accountId}-coreos-cluster-cloudinit
 
 # Path to cloud-config.yaml
@@ -68,17 +69,48 @@ s3Token=$(get_value "Token")
 s3Key=$(get_value "AccessKeyId")
 s3Secret=$(get_value "SecretAccessKey")
 
-workDir="/root/cloudinit"
-mkdir -m 700 -p ${workDir}
-cd ${workDir}
 
-# Copy configuration files from s3 bucket and store under etc/
+########################################################################
+# Download configuration files from s3 bucket and store under etc/
+########################################################################
+
+configDir="/etc/config"
+mkdir -m 700 -p ${configDir}
+cd ${configDir}
+
+configBucket=${accountId}-coreos-cluster-config
+
+# TODO: dynamically download all config files
+# TODO: download only if there is any config file!
+# TODO: currently this is hardcoded which is poor practice and will work for elk only
+
+# TODO: temporary hardcoded path to logstash config
+logstashConfigFile="${roleProfile}/logstash.conf"
+
+resource="/${configBucket}/${logstashConfigFile}"
+create_string_to_sign
+signature=$(/bin/echo -n "$stringToSign" | openssl sha1 -hmac ${s3Secret} -binary | base64)
+filePath=${logstashConfigFile}
+debug_log
+curl -s -L -O -H "Host: ${configBucket}.s3.amazonaws.com" \
+  -H "Content-Type: ${contentType}" \
+  -H "Authorization: AWS ${s3Key}:${signature}" \
+  -H "x-amz-security-token:${s3Token}" \
+  -H "Date: ${dateValue}" \
+  https://${configBucket}.s3.amazonaws.com/${logstashConfigFile}
 
 
+########################################################################
 # Download coreos-cluster-cloudinit/<profile>/clould-config.yaml
 # 
 # And replace ipv4 vars in clould-config.yaml
 # because oem-cloudinit.service does it only on native "user-data", i.e. this script.
+########################################################################
+
+workDir="/root/cloudinit"
+mkdir -m 700 -p ${workDir}
+cd ${workDir}
+
 resource="/${bucket}/${cloudConfigYaml}"
 create_string_to_sign
 signature=$(/bin/echo -n "$stringToSign" | openssl sha1 -hmac ${s3Secret} -binary | base64)
