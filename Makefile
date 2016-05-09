@@ -71,7 +71,8 @@ destroy_all: \
 	destroy_iam \
 	destroy_route53 \
 	destroy_s3 \
-	destroy_vpc
+	destroy_vpc \
+	destroy_helloworld
 
 clean_all: destroy_all
 	rm -f $(BUILD)/*.tf 
