@@ -100,3 +100,8 @@ sudo chmod a+x script-name.sh
 systemctl list-unit-files
 ```
 
+# How to find the mounted volumes?
+
+you can verify presence of your volume with `lsblk` command
+
+# 
