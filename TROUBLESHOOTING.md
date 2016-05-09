@@ -104,4 +104,12 @@ systemctl list-unit-files
 
 you can verify presence of your volume with `lsblk` command
 
-# 
+# What are systemd units specifiers %i, %p, %n, etc.?
+
+[Systemd Specifiers](https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Specifiers)
+
+# Vagrant window issues?
+
+We have noticed that for some reason make instructions which create directories fail when the host machine OS is windows; the work around is to get into the vagrant machine and then clone the repo
+
+ 
