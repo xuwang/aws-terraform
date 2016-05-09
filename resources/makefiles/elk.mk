@@ -36,7 +36,6 @@ upload_elk_userdata: init_build_dir
 
 # upload_confs
 # uploads confing folder to config s3 bucket; by keeping the folder structure
-
 upload_configs:
 	$(SCRIPTS)/upload-config.sh elk $(MODULES)/elk/config/logstash.conf
 
