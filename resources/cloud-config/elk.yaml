@@ -51,3 +51,21 @@ coreos:
         ExecStop=/usr/bin/docker stop %n
         RestartSec=10
         Restart=always
+    - name: logstash.service
+      command: start
+      content: |
+        [Unit]
+        Description=logstash
+        Requires=docker.service
+        After=docker.service
+        Wants=elasticsearch.service
+        After=elasticsearch.service
+        [Service]
+        EnvironmentFile=/etc/environment
+        TimeoutStartSec=0
+        ExecStartPre=/usr/bin/docker pull stakater/logstash:latest
+        ExecStartPre=-/usr/bin/docker rm %n
+        ExecStart=/usr/bin/sh -c "/usr/bin/docker run --rm --name %n -p 5044:5044 stakater/logstash:latest logstash -f /etc/config/logstash.conf"
+        ExecStop=/usr/bin/docker stop %n
+        RestartSec=10
+        Restart=always        
