@@ -26,4 +26,8 @@ The above command will create a __coreos-cluster__ profile authentication sectio
 # What is an instance role profile?
 
 
-# 
+# List of Amzon Regions & Availability Zones
+
+[Regions & AZs](https://gist.github.com/neilstuartcraig/0ccefcf0887f29b7f240)
+
+
