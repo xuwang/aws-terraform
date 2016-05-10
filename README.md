@@ -33,9 +33,9 @@ For other type of Unix cluster, see a similar repo [aws-linux-cluster](https://g
 Go to [AWS Console](https://console.aws.amazon.com/).
 
 1. Signup AWS account if you don't already have one. The default EC2 instances created by this tool is covered by AWS Free Tier (https://aws.amazon.com/free/) service.
-1. Create a group `coreos-cluster` with `AdministratorAccess` policy.
-1. Create a user `coreos-cluster` and __Download__ the user credentials.
-1. Add user `coreos-cluster` to group `coreos-cluster`.
+2. Create a group `coreos-cluster` with `AdministratorAccess` policy.
+3. Create a user `coreos-cluster` and __Download__ the user credentials.
+4. Add user `coreos-cluster` to group `coreos-cluster`.
 
 ## Install tools
 

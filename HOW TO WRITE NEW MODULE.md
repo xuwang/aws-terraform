@@ -46,5 +46,14 @@ module-<module-name>.tf
 
 `elk.mk`
 
-# Step 6: Upload configurations
+# Step 7: Define configurations
+
+if your systemd unit which runs a docker container needs some configuration then you can put them under a config folder of that module
+
+(and it will be automatically uploaded and downloaded into the instance under /etc/configs/); still WIP
+
+# Step 8: Define Subnet?
+
+not sure but we might need to setup <module-name>-subnet.tf in vpc module; but i don't think its mandatory for simple modules; need to check with xu wang
+
 
