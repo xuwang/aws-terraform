@@ -2,5 +2,5 @@
 
 variable "vpc_cidr" { default = "0.0.0.0/0" }
 variable "all_net" { default = "0.0.0.0/0" }
-variable "vpc_name" { default = "cluster_vpc" }
-variable "vpc_region" { default = "us-west-2" }
+variable "vpc_name" { }
+variable "vpc_region" { }

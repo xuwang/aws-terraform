@@ -2,7 +2,7 @@
 
 # Replace CLUSTER_NAME with user defined name.
 
-CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
+CLUSTER_NAME=${CLUSTER_NAME}
 
 files=$(grep -s -l CLUSTER-NAME -r $@)
 if [ "X$files" != "X" ];

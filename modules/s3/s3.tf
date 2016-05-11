@@ -1,11 +1,3 @@
-# s3 bucket requires gloable unique bucket name, make sure set a prefix bucket 
-# to make the bucket name unique
-
-variable "bucket_prefix" {
-    # TODO: this shouldn't be hard coded!
-    default = "coreos-cluster"
-}
-
 # s3 bucket for initial-cluster etcd proxy discovery
 # and two-stage cloudinit user-data files
 resource "aws_s3_bucket" "cloudinit" {
@@ -47,7 +39,7 @@ resource "aws_s3_bucket" "dockerhub" {
     }
 }
 
-# s3 bucket for gocd 
+# s3 bucket for gocd
 resource "aws_s3_bucket" "gocd" {
     bucket = "${var.bucket_prefix}-gocd"
     force_destroy = true

@@ -1,11 +1,11 @@
 resource "aws_db_subnet_group" "coreos_cluster" {
-    name = "coreos-cluster-db"
-    description = "db subnets for coreos-cluster applications"
+    name = "${var.cluster_name}-db"
+    description = "db subnets for ${var.cluster_name} applications"
     subnet_ids = ["${var.rds_subnet_a_id}","${var.rds_subnet_b_id}","${var.rds_subnet_c_id}"]
 }
 
 resource "aws_db_instance" "coreos_cluster" {
-    identifier = "coreos-cluster"
+    identifier = "${var.cluster_name}"
     allocated_storage = 10
     engine = "postgres"
     engine_version = "9.3.5"

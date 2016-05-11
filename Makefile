@@ -8,10 +8,12 @@ CLUSTER_NAME := coreos-cluster
 # a list of allowed AWS account IDs should be defined:
 #ALLOWED_ACCOUNT_IDS := "123456789012","012345678901"
 
-# For get-ami.sh
+# For get-vars.sh
 COREOS_UPDATE_CHANNEL=beta
-AWS_REGION=us-west-2
+AWS_REGION=sa-east-1
 VM_TYPE=hvm
+# For route53.tf
+PRIVATE_DOMAIN=$(CLUSTER_NAME).local
 
 # Working Directories
 ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))

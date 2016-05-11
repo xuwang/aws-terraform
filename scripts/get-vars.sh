@@ -6,6 +6,8 @@ AWS_REGION=${AWS_REGION}                           # us-west-1/us-west-2/...
 VM_TYPE=${VM_TYPE}                                        # hvm/pv - note: t1.micro supports only pv type
 CLUSTER_NAME=${CLUSTER_NAME}                             # Name of cluster to be used
 
+PRIVATE_DOMAIN=${PRIVATE_DOMAIN}
+
 # Get options from the command line
 while getopts ":c:z:t:" OPTION
 do
@@ -34,4 +36,5 @@ cat <<EOF
 variable "ami" { default = "`curl -s $url`" }
 variable "region" { default ="${AWS_REGION}"}
 variable "cluster_name" { default = "${CLUSTER_NAME}"}
+variable "private_domain" { default = "${PRIVATE_DOMAIN}"}
 EOF

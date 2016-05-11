@@ -6,8 +6,8 @@
 # The cloud-config will be processed by coreos-cloudinit to bootstrap the machine. 
 
 # aws profile
-AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
-CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
+AWS_PROFILE=${AWS_PROFILE}
+CLUSTER_NAME=${CLUSTER_NAME}
 
 CLOUDINIT_BUCKET=${CLOUDINIT_BUCKET:-${CLUSTER_NAME}-cloudinit}
 

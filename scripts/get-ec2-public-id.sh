@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
+AWS_PROFILE=${AWS_PROFILE}
 ASG=${1:-etcd}
 
 EC2_IDS=$(aws --profile $AWS_PROFILE autoscaling describe-auto-scaling-groups --auto-scaling-group-name $ASG \

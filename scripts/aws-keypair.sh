@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Default key name
-key='coreos-cluster'
+AWS_PROFILE=${AWS_PROFILE}
+CLUSTER_NAME=${CLUSTER_NAME}
 
-AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
-CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
+# Default key name
+key=$CLUSTER_NAME
 
 echo "Getting AWS account number..."
 AWS_ACCOUNT=$(aws --profile ${AWS_PROFILE} iam get-user | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')
