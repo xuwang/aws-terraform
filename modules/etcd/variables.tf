@@ -1,5 +1,5 @@
 variable "allow_ssh_cidr" { default = "0.0.0.0/0" }
-variable "aws_region" { default = "us-west-2" }
+variable "aws_region" { }
 variable "aws_account_id" { }
 variable "ami" { }
 variable "image_type" { default = "t2.micro" }
