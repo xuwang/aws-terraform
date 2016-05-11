@@ -9,7 +9,7 @@ CLUSTER_NAME := coreos-cluster
 #ALLOWED_ACCOUNT_IDS := "123456789012","012345678901"
 
 # For get-ami.sh
-COREOS_UPDATE_CHANNE=beta
+COREOS_UPDATE_CHANNEL=beta
 AWS_REGION=us-west-2
 VM_TYPE=hvm
 
@@ -24,7 +24,7 @@ CONFIG := $(BUILD)/cloud-config
 CERTS := $(BUILD)/certs
 SITE_CERT := $(CERTS)/site.pem
 POLICIES := $(BUILD)/policies
-AMI_VARS=$(BUILD)/ami.tf
+MODULE_VARS=$(BUILD)/module_vars.tf
 
 # Terraform files
 TF_PORVIDER := $(BUILD)/provider.tf

@@ -10,13 +10,13 @@ graph: | $(BUILD)
 refresh: init
 	cd $(BUILD); $(TF_REFRESH)
 
-init: | $(TF_PORVIDER) $(AMI_VARS)
+init: | $(TF_PORVIDER) $(MODULE_VARS)
 
 $(BUILD): init_build_dir
 
 $(TF_PORVIDER): update_provider
 
-$(AMI_VARS): update_ami
+$(MODULE_VARS): update_vars
 
 $(SITE_CERT): gen_certs
 
@@ -27,9 +27,9 @@ init_build_dir:
 	@$(SCRIPTS)/substitute-AWS-ACCOUNT.sh $(POLICIES)/*.json
 	@$(SCRIPTS)/substitute-CLUSTER-NAME.sh $(CONFIG)/*.yaml $(POLICIES)/*.json
 
-update_ami:	| $(BUILD)
+update_vars:	| $(BUILD)
 	# Generate default AMI ids
-	$(SCRIPTS)/get-ami.sh > $(AMI_VARS)
+	$(SCRIPTS)/get-vars.sh > $(MODULE_VARS)
 
 update_provider: | $(BUILD)
 	# Generate tf provider
@@ -45,5 +45,5 @@ gen_certs: $(BUILD)
 clean_certs:
 	rm -f $(CERTS)/*.pem
 	
-.PHONY: init show show_state graph refresh update_ami update_provider init_build_dir
+.PHONY: init show show_state graph refresh update_vars update_provider init_build_dir
 .PHONY: gen_certs clean_certs
