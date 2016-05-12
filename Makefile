@@ -8,10 +8,11 @@ CLUSTER_NAME := coreos-cluster
 # a list of allowed AWS account IDs should be defined:
 #ALLOWED_ACCOUNT_IDS := "123456789012","012345678901"
 
-# For get-ami.sh
-COREOS_UPDATE_CHANNE=beta
-AWS_REGION=us-west-2
+# For get-vars.sh
+COREOS_UPDATE_CHANNEL=beta
 VM_TYPE=hvm
+# For route53.tf
+PRIVATE_DOMAIN=$(CLUSTER_NAME).local
 
 # Working Directories
 ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
@@ -24,7 +25,7 @@ CONFIG := $(BUILD)/cloud-config
 CERTS := $(BUILD)/certs
 SITE_CERT := $(CERTS)/site.pem
 POLICIES := $(BUILD)/policies
-AMI_VARS=$(BUILD)/ami.tf
+MODULE_VARS=$(BUILD)/module_vars.tf
 
 # Terraform files
 TF_PORVIDER := $(BUILD)/provider.tf

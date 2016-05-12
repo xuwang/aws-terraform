@@ -22,7 +22,7 @@ write_files:
         AWS_CONFIG_ENV=/root/.aws/envvars
         source $AWS_CONFIG_ENV
         IMAGE=suet/awscli:latest
-        APPBUCKET=s3://${AWS_ACCOUNT}-coreos-cluster-config/apps
+        APPBUCKET=s3://${AWS_ACCOUNT}-CLUSTER-NAME-config/apps
         DST=/var/lib/apps
         CMD="aws s3 sync --exact-timestamps --delete $APPBUCKET $DST && chmod 755 ${DST}/bin/*"
         
@@ -76,5 +76,5 @@ write_files:
   - path: /etc/systemd/system/docker.service.d/50-insecure-registry.conf
     content: |
         [Service]
-        Environment=DOCKER_OPTS='--insecure-registry=10.0.0.0/8,dockerhub.coreos-cluster.local'
+        Environment=DOCKER_OPTS='--insecure-registry=10.0.0.0/8,dockerhub.CLUSTER-NAME.local'
 

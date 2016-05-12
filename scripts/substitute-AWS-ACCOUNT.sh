@@ -5,7 +5,7 @@
 
 # AWS account number - getting it from an existing user resource
 # 
-AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
+AWS_PROFILE=${AWS_PROFILE}
 
 echo "Getting AWS account number..."
 AWS_ACCOUNT=$(aws --profile ${AWS_PROFILE} iam get-user | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')

@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Default key name
-key='coreos-cluster'
+AWS_PROFILE=${AWS_PROFILE}
+CLUSTER_NAME=${CLUSTER_NAME}
 
-AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
-CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
+# Default key name
+key=${CLUSTER_NAME}
 
 echo "Getting AWS account number..."
 AWS_ACCOUNT=$(aws --profile ${AWS_PROFILE} iam get-user | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')
@@ -45,7 +45,7 @@ destroy(){
       aws --profile ${AWS_PROFILE} s3 rm s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-config/keypairs/${key}.pem
       echo "Delete aws keypair ${key}"
       aws --profile ${AWS_PROFILE} ec2 delete-key-pair --key-name ${key}  
-      echo "Revmove from ${TMP_DIR}"
+      echo "Remove from ${TMP_DIR}"
       rm -rf ${TMP_DIR}/${key}.pem
       rm -rf ${TMP_DIR}/${key}.pub
     fi

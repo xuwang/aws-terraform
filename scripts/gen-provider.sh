@@ -5,8 +5,8 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 ROOT_DIR=$(dirname $DIR)
 BUILD=${BUILD:-$ROOT_DIR/build}
 
-AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
-CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
+AWS_PROFILE=${AWS_PROFILE}
+CLUSTER_NAME=${CLUSTER_NAME}
 
 TF_VAR_aws_access_key=$($DIR/read_cfg.sh $HOME/.aws/credentials $AWS_PROFILE aws_access_key_id)
 TF_VAR_aws_secret_key=$($DIR/read_cfg.sh $HOME/.aws/credentials $AWS_PROFILE aws_secret_access_key)

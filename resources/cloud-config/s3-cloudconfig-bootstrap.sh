@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-# This is a coreos-cluster-cloudinit bootstrap script. It is passed in as 'user-data' file during the machine build. 
+# This is a CLUSTER-NAME-cloudinit bootstrap script. It is passed in as 'user-data' file during the machine build.
 # Then the script is excecuted to download the CoreOs "cloud-config.yaml" file  and "intial-cluster" files.
 # These files  will configure the system to join the CoreOS cluster. The second stage cloud-config.yaml can 
 # be changed to allow system configuration changes wihtout having to rebuild the system. All it takes is a reboot.
@@ -8,7 +8,7 @@
 
 # Convention: 
 # 1. A bucket should exist that contains role-based cloud-config.yaml
-#  e.g. <account-id>-coreos-cluster-cloudinit/<roleProfile>/cloud-config.yaml
+#  e.g. <account-id>-CLUSTER-NAME-cloudinit/<roleProfile>/cloud-config.yaml
 # 2. All machines should have instance role profile, with a policy that allows readonly access to this bucket.
 
 # Get instance auth token from meta-data
@@ -54,9 +54,8 @@ roleProfile=$(curl -s http://169.254.169.254/latest/meta-data/iam/info \
 accountId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document \
 	| grep -Eo '([[:digit:]]{12})')
 
-# Bucket path for the cloud-config.yaml 
-# TODO: coreos-cluster shouldn't be hardcoded
-bucket=${accountId}-coreos-cluster-cloudinit
+# Bucket path for the cloud-config.yaml
+bucket=${accountId}-CLUSTER-NAME-cloudinit
 
 # Path to cloud-config.yaml
 cloudConfigYaml="${roleProfile}/cloud-config.yaml"
@@ -78,7 +77,7 @@ configDir="/etc/config"
 mkdir -m 700 -p ${configDir}
 cd ${configDir}
 
-configBucket=${accountId}-coreos-cluster-config
+configBucket=${accountId}-CLUSTER-NAME-config
 
 # TODO: dynamically download all config files
 # TODO: download only if there is any config file!
@@ -101,7 +100,7 @@ curl -s -L -O -H "Host: ${configBucket}.s3.amazonaws.com" \
 
 
 ########################################################################
-# Download coreos-cluster-cloudinit/<profile>/clould-config.yaml
+# Download CLUSTER-NAME-cloudinit/<profile>/clould-config.yaml
 # 
 # And replace ipv4 vars in clould-config.yaml
 # because oem-cloudinit.service does it only on native "user-data", i.e. this script.
