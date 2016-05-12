@@ -10,7 +10,6 @@ CLUSTER_NAME := coreos-cluster
 
 # For get-vars.sh
 COREOS_UPDATE_CHANNEL=beta
-AWS_REGION=sa-east-1
 VM_TYPE=hvm
 # For route53.tf
 PRIVATE_DOMAIN=$(CLUSTER_NAME).local
