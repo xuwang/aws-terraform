@@ -10,7 +10,7 @@ graph: | $(BUILD)
 refresh: init
 	cd $(BUILD); $(TF_REFRESH)
 
-init: | $(TF_PORVIDER) $(MODULE_VARS)
+init: | $(TF_PORVIDER) $(MODULE_VARS) $(VPC_MODULE)
 
 $(BUILD): init_build_dir
 
@@ -19,6 +19,8 @@ $(TF_PORVIDER): update_provider
 $(MODULE_VARS): update_vars
 
 $(SITE_CERT): gen_certs
+
+$(VPC_MODULE): gen_vpc_subnet_tfs
 
 init_build_dir:
 	@mkdir -p $(BUILD)
@@ -44,6 +46,10 @@ gen_certs: $(BUILD)
 
 clean_certs:
 	rm -f $(CERTS)/*.pem
-	
+
+gen_vpc_subnet_tfs: | $(BUILD)
+	# Generate *-subnet.tf files
+	$(SCRIPTS)/gen-subnet-tfs.sh -d $(VPC_MODULE)
+
 .PHONY: init show show_state graph refresh update_vars update_provider init_build_dir
 .PHONY: gen_certs clean_certs
