@@ -3,17 +3,19 @@
 #
 resource "aws_autoscaling_group" "elk" {
   name = "elk"
-  availability_zones = [ "${var.elk_subnet_az_a}", "${var.elk_subnet_az_b}", "${var.elk_subnet_az_c}"]
+  # This placeholder will be replaced by array of variables defined for availability zone in the module's variables
+  availability_zones = <%MODULE-AZ-VARIABLES-ARRAY%>
   min_size = "${var.cluster_min_size}"
   max_size = "${var.cluster_max_size}"
   desired_capacity = "${var.cluster_desired_capacity}"
-  
+
   health_check_type = "EC2"
   force_delete = true
-  
+
   launch_configuration = "${aws_launch_configuration.elk.name}"
-  vpc_zone_identifier = ["${var.elk_subnet_a_id}","${var.elk_subnet_b_id}","${var.elk_subnet_c_id}"]
-  
+  # This placeholder will be replaced by array of variables defined for VPC zone IDs in the module's variables
+  vpc_zone_identifier = <%MODULE-ID-VARIABLES-ARRAY%>
+
   tag {
     key = "Name"
     value = "elk"
@@ -34,22 +36,22 @@ resource "aws_launch_configuration" "elk" {
   # /root
   root_block_device = {
     volume_type = "gp2"
-    volume_size = "${var.root_volume_size}" 
+    volume_size = "${var.root_volume_size}"
   }
-  
+
   # /var/lib/docker
   ebs_block_device = {
     device_name = "/dev/sdb"
     # General Purpose SSD
     volume_type = "gp2"
-    volume_size = "${var.docker_volume_size}" 
+    volume_size = "${var.docker_volume_size}"
   }
 
   # /opt/data
   ebs_block_device = {
     device_name = "/dev/sdc"
     volume_type = "gp2"
-    volume_size = "${var.data_volume_size}" 
+    volume_size = "${var.data_volume_size}"
   }
 
   user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"

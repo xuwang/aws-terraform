@@ -20,11 +20,8 @@ module "etcd" {
     # vpc
     vpc_id = "${module.vpc.vpc_id}"
     vpc_cidr = "${module.vpc.vpc_cidr}"
-    etcd_subnet_a_id = "${module.vpc.etcd_subnet_a_id}"
-    etcd_subnet_b_id = "${module.vpc.etcd_subnet_b_id}"
-    etcd_subnet_c_id = "${module.vpc.etcd_subnet_c_id}"
-    etcd_subnet_az_a = "${module.vpc.etcd_subnet_az_a}"
-    etcd_subnet_az_b = "${module.vpc.etcd_subnet_az_b}"
-    etcd_subnet_az_c = "${module.vpc.etcd_subnet_az_c}"
 
+    # This placeholder will be replaced by MODULE subnet id and availability zone variables
+    # For more information look into 'substitute-VPC-AZ-placeholders.sh'
+    <%MODULE-SUBNET-IDS-AND-AZS%>
 }

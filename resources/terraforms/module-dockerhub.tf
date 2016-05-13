@@ -16,10 +16,8 @@ module "dockerhub" {
     # vpc
     vpc_id = "${module.vpc.vpc_id}"
     vpc_cidr = "${module.vpc.vpc_cidr}"
-    dockerhub_subnet_a_id = "${module.vpc.admiral_subnet_a_id}"
-    dockerhub_subnet_b_id = "${module.vpc.admiral_subnet_b_id}"
-    dockerhub_subnet_c_id = "${module.vpc.admiral_subnet_c_id}"
-    dockerhub_subnet_az_a = "${module.vpc.admiral_subnet_az_a}"
-    dockerhub_subnet_az_b = "${module.vpc.admiral_subnet_az_b}"
-    dockerhub_subnet_az_c = "${module.vpc.admiral_subnet_az_c}"
+
+    # This placeholder will be replaced by ADMIRAL subnet id and availability zone variables
+    # For more information look into 'substitute-VPC-AZ-placeholders.sh'
+    <%ADMIRAL-SUBNET-IDS-AND-AZS%>
 }

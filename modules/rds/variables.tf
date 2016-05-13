@@ -5,9 +5,7 @@ variable "db_password" { }
 # networking vars set by module.vpc
 variable "vpc_id" { }
 variable "vpc_cidr" { }
-variable "rds_subnet_a_id" { }
-variable "rds_subnet_b_id" { }
-variable "rds_subnet_c_id" { }
-variable "rds_subnet_az_a" { }
-variable "rds_subnet_az_b" { }
-variable "rds_subnet_az_c" { }
+
+# This placeholder will be replaced by module subnet id and availability zone tf variable definations
+# For more information look into 'substitute-VPC-AZ-placeholders.sh'
+<%MODULE-SUBNET-VARIABLES%>

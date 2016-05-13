@@ -14,11 +14,11 @@ VM_TYPE=hvm
 # For route53.tf
 PRIVATE_DOMAIN=$(CLUSTER_NAME).local
 
-# For gen-subnet-tfs.sh
+# For gen-vpc-subnet-modules-tf.sh
 VPC_SUBNET_MODULES=etcd,admiral,worker,elb,rds
 
-# AWS availability zones
-AZ_US_EAST_1=us-east-1a,us-east-1b,us-east-1c,us-east-1d,us-east-1e
+# Supported Subnet AWS availability zones
+AZ_US_EAST_1=us-east-1b,us-east-1c,us-east-1d,us-east-1e
 AZ_US_WEST_1=us-west-1a,us-west-1b,us-west-1c
 AZ_US_WEST_2=us-west-2a,us-west-2b,us-west-2c
 AZ_EU_WEST_1=eu-west-1a,eu-west-1b,eu-west-1c

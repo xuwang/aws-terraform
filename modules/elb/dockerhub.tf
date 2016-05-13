@@ -9,10 +9,11 @@ variable "dockerhub_cert_key" { default = "certs/site-key.pem" }
 resource "aws_elb" "dockerhub" {
   name = "dockerhub-elb"
   depends_on = "aws_iam_server_certificate.wildcard"
-  
+
   security_groups = [ "${aws_security_group.elb.id}" ]
-  subnets = ["${var.elb_subnet_a_id}","${var.elb_subnet_b_id}","${var.elb_subnet_c_id}"]
-  
+  # This placeholder will be replaced by array of variables defined for VPC zone IDs in the module's variables
+  subnets = <%MODULE-ID-VARIABLES-ARRAY%>
+
   listener {
     lb_port = 443
     lb_protocol = "https"
@@ -52,7 +53,7 @@ resource "aws_route53_record" "private-dockerhub" {
   zone_id = "${var.route53_private_zone_id}"
   name = "dockerhub"
   type = "A"
-  
+
   alias {
     name = "${aws_elb.dockerhub.dns_name}"
     zone_id = "${aws_elb.dockerhub.zone_id}"
@@ -63,7 +64,7 @@ resource "aws_route53_record" "public-dockerhub" {
   zone_id = "${var.route53_public_zone_id}"
   name = "dockerhub"
   type = "A"
-  
+
   alias {
     name = "${aws_elb.dockerhub.dns_name}"
     zone_id = "${aws_elb.dockerhub.zone_id}"
@@ -75,4 +76,3 @@ resource "aws_route53_record" "public-dockerhub" {
 output "dockerhub_elb_id" {
     value = "${aws_elb.dockerhub.id}"
 }
-

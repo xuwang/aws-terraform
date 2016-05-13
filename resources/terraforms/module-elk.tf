@@ -16,10 +16,8 @@ module "elk" {
     # vpc
     vpc_id = "${module.vpc.vpc_id}"
     vpc_cidr = "${module.vpc.vpc_cidr}"
-    elk_subnet_a_id = "${module.vpc.admiral_subnet_a_id}"
-    elk_subnet_b_id = "${module.vpc.admiral_subnet_b_id}"
-    elk_subnet_c_id = "${module.vpc.admiral_subnet_c_id}"
-    elk_subnet_az_a = "${module.vpc.admiral_subnet_az_a}"
-    elk_subnet_az_b = "${module.vpc.admiral_subnet_az_b}"
-    elk_subnet_az_c = "${module.vpc.admiral_subnet_az_c}"
+
+    # This placeholder will be replaced by ADMIRAL subnet id and availability zone variables
+    # For more information look into 'substitute-VPC-AZ-placeholders.sh'
+    <%ADMIRAL-SUBNET-IDS-AND-AZS%>
 }

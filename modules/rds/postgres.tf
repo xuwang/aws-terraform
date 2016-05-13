@@ -1,7 +1,8 @@
 resource "aws_db_subnet_group" "coreos_cluster" {
     name = "${var.cluster_name}-db"
     description = "db subnets for ${var.cluster_name} applications"
-    subnet_ids = ["${var.rds_subnet_a_id}","${var.rds_subnet_b_id}","${var.rds_subnet_c_id}"]
+    # This placeholder will be replaced by array of variables defined for VPC zone IDs in the module's variables
+    subnet_ids = <%MODULE-ID-VARIABLES-ARRAY%>
 }
 
 resource "aws_db_instance" "coreos_cluster" {
@@ -14,7 +15,7 @@ resource "aws_db_instance" "coreos_cluster" {
     name = "dockerage"
     username = "${var.db_user}"
     password = "${var.db_password}"
-    multi_az = "false" 
+    multi_az = "false"
     availability_zone = "${var.rds_subnet_az_b}"
     port = "5432"
     publicly_accessible = "false"
