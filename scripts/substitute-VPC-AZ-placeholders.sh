@@ -42,13 +42,13 @@ do
 done
 
 #######################################################
-## FOR .terraform/modules/*.tf FILE SUBSTITUTIONS
+## FOR /modules/*.tf.tmpl FILE SUBSTITUTIONS
+## creates new files with substituted values and extension ".tf"
 ## (variable definitions and their usage)
 #######################################################
-# find files with .tf extension in the directory: $TF_MODULES_DIRECTORY
-TF_MODULES_FILES=$(find $TF_MODULES_DIRECTORY -type f -iname "*.tf")
+# find files with .tf.tmpl extension in the directory: $TF_MODULES_DIRECTORY
+TF_MODULES_FILES=$(find $TF_MODULES_DIRECTORY -type f -iname "*.tf.tmpl")
 
-echo "$TF_MODULES_FILES"
 # find files which contain any of the three placeholders
 files=$(grep -s -l -e \<%MODULE-SUBNET-VARIABLES%\> -e \<%MODULE-AZ-VARIABLES-ARRAY%\> -e \<%MODULE-ID-VARIABLES-ARRAY%\> -r $TF_MODULES_FILES)
 current_module_name=""
@@ -81,14 +81,19 @@ do
 	az_variables_array="${az_variables_array::-1} ]"
 	id_variables_array="${id_variables_array::-1} ]"
 
-	# Replace placeholders with their respective values in the file
-	perl -p -i -e "s/<%MODULE-SUBNET-VARIABLES%>/${variables}/g" $f
-	perl -p -i -e "s/<%MODULE-AZ-VARIABLES-ARRAY%>/${az_variables_array}/g" $f
-	perl -p -i -e "s/<%MODULE-ID-VARIABLES-ARRAY%>/${id_variables_array}/g" $f
+  # create a new file tf file without the .tmpl extension
+  newFile="${f%%.tmpl*}"
+  cp $f $newFile
+	# Replace placeholders with their respective values in the new tf file
+  perl -p -i -e "s/<%MODULE-SUBNET-VARIABLES%>/${variables}/g" "${newFile}"
+	perl -p -i -ne "s/<%MODULE-AZ-VARIABLES-ARRAY%>/${az_variables_array}/g" "${newFile}";
+	perl -p -i -e "s/<%MODULE-ID-VARIABLES-ARRAY%>/${id_variables_array}/g" "${newFile}"
 done
 
 #######################################################
 ## FOR module-*.tf FILE SUBSTITUTIONS
+## Substitutes values in build/module-*.tf files
+## So no need to create .tmpl files
 #######################################################
 # find files which contain any of the three placeholders
 files=$(grep -s -l -e \<%MODULE-SUBNET-IDS-AND-AZS%\> -e \<%ADMIRAL-SUBNET-IDS-AND-AZS%\> -e \<%WORKER-SUBNET-IDS-AND-AZS%\> -r $TF_FILES)

@@ -4,7 +4,7 @@
 resource "aws_autoscaling_group" "admiral" {
   name = "admiral"
   # This placeholder will be replaced by array of variables defined for availability zone in the module's variables
-  availability_zones = <%MODULE-AZ-VARIABLES-ARRAY%>
+  availability_zones = [ "${var.admiral_subnet_az_b}", "${var.admiral_subnet_az_c}", "${var.admiral_subnet_az_d}", "${var.admiral_subnet_az_e}" ]
   min_size = "${var.cluster_min_size}"
   max_size = "${var.cluster_max_size}"
   desired_capacity = "${var.cluster_desired_capacity}"
@@ -14,7 +14,7 @@ resource "aws_autoscaling_group" "admiral" {
 
   launch_configuration = "${aws_launch_configuration.admiral.name}"
   # This placeholder will be replaced by array of variables defined for VPC zone IDs in the module's variables
-  vpc_zone_identifier = <%MODULE-ID-VARIABLES-ARRAY%>
+  vpc_zone_identifier = [ "${var.admiral_subnet_b_id}", "${var.admiral_subnet_c_id}", "${var.admiral_subnet_d_id}", "${var.admiral_subnet_e_id}" ]
 
   tag {
     key = "Name"

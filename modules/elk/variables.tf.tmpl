@@ -6,7 +6,7 @@ variable "image_type" { default = "t2.micro" }
 variable "cluster_min_size" { default = 1 }
 variable "cluster_max_size" { default = 9 }
 variable "cluster_desired_capacity" { default = 3 }
-variable "keypair" { default = "gocd" }
+variable "keypair" { default = "elk" }
 variable "root_volume_size" { default = 12 }
 variable "docker_volume_size" { default = 12 }
 variable "data_volume_size" { default = 12 }
@@ -17,12 +17,4 @@ variable "vpc_cidr" { }
 
 # This placeholder will be replaced by module subnet id and availability zone tf variable definations
 # For more information look into 'substitute-VPC-AZ-placeholders.sh'
-
-		variable "gocd_subnet_b_id" { }
-		variable "gocd_subnet_az_b" { }
-		variable "gocd_subnet_c_id" { }
-		variable "gocd_subnet_az_c" { }
-		variable "gocd_subnet_d_id" { }
-		variable "gocd_subnet_az_d" { }
-		variable "gocd_subnet_e_id" { }
-		variable "gocd_subnet_az_e" { }
+<%MODULE-SUBNET-VARIABLES%>

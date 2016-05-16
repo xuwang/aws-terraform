@@ -17,4 +17,12 @@ variable "vpc_cidr" { }
 
 # This placeholder will be replaced by module subnet id and availability zone tf variable definations
 # For more information look into 'substitute-VPC-AZ-placeholders.sh'
-<%MODULE-SUBNET-VARIABLES%>
+
+		variable "admiral_subnet_b_id" { }
+		variable "admiral_subnet_az_b" { }
+		variable "admiral_subnet_c_id" { }
+		variable "admiral_subnet_az_c" { }
+		variable "admiral_subnet_d_id" { }
+		variable "admiral_subnet_az_d" { }
+		variable "admiral_subnet_e_id" { }
+		variable "admiral_subnet_az_e" { }
