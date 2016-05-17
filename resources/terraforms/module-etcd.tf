@@ -11,7 +11,8 @@ module "etcd" {
     aws_account_id="${var.aws_account.id}"
     aws_region = "${var.aws_account.default_region}"
     ami = "${var.ami}"
-
+    cluster_name = "${var.cluster_name}"
+    
     # Note: currently etcd launch_configuration devices can NOT be changed after etcd cluster is up
     # See https://github.com/hashicorp/terraform/issues/2910
     docker_volume_size = 12

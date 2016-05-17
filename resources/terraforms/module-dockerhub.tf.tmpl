@@ -13,6 +13,9 @@ module "dockerhub" {
     aws_region = "${var.aws_account.default_region}"
     ami = "${var.ami}"
 
+    #cluster name
+    cluster_name = "${var.cluster_name}"
+    
     # vpc
     vpc_id = "${module.vpc.vpc_id}"
     vpc_cidr = "${module.vpc.vpc_cidr}"
