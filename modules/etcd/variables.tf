@@ -22,3 +22,5 @@ variable "vpc_cidr" { }
 		variable "etcd_subnet_az_a" { }
 		variable "etcd_subnet_b_id" { }
 		variable "etcd_subnet_az_b" { }
+		variable "etcd_subnet_c_id" { }
+		variable "etcd_subnet_az_c" { }
