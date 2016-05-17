@@ -26,7 +26,8 @@ declare -A AWS_AZS=(["us-east-1"]=${AZ_US_EAST_1}
 				 ["eu-central-1"]=${AZ_EU_CETNRAL_1}
 				 ["ap-southeast-1"]=${AZ_AP_SOUTHEAST_1}
 				 ["ap-southeast-2"]=${AZ_AP_SOUTHEAST_2}
-				 ["ap-northeast-1"]=${AZ_AP_NORTHEAST_1}
+         ["ap-northeast-1"]=${AZ_AP_NORTHEAST_1}
+				 ["ap-northeast-2"]=${AZ_AP_NORTHEAST_2}
 				 ["sa-east-1"]=${AZ_SA_EAST_1})
 
 # fetch AWS_REGION from the config file
@@ -92,8 +93,7 @@ done
 
 #######################################################
 ## FOR module-*.tf FILE SUBSTITUTIONS
-## Substitutes values in build/module-*.tf files
-## So no need to create .tmpl files
+## Substitutes values in resouces/terraform/module-*.tf.tmpl files
 #######################################################
 # find files which contain any of the three placeholders
 files=$(grep -s -l -e \<%MODULE-SUBNET-IDS-AND-AZS%\> -e \<%ADMIRAL-SUBNET-IDS-AND-AZS%\> -e \<%WORKER-SUBNET-IDS-AND-AZS%\> -r $TF_FILES)
@@ -139,8 +139,11 @@ do
 	worker_result="${worker_vpc_ids}
 	${worker_vpc_azs}"
 
+  # create a new file tf file without the .tmpl extension
+  newFile="${f%%.tmpl*}"
+  cp $f $newFile
 	# Replace placeholders with their respective values in the file
-	perl -p -i -e "s/<%MODULE-SUBNET-IDS-AND-AZS%>/${module_result}/g" $f
-	perl -p -i -e "s/<%ADMIRAL-SUBNET-IDS-AND-AZS%>/${admiral_result}/g" $f
-	perl -p -i -e "s/<%WORKER-SUBNET-IDS-AND-AZS%>/${worker_result}/g" $f
+	perl -p -i -e "s/<%MODULE-SUBNET-IDS-AND-AZS%>/${module_result}/g" ${newFile}
+	perl -p -i -e "s/<%ADMIRAL-SUBNET-IDS-AND-AZS%>/${admiral_result}/g" ${newFile}
+	perl -p -i -e "s/<%WORKER-SUBNET-IDS-AND-AZS%>/${worker_result}/g" ${newFile}
 done

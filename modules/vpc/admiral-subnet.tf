@@ -4,15 +4,26 @@
   # The variable values for CIDR blocks and availability zones are generated dynamically
   # by the same script, according to the selected AWS region
 	
-		variable "admiral_subnet_b" { default = "10.0.20.0/24" }
-		variable "admiral_subnet_az_b" { default = "us-east-1b" }
-		variable "admiral_subnet_c" { default = "10.0.21.0/24" }
-		variable "admiral_subnet_az_c" { default = "us-east-1c" }
-		variable "admiral_subnet_d" { default = "10.0.22.0/24" }
-		variable "admiral_subnet_az_d" { default = "us-east-1d" }
-		variable "admiral_subnet_e" { default = "10.0.23.0/24" }
-		variable "admiral_subnet_az_e" { default = "us-east-1e" }
+		variable "admiral_subnet_a" { default = "10.0.20.0/24" }
+		variable "admiral_subnet_az_a" { default = "ap-southeast-1a" }
+		variable "admiral_subnet_b" { default = "10.0.21.0/24" }
+		variable "admiral_subnet_az_b" { default = "ap-southeast-1b" }
 	
+		resource "aws_subnet" "admiral_a" {
+				vpc_id = "${aws_vpc.cluster_vpc.id}"
+				availability_zone = "${var.admiral_subnet_az_a}"
+				cidr_block = "${var.admiral_subnet_a}"
+				map_public_ip_on_launch = "true"
+				tags {
+						Name = "admiral_a"
+				}
+		}
+		
+		resource "aws_route_table_association" "admiral_rt_a" {
+				subnet_id = "${aws_subnet.admiral_a.id}"
+				route_table_id = "${aws_route_table.cluster_vpc.id}"
+		}
+		
 		resource "aws_subnet" "admiral_b" {
 				vpc_id = "${aws_vpc.cluster_vpc.id}"
 				availability_zone = "${var.admiral_subnet_az_b}"
@@ -28,57 +39,8 @@
 				route_table_id = "${aws_route_table.cluster_vpc.id}"
 		}
 		
-		resource "aws_subnet" "admiral_c" {
-				vpc_id = "${aws_vpc.cluster_vpc.id}"
-				availability_zone = "${var.admiral_subnet_az_c}"
-				cidr_block = "${var.admiral_subnet_c}"
-				map_public_ip_on_launch = "true"
-				tags {
-						Name = "admiral_c"
-				}
-		}
-		
-		resource "aws_route_table_association" "admiral_rt_c" {
-				subnet_id = "${aws_subnet.admiral_c.id}"
-				route_table_id = "${aws_route_table.cluster_vpc.id}"
-		}
-		
-		resource "aws_subnet" "admiral_d" {
-				vpc_id = "${aws_vpc.cluster_vpc.id}"
-				availability_zone = "${var.admiral_subnet_az_d}"
-				cidr_block = "${var.admiral_subnet_d}"
-				map_public_ip_on_launch = "true"
-				tags {
-						Name = "admiral_d"
-				}
-		}
-		
-		resource "aws_route_table_association" "admiral_rt_d" {
-				subnet_id = "${aws_subnet.admiral_d.id}"
-				route_table_id = "${aws_route_table.cluster_vpc.id}"
-		}
-		
-		resource "aws_subnet" "admiral_e" {
-				vpc_id = "${aws_vpc.cluster_vpc.id}"
-				availability_zone = "${var.admiral_subnet_az_e}"
-				cidr_block = "${var.admiral_subnet_e}"
-				map_public_ip_on_launch = "true"
-				tags {
-						Name = "admiral_e"
-				}
-		}
-		
-		resource "aws_route_table_association" "admiral_rt_e" {
-				subnet_id = "${aws_subnet.admiral_e.id}"
-				route_table_id = "${aws_route_table.cluster_vpc.id}"
-		}
-		
 	
+		output "admiral_subnet_a_id" {value = "${aws_subnet.admiral_a.id}"}
+		output "admiral_subnet_az_a" {value = "${var.admiral_subnet_az_a}"}
 		output "admiral_subnet_b_id" {value = "${aws_subnet.admiral_b.id}"}
 		output "admiral_subnet_az_b" {value = "${var.admiral_subnet_az_b}"}
-		output "admiral_subnet_c_id" {value = "${aws_subnet.admiral_c.id}"}
-		output "admiral_subnet_az_c" {value = "${var.admiral_subnet_az_c}"}
-		output "admiral_subnet_d_id" {value = "${aws_subnet.admiral_d.id}"}
-		output "admiral_subnet_az_d" {value = "${var.admiral_subnet_az_d}"}
-		output "admiral_subnet_e_id" {value = "${aws_subnet.admiral_e.id}"}
-		output "admiral_subnet_az_e" {value = "${var.admiral_subnet_az_e}"}

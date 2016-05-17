@@ -23,12 +23,13 @@ $(SITE_CERT): gen_certs
 $(VPC_MODULE): gen_vpc_subnets_tf
 
 init_build_dir:
+	@rm -f $(BUILD)/*.tf
 	@mkdir -p $(BUILD)
 	@cp -rf $(RESOURCES)/cloud-config $(BUILD)
 	@cp -rf $(RESOURCES)/policies $(BUILD)
 	@$(SCRIPTS)/substitute-AWS-ACCOUNT.sh $(POLICIES)/*.json
 	@$(SCRIPTS)/substitute-CLUSTER-NAME.sh $(CONFIG)/*.yaml $(POLICIES)/*.json $(CONFIG)/s3-cloudconfig-bootstrap.sh
-	@$(SCRIPTS)/substitute-VPC-AZ-placeholders.sh $(MODULES) $(BUILD)/*.tf
+	@$(SCRIPTS)/substitute-VPC-AZ-placeholders.sh $(MODULES) $(TF_RESOURCES)/*.tf.tmpl
 
 update_vars:	| $(BUILD)
 	# Generate default AMI ids

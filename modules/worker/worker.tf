@@ -4,7 +4,7 @@
 resource "aws_autoscaling_group" "worker" {
   name = "worker"
   # This placeholder will be replaced by array of variables defined for availability zone in the module's variables
-  availability_zones = [ "${var.worker_subnet_az_b}", "${var.worker_subnet_az_c}", "${var.worker_subnet_az_d}", "${var.worker_subnet_az_e}" ]
+  availability_zones = [ "${var.worker_subnet_az_a}", "${var.worker_subnet_az_b}" ]
   min_size = "${var.cluster_min_size}"
   max_size = "${var.cluster_max_size}"
   desired_capacity = "${var.cluster_desired_capacity}"
@@ -14,7 +14,7 @@ resource "aws_autoscaling_group" "worker" {
 
   launch_configuration = "${aws_launch_configuration.worker.name}"
   # This placeholder will be replaced by array of variables defined for VPC zone IDs in the module's variables
-  vpc_zone_identifier = [ "${var.worker_subnet_b_id}", "${var.worker_subnet_c_id}", "${var.worker_subnet_d_id}", "${var.worker_subnet_e_id}" ]
+  vpc_zone_identifier = [ "${var.worker_subnet_a_id}", "${var.worker_subnet_b_id}" ]
 
   tag {
     key = "Name"

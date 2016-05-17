@@ -19,5 +19,10 @@ module "elk" {
 
     # This placeholder will be replaced by ADMIRAL subnet id and availability zone variables
     # For more information look into 'substitute-VPC-AZ-placeholders.sh'
-    <%ADMIRAL-SUBNET-IDS-AND-AZS%>
+    
+		elk_subnet_a_id = "${module.vpc.admiral_subnet_a_id}"
+		elk_subnet_b_id = "${module.vpc.admiral_subnet_b_id}"
+	
+		elk_subnet_az_a = "${module.vpc.admiral_subnet_az_a}"
+		elk_subnet_az_b = "${module.vpc.admiral_subnet_az_b}"
 }

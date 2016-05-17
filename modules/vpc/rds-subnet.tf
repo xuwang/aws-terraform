@@ -4,15 +4,26 @@
   # The variable values for CIDR blocks and availability zones are generated dynamically
   # by the same script, according to the selected AWS region
 	
-		variable "rds_subnet_b" { default = "10.0.50.0/24" }
-		variable "rds_subnet_az_b" { default = "us-east-1b" }
-		variable "rds_subnet_c" { default = "10.0.51.0/24" }
-		variable "rds_subnet_az_c" { default = "us-east-1c" }
-		variable "rds_subnet_d" { default = "10.0.52.0/24" }
-		variable "rds_subnet_az_d" { default = "us-east-1d" }
-		variable "rds_subnet_e" { default = "10.0.53.0/24" }
-		variable "rds_subnet_az_e" { default = "us-east-1e" }
+		variable "rds_subnet_a" { default = "10.0.50.0/24" }
+		variable "rds_subnet_az_a" { default = "ap-southeast-1a" }
+		variable "rds_subnet_b" { default = "10.0.51.0/24" }
+		variable "rds_subnet_az_b" { default = "ap-southeast-1b" }
 	
+		resource "aws_subnet" "rds_a" {
+				vpc_id = "${aws_vpc.cluster_vpc.id}"
+				availability_zone = "${var.rds_subnet_az_a}"
+				cidr_block = "${var.rds_subnet_a}"
+				map_public_ip_on_launch = "true"
+				tags {
+						Name = "rds_a"
+				}
+		}
+		
+		resource "aws_route_table_association" "rds_rt_a" {
+				subnet_id = "${aws_subnet.rds_a.id}"
+				route_table_id = "${aws_route_table.cluster_vpc.id}"
+		}
+		
 		resource "aws_subnet" "rds_b" {
 				vpc_id = "${aws_vpc.cluster_vpc.id}"
 				availability_zone = "${var.rds_subnet_az_b}"
@@ -28,57 +39,8 @@
 				route_table_id = "${aws_route_table.cluster_vpc.id}"
 		}
 		
-		resource "aws_subnet" "rds_c" {
-				vpc_id = "${aws_vpc.cluster_vpc.id}"
-				availability_zone = "${var.rds_subnet_az_c}"
-				cidr_block = "${var.rds_subnet_c}"
-				map_public_ip_on_launch = "true"
-				tags {
-						Name = "rds_c"
-				}
-		}
-		
-		resource "aws_route_table_association" "rds_rt_c" {
-				subnet_id = "${aws_subnet.rds_c.id}"
-				route_table_id = "${aws_route_table.cluster_vpc.id}"
-		}
-		
-		resource "aws_subnet" "rds_d" {
-				vpc_id = "${aws_vpc.cluster_vpc.id}"
-				availability_zone = "${var.rds_subnet_az_d}"
-				cidr_block = "${var.rds_subnet_d}"
-				map_public_ip_on_launch = "true"
-				tags {
-						Name = "rds_d"
-				}
-		}
-		
-		resource "aws_route_table_association" "rds_rt_d" {
-				subnet_id = "${aws_subnet.rds_d.id}"
-				route_table_id = "${aws_route_table.cluster_vpc.id}"
-		}
-		
-		resource "aws_subnet" "rds_e" {
-				vpc_id = "${aws_vpc.cluster_vpc.id}"
-				availability_zone = "${var.rds_subnet_az_e}"
-				cidr_block = "${var.rds_subnet_e}"
-				map_public_ip_on_launch = "true"
-				tags {
-						Name = "rds_e"
-				}
-		}
-		
-		resource "aws_route_table_association" "rds_rt_e" {
-				subnet_id = "${aws_subnet.rds_e.id}"
-				route_table_id = "${aws_route_table.cluster_vpc.id}"
-		}
-		
 	
+		output "rds_subnet_a_id" {value = "${aws_subnet.rds_a.id}"}
+		output "rds_subnet_az_a" {value = "${var.rds_subnet_az_a}"}
 		output "rds_subnet_b_id" {value = "${aws_subnet.rds_b.id}"}
 		output "rds_subnet_az_b" {value = "${var.rds_subnet_az_b}"}
-		output "rds_subnet_c_id" {value = "${aws_subnet.rds_c.id}"}
-		output "rds_subnet_az_c" {value = "${var.rds_subnet_az_c}"}
-		output "rds_subnet_d_id" {value = "${aws_subnet.rds_d.id}"}
-		output "rds_subnet_az_d" {value = "${var.rds_subnet_az_d}"}
-		output "rds_subnet_e_id" {value = "${aws_subnet.rds_e.id}"}
-		output "rds_subnet_az_e" {value = "${var.rds_subnet_az_e}"}

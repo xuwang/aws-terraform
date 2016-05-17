@@ -18,11 +18,7 @@ variable "vpc_cidr" { }
 # This placeholder will be replaced by module subnet id and availability zone tf variable definations
 # For more information look into 'substitute-VPC-AZ-placeholders.sh'
 
+		variable "dockerhub_subnet_a_id" { }
+		variable "dockerhub_subnet_az_a" { }
 		variable "dockerhub_subnet_b_id" { }
 		variable "dockerhub_subnet_az_b" { }
-		variable "dockerhub_subnet_c_id" { }
-		variable "dockerhub_subnet_az_c" { }
-		variable "dockerhub_subnet_d_id" { }
-		variable "dockerhub_subnet_az_d" { }
-		variable "dockerhub_subnet_e_id" { }
-		variable "dockerhub_subnet_az_e" { }

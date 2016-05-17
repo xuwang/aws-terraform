@@ -4,7 +4,7 @@
 resource "aws_autoscaling_group" "elk" {
   name = "elk"
   # This placeholder will be replaced by array of variables defined for availability zone in the module's variables
-  availability_zones = [ "${var.elk_subnet_az_b}", "${var.elk_subnet_az_c}", "${var.elk_subnet_az_d}", "${var.elk_subnet_az_e}" ]
+  availability_zones = [ "${var.elk_subnet_az_a}", "${var.elk_subnet_az_b}" ]
   min_size = "${var.cluster_min_size}"
   max_size = "${var.cluster_max_size}"
   desired_capacity = "${var.cluster_desired_capacity}"
@@ -14,7 +14,7 @@ resource "aws_autoscaling_group" "elk" {
 
   launch_configuration = "${aws_launch_configuration.elk.name}"
   # This placeholder will be replaced by array of variables defined for VPC zone IDs in the module's variables
-  vpc_zone_identifier = [ "${var.elk_subnet_b_id}", "${var.elk_subnet_c_id}", "${var.elk_subnet_d_id}", "${var.elk_subnet_e_id}" ]
+  vpc_zone_identifier = [ "${var.elk_subnet_a_id}", "${var.elk_subnet_b_id}" ]
 
   tag {
     key = "Name"

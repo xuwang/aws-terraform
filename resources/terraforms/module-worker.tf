@@ -19,5 +19,10 @@ module "worker" {
 
     # This placeholder will be replaced by module subnet id and availability zone variables
     # For more information look into 'substitute-VPC-AZ-placeholders.sh'
-    <%MODULE-SUBNET-IDS-AND-AZS%>
+    
+		worker_subnet_a_id = "${module.vpc.worker_subnet_a_id}"
+		worker_subnet_b_id = "${module.vpc.worker_subnet_b_id}"
+	
+		worker_subnet_az_a = "${module.vpc.worker_subnet_az_a}"
+		worker_subnet_az_b = "${module.vpc.worker_subnet_az_b}"
 }

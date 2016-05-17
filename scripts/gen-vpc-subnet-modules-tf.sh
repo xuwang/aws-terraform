@@ -14,6 +14,7 @@ declare -A AWS_AZS=(["us-east-1"]=${AZ_US_EAST_1}
 				 ["ap-southeast-1"]=${AZ_AP_SOUTHEAST_1}
 				 ["ap-southeast-2"]=${AZ_AP_SOUTHEAST_2}
 				 ["ap-northeast-1"]=${AZ_AP_NORTHEAST_1}
+				 ["ap-northeast-2"]=${AZ_AP_NORTHEAST_2}
 				 ["sa-east-1"]=${AZ_SA_EAST_1})
 
 # Name of modules whose subnet.tf files are to be created in the vpc module

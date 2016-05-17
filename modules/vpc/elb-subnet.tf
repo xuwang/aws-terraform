@@ -4,15 +4,26 @@
   # The variable values for CIDR blocks and availability zones are generated dynamically
   # by the same script, according to the selected AWS region
 	
-		variable "elb_subnet_b" { default = "10.0.40.0/24" }
-		variable "elb_subnet_az_b" { default = "us-east-1b" }
-		variable "elb_subnet_c" { default = "10.0.41.0/24" }
-		variable "elb_subnet_az_c" { default = "us-east-1c" }
-		variable "elb_subnet_d" { default = "10.0.42.0/24" }
-		variable "elb_subnet_az_d" { default = "us-east-1d" }
-		variable "elb_subnet_e" { default = "10.0.43.0/24" }
-		variable "elb_subnet_az_e" { default = "us-east-1e" }
+		variable "elb_subnet_a" { default = "10.0.40.0/24" }
+		variable "elb_subnet_az_a" { default = "ap-southeast-1a" }
+		variable "elb_subnet_b" { default = "10.0.41.0/24" }
+		variable "elb_subnet_az_b" { default = "ap-southeast-1b" }
 	
+		resource "aws_subnet" "elb_a" {
+				vpc_id = "${aws_vpc.cluster_vpc.id}"
+				availability_zone = "${var.elb_subnet_az_a}"
+				cidr_block = "${var.elb_subnet_a}"
+				map_public_ip_on_launch = "true"
+				tags {
+						Name = "elb_a"
+				}
+		}
+		
+		resource "aws_route_table_association" "elb_rt_a" {
+				subnet_id = "${aws_subnet.elb_a.id}"
+				route_table_id = "${aws_route_table.cluster_vpc.id}"
+		}
+		
 		resource "aws_subnet" "elb_b" {
 				vpc_id = "${aws_vpc.cluster_vpc.id}"
 				availability_zone = "${var.elb_subnet_az_b}"
@@ -28,57 +39,8 @@
 				route_table_id = "${aws_route_table.cluster_vpc.id}"
 		}
 		
-		resource "aws_subnet" "elb_c" {
-				vpc_id = "${aws_vpc.cluster_vpc.id}"
-				availability_zone = "${var.elb_subnet_az_c}"
-				cidr_block = "${var.elb_subnet_c}"
-				map_public_ip_on_launch = "true"
-				tags {
-						Name = "elb_c"
-				}
-		}
-		
-		resource "aws_route_table_association" "elb_rt_c" {
-				subnet_id = "${aws_subnet.elb_c.id}"
-				route_table_id = "${aws_route_table.cluster_vpc.id}"
-		}
-		
-		resource "aws_subnet" "elb_d" {
-				vpc_id = "${aws_vpc.cluster_vpc.id}"
-				availability_zone = "${var.elb_subnet_az_d}"
-				cidr_block = "${var.elb_subnet_d}"
-				map_public_ip_on_launch = "true"
-				tags {
-						Name = "elb_d"
-				}
-		}
-		
-		resource "aws_route_table_association" "elb_rt_d" {
-				subnet_id = "${aws_subnet.elb_d.id}"
-				route_table_id = "${aws_route_table.cluster_vpc.id}"
-		}
-		
-		resource "aws_subnet" "elb_e" {
-				vpc_id = "${aws_vpc.cluster_vpc.id}"
-				availability_zone = "${var.elb_subnet_az_e}"
-				cidr_block = "${var.elb_subnet_e}"
-				map_public_ip_on_launch = "true"
-				tags {
-						Name = "elb_e"
-				}
-		}
-		
-		resource "aws_route_table_association" "elb_rt_e" {
-				subnet_id = "${aws_subnet.elb_e.id}"
-				route_table_id = "${aws_route_table.cluster_vpc.id}"
-		}
-		
 	
+		output "elb_subnet_a_id" {value = "${aws_subnet.elb_a.id}"}
+		output "elb_subnet_az_a" {value = "${var.elb_subnet_az_a}"}
 		output "elb_subnet_b_id" {value = "${aws_subnet.elb_b.id}"}
 		output "elb_subnet_az_b" {value = "${var.elb_subnet_az_b}"}
-		output "elb_subnet_c_id" {value = "${aws_subnet.elb_c.id}"}
-		output "elb_subnet_az_c" {value = "${var.elb_subnet_az_c}"}
-		output "elb_subnet_d_id" {value = "${aws_subnet.elb_d.id}"}
-		output "elb_subnet_az_d" {value = "${var.elb_subnet_az_d}"}
-		output "elb_subnet_e_id" {value = "${aws_subnet.elb_e.id}"}
-		output "elb_subnet_az_e" {value = "${var.elb_subnet_az_e}"}

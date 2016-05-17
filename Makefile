@@ -18,14 +18,16 @@ PRIVATE_DOMAIN=$(CLUSTER_NAME).local
 VPC_SUBNET_MODULES=etcd,admiral,worker,elb,rds
 
 # Supported Subnet AWS availability zones
+# Update these values according to the zones available to your AWS account
 AZ_US_EAST_1=us-east-1b,us-east-1c,us-east-1d,us-east-1e
-AZ_US_WEST_1=us-west-1a,us-west-1b,us-west-1c
+AZ_US_WEST_1=us-west-1a,us-west-1b
 AZ_US_WEST_2=us-west-2a,us-west-2b,us-west-2c
 AZ_EU_WEST_1=eu-west-1a,eu-west-1b,eu-west-1c
 AZ_EU_CETNRAL_1=eu-central-1a,eu-central-1b
 AZ_AP_SOUTHEAST_1=ap-southeast-1a,ap-southeast-1b
 AZ_AP_SOUTHEAST_2=ap-southeast-2a,ap-southeast-2b,ap-southeast-2c
-AZ_AP_NORTHEAST_1=ap-northeast-1a,ap-northeast-1b,ap-northeast-1c
+AZ_AP_NORTHEAST_1=ap-northeast-1a,ap-northeast-1c
+AZ_AP_NORTHEAST_2=ap-northeast-2a,ap-northeast-2c
 AZ_SA_EAST_1=sa-east-1a,sa-east-1b,sa-east-1c
 
 # Working Directories
