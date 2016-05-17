@@ -10,6 +10,7 @@ variable "keypair" { default = "elk" }
 variable "root_volume_size" { default = 12 }
 variable "docker_volume_size" { default = 12 }
 variable "data_volume_size" { default = 12 }
+variable "cluster_name" { }
 
 # networking vars set by module.vpc
 variable "vpc_id" { }

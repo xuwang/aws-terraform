@@ -60,7 +60,7 @@ resource "aws_iam_role_policy" "gocd_policy" {
 }
 
 resource "aws_iam_role" "gocd" {
-    name = "gocd"
+    name = "${var.cluster_name}_gocd"
     path = "/"
     assume_role_policy =  "${file(\"policies/assume_role_policy.json\")}"
 }

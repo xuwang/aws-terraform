@@ -61,7 +61,7 @@ resource "aws_iam_role_policy" "worker_policy" {
 }
 
 resource "aws_iam_role" "worker" {
-    name = "worker"
+    name = "${var.cluster_name}_worker"
     path = "/"
     assume_role_policy =  "${file(\"policies/assume_role_policy.json\")}"
 }

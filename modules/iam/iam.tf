@@ -1,6 +1,6 @@
 # deployment user for elb registrations etc.
 resource "aws_iam_user" "deployment" {
-    name = "${var.deployment_user}_${var.cluster_name}"
+    name = "${var.cluster_name}_${var.deployment_user}"
     path = "/system/"
 }
 resource "aws_iam_user_policy" "deployment" {
@@ -12,7 +12,7 @@ resource "aws_iam_access_key" "deployment" {
     user = "${aws_iam_user.deployment.name}"
 
     provisioner "local-exec" {
-    # generate a cloud-config file segment that installs aws deployment credentials on the target nodes. 
+    # generate a cloud-config file segment that installs aws deployment credentials on the target nodes.
     command = <<CMD_DATA
 cat > "${var.cloud_config_file_path}" <<EOF
 

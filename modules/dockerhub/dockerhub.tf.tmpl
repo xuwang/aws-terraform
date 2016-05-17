@@ -59,7 +59,7 @@ resource "aws_iam_role_policy" "dockerhub_policy" {
 }
 
 resource "aws_iam_role" "dockerhub" {
-    name = "dockerhub"
+    name = "${var.cluster_name}_dockerhub"
     path = "/"
     assume_role_policy =  "${file(\"policies/assume_role_policy.json\")}"
 }

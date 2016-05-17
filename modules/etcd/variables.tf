@@ -10,6 +10,7 @@ variable "keypair" { default = "etcd" }
 variable "root_volume_size" { default = 12 }
 variable "docker_volume_size" { default = 12 }
 variable "data_volume_size" { default = 12 }
+variable "cluster_name" { }
 
 # networking vars set by module.vpc
 variable "vpc_id" { }
@@ -22,5 +23,3 @@ variable "vpc_cidr" { }
 		variable "etcd_subnet_az_a" { }
 		variable "etcd_subnet_b_id" { }
 		variable "etcd_subnet_az_b" { }
-		variable "etcd_subnet_c_id" { }
-		variable "etcd_subnet_az_c" { }

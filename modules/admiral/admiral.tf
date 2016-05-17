@@ -68,7 +68,7 @@ resource "aws_iam_role_policy" "admiral_policy" {
 }
 
 resource "aws_iam_role" "admiral" {
-    name = "admiral"
+    name = "${var.cluster_name}_admiral"
     path = "/"
     assume_role_policy =  "${file(\"policies/assume_role_policy.json\")}"
 }

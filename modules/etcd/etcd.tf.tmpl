@@ -64,7 +64,7 @@ resource "aws_iam_role_policy" "etcd_policy" {
 }
 
 resource "aws_iam_role" "etcd" {
-    name = "etcd"
+    name = "${var.cluster_name}_etcd"
     path = "/"
     assume_role_policy =  "${file(\"policies/assume_role_policy.json\")}"
 }
