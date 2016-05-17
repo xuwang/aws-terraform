@@ -1,11 +1,11 @@
-module "dockerhub" {
-    source = "../modules/dockerhub"
+module "elk" {
+    source = "../modules/elk"
 
     image_type = "t2.micro"
     cluster_desired_capacity = 1
     root_volume_size =  8
     docker_volume_size =  12
-    keypair = "dockerhub"
+    keypair = "elk"
     allow_ssh_cidr="0.0.0.0/0"
 
     # aws
@@ -19,10 +19,5 @@ module "dockerhub" {
 
     # This placeholder will be replaced by ADMIRAL subnet id and availability zone variables
     # For more information look into 'substitute-VPC-AZ-placeholders.sh'
-    
-		dockerhub_subnet_a_id = "${module.vpc.admiral_subnet_a_id}"
-		dockerhub_subnet_b_id = "${module.vpc.admiral_subnet_b_id}"
-	
-		dockerhub_subnet_az_a = "${module.vpc.admiral_subnet_az_a}"
-		dockerhub_subnet_az_b = "${module.vpc.admiral_subnet_az_b}"
+    <%ADMIRAL-SUBNET-IDS-AND-AZS%>
 }

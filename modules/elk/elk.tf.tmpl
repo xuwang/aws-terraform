@@ -1,10 +1,10 @@
 #
-# Admiral autoscale group configurations
+# elk autoscale group configurations
 #
-resource "aws_autoscaling_group" "admiral" {
-  name = "admiral"
+resource "aws_autoscaling_group" "elk" {
+  name = "elk"
   # This placeholder will be replaced by array of variables defined for availability zone in the module's variables
-  availability_zones = [ "${var.admiral_subnet_az_a}", "${var.admiral_subnet_az_b}" ]
+  availability_zones = <%MODULE-AZ-VARIABLES-ARRAY%>
   min_size = "${var.cluster_min_size}"
   max_size = "${var.cluster_max_size}"
   desired_capacity = "${var.cluster_desired_capacity}"
@@ -12,24 +12,24 @@ resource "aws_autoscaling_group" "admiral" {
   health_check_type = "EC2"
   force_delete = true
 
-  launch_configuration = "${aws_launch_configuration.admiral.name}"
+  launch_configuration = "${aws_launch_configuration.elk.name}"
   # This placeholder will be replaced by array of variables defined for VPC zone IDs in the module's variables
-  vpc_zone_identifier = [ "${var.admiral_subnet_a_id}", "${var.admiral_subnet_b_id}" ]
+  vpc_zone_identifier = <%MODULE-ID-VARIABLES-ARRAY%>
 
   tag {
     key = "Name"
-    value = "admiral"
+    value = "elk"
     propagate_at_launch = true
   }
 }
 
-resource "aws_launch_configuration" "admiral" {
+resource "aws_launch_configuration" "elk" {
   # use system generated name to allow changes of launch_configuration
   # name = "workder-${var.ami}"
   image_id = "${var.ami}"
   instance_type = "${var.image_type}"
-  iam_instance_profile = "${aws_iam_instance_profile.admiral.name}"
-  security_groups = [ "${aws_security_group.admiral.id}" ]
+  iam_instance_profile = "${aws_iam_instance_profile.elk.name}"
+  security_groups = [ "${aws_security_group.elk.id}" ]
   key_name = "${var.keypair}"
   lifecycle { create_before_destroy = true }
 
@@ -42,6 +42,7 @@ resource "aws_launch_configuration" "admiral" {
   # /var/lib/docker
   ebs_block_device = {
     device_name = "/dev/sdb"
+    # General Purpose SSD
     volume_type = "gp2"
     volume_size = "${var.docker_volume_size}"
   }
@@ -56,19 +57,19 @@ resource "aws_launch_configuration" "admiral" {
   user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
 }
 
-resource "aws_iam_instance_profile" "admiral" {
-    name = "admiral"
-    roles = ["${aws_iam_role.admiral.name}"]
+resource "aws_iam_instance_profile" "elk" {
+    name = "elk"
+    roles = ["${aws_iam_role.elk.name}"]
 }
 
-resource "aws_iam_role_policy" "admiral_policy" {
-    name = "admiral"
-    role = "${aws_iam_role.admiral.id}"
-    policy = "${file(\"policies/admiral_policy.json\")}"
+resource "aws_iam_role_policy" "elk_policy" {
+    name = "elk"
+    role = "${aws_iam_role.elk.id}"
+    policy = "${file(\"policies/elk_policy.json\")}"
 }
 
-resource "aws_iam_role" "admiral" {
-    name = "admiral"
+resource "aws_iam_role" "elk" {
+    name = "elk"
     path = "/"
     assume_role_policy =  "${file(\"policies/assume_role_policy.json\")}"
 }

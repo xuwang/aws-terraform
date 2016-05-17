@@ -14,9 +14,11 @@ variable "data_volume_size" { default = 12 }
 # networking vars set by module.vpc
 variable "vpc_id" { }
 variable "vpc_cidr" { }
-variable "dockerhub_subnet_a_id" { }
-variable "dockerhub_subnet_b_id" { }
-variable "dockerhub_subnet_c_id" { }
-variable "dockerhub_subnet_az_a" { }
-variable "dockerhub_subnet_az_b" { }
-variable "dockerhub_subnet_az_c" { }
+
+# This placeholder will be replaced by module subnet id and availability zone tf variable definations
+# For more information look into 'substitute-VPC-AZ-placeholders.sh'
+
+		variable "dockerhub_subnet_a_id" { }
+		variable "dockerhub_subnet_az_a" { }
+		variable "dockerhub_subnet_b_id" { }
+		variable "dockerhub_subnet_az_b" { }

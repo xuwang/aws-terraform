@@ -14,9 +14,11 @@ variable "data_volume_size" { default = 12 }
 # networking vars set by module.vpc
 variable "vpc_id" { }
 variable "vpc_cidr" { }
-variable "gocd_subnet_a_id" { }
-variable "gocd_subnet_b_id" { }
-variable "gocd_subnet_c_id" { }
-variable "gocd_subnet_az_a" { }
-variable "gocd_subnet_az_b" { }
-variable "gocd_subnet_az_c" { }
+
+# This placeholder will be replaced by module subnet id and availability zone tf variable definations
+# For more information look into 'substitute-VPC-AZ-placeholders.sh'
+
+		variable "gocd_subnet_a_id" { }
+		variable "gocd_subnet_az_a" { }
+		variable "gocd_subnet_b_id" { }
+		variable "gocd_subnet_az_b" { }

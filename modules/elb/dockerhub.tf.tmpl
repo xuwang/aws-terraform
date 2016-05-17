@@ -12,7 +12,7 @@ resource "aws_elb" "dockerhub" {
 
   security_groups = [ "${aws_security_group.elb.id}" ]
   # This placeholder will be replaced by array of variables defined for VPC zone IDs in the module's variables
-  subnets = [ "${var.elb_subnet_a_id}", "${var.elb_subnet_b_id}" ]
+  subnets = <%MODULE-ID-VARIABLES-ARRAY%>
 
   listener {
     lb_port = 443

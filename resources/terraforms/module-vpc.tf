@@ -3,7 +3,7 @@ module "vpc" {
     vpc_cidr = "10.0.0.0/16"
     vpc_name = "${var.cluster_name}"
     vpc_region = "${var.aws_account.default_region}"
-    
+
 /*
 # the following can be configured. See ../modules/vpc for default values
     etcd_subnet_a = <cdir value>
@@ -13,7 +13,7 @@ module "vpc" {
     admiral_subnet_a = <cdir value>
     admiral_subnet_b = <cdir value>
     admiral_subnet_c = <cdir value>
-    
+
     worker_subnet_a = <cdir value>
     worker_subnet_b = <cdir value>
     worker_subnet_c = <cdir value>
@@ -25,7 +25,7 @@ module "vpc" {
     rds_subnet_a = <cdir value>
     rds_subnet_b = <cdir value>
     rds_subnet_c = <cdir value>
-*/
+
 
 
     etcd_subnet_az_a  = "${var.aws_account.default_region}a"
@@ -47,4 +47,5 @@ module "vpc" {
     rds_subnet_az_a  = "${var.aws_account.default_region}a"
     rds_subnet_az_b  = "${var.aws_account.default_region}b"
     rds_subnet_az_c  = "${var.aws_account.default_region}c"
+    */
 }

@@ -17,10 +17,13 @@ module "admiral" {
     # vpc
     vpc_id = "${module.vpc.vpc_id}"
     vpc_cidr = "${module.vpc.vpc_cidr}"
-    admiral_subnet_a_id = "${module.vpc.admiral_subnet_a_id}"
-    admiral_subnet_b_id = "${module.vpc.admiral_subnet_b_id}"
-    admiral_subnet_c_id = "${module.vpc.admiral_subnet_c_id}"
-    admiral_subnet_az_a = "${module.vpc.admiral_subnet_az_a}"
-    admiral_subnet_az_b = "${module.vpc.admiral_subnet_az_b}"
-    admiral_subnet_az_c = "${module.vpc.admiral_subnet_az_c}"
+
+    # This placeholder will be replaced by module subnet id and availability zone variables
+    # For more information look into 'substitute-VPC-AZ-placeholders.sh'
+    
+		admiral_subnet_a_id = "${module.vpc.admiral_subnet_a_id}"
+		admiral_subnet_b_id = "${module.vpc.admiral_subnet_b_id}"
+	
+		admiral_subnet_az_a = "${module.vpc.admiral_subnet_az_a}"
+		admiral_subnet_az_b = "${module.vpc.admiral_subnet_az_b}"
 }

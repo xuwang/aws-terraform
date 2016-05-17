@@ -1,11 +1,12 @@
-module "dockerhub" {
-    source = "../modules/dockerhub"
+module "admiral" {
+    source = "../modules/admiral"
 
     image_type = "t2.micro"
     cluster_desired_capacity = 1
     root_volume_size =  8
     docker_volume_size =  12
-    keypair = "dockerhub"
+    data_volume_size =  12
+    keypair = "admiral"
     allow_ssh_cidr="0.0.0.0/0"
 
     # aws
@@ -17,12 +18,7 @@ module "dockerhub" {
     vpc_id = "${module.vpc.vpc_id}"
     vpc_cidr = "${module.vpc.vpc_cidr}"
 
-    # This placeholder will be replaced by ADMIRAL subnet id and availability zone variables
+    # This placeholder will be replaced by module subnet id and availability zone variables
     # For more information look into 'substitute-VPC-AZ-placeholders.sh'
-    
-		dockerhub_subnet_a_id = "${module.vpc.admiral_subnet_a_id}"
-		dockerhub_subnet_b_id = "${module.vpc.admiral_subnet_b_id}"
-	
-		dockerhub_subnet_az_a = "${module.vpc.admiral_subnet_az_a}"
-		dockerhub_subnet_az_b = "${module.vpc.admiral_subnet_az_b}"
+    <%MODULE-SUBNET-IDS-AND-AZS%>
 }

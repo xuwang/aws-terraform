@@ -10,10 +10,5 @@ module "rds" {
 
     # This placeholder will be replaced by module subnet id and availability zone variables
     # For more information look into 'substitute-VPC-AZ-placeholders.sh'
-    
-		rds_subnet_a_id = "${module.vpc.rds_subnet_a_id}"
-		rds_subnet_b_id = "${module.vpc.rds_subnet_b_id}"
-	
-		rds_subnet_az_a = "${module.vpc.rds_subnet_az_a}"
-		rds_subnet_az_b = "${module.vpc.rds_subnet_az_b}"
+    <%MODULE-SUBNET-IDS-AND-AZS%>
 }
