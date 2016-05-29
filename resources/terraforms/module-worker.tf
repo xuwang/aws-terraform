@@ -6,7 +6,7 @@ module "worker" {
     root_volume_size =  8
     docker_volume_size =  12
     keypair = "worker"
-    allow_ssh_cidr="0.0.0.0/0"
+    allow_ssh_cidr = "${var.allow_ssh_cidr}"
 
     # aws
     aws_account_id="${var.aws_account.id}"

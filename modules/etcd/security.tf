@@ -10,16 +10,8 @@ resource "aws_security_group" "etcd"  {
       protocol = "-1"
       cidr_blocks = ["0.0.0.0/0"]
     }
-    
-    # Allow etcd peers to communicate, include etcd proxies
-    ingress {
-      from_port = 7001
-      to_port = 7001
-      protocol = "tcp"
-      cidr_blocks = ["${var.vpc_cidr}"]
-    }
 
-    # Allow etcd2 peers to communicate, include etcd proxies
+    # Allow etcd peers to communicate, include etcd proxies
     ingress {
       from_port = 2380
       to_port = 2380
@@ -28,14 +20,6 @@ resource "aws_security_group" "etcd"  {
     }
 
     # Allow etcd clients to communicate
-    ingress {
-      from_port = 4001
-      to_port = 4001
-      protocol = "tcp"
-      cidr_blocks = ["${var.vpc_cidr}"]
-    }
-
-    # Allow etcd2 clients to communicate
     ingress {
       from_port = 2379
       to_port = 2379
@@ -48,7 +32,7 @@ resource "aws_security_group" "etcd"  {
       from_port = 22
       to_port = 22
       protocol = "tcp"
-      cidr_blocks = ["${var.allow_ssh_cidr}"]
+      cidr_blocks = ["${split(",", var.allow_ssh_cidr)}"]
       self = true
     }
 

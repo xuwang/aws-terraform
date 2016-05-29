@@ -3,9 +3,9 @@ module "etcd" {
 
     # etcd cluster_desired_capacity should be in odd numbers, e.g. 3, 5, 9
     cluster_desired_capacity = 1
-    image_type = "t2.micro"
+    image_type = "t2.small"
     keypair = "etcd"
-    allow_ssh_cidr="0.0.0.0/0"
+    allow_ssh_cidr = "${var.allow_ssh_cidr}"
 
     # aws
     aws_account_id="${var.aws_account.id}"
@@ -26,5 +26,4 @@ module "etcd" {
     etcd_subnet_az_a = "${module.vpc.etcd_subnet_az_a}"
     etcd_subnet_az_b = "${module.vpc.etcd_subnet_az_b}"
     etcd_subnet_az_c = "${module.vpc.etcd_subnet_az_c}"
-
 }
