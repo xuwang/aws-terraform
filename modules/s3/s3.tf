@@ -54,3 +54,7 @@ resource "aws_s3_bucket" "logs" {
         Name = "Logs"
     }
 }
+
+output "s3_bucket_config_id" {
+    value = "${aws_s3_bucket.config.id}"
+}

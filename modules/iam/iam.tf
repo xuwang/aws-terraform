@@ -8,6 +8,20 @@ resource "aws_iam_user_policy" "deployment" {
     user = "${aws_iam_user.deployment.name}"
     policy = "${file(\"policies/deployment_policy.json\")}"
 }
+
+# Save deployment credetials to config-bucket
+# TODO: add encryption
+resource "aws_s3_bucket_object" "aws-deployment-id" {
+    bucket = "${var.config-bucket}"
+    key = "credentials/deployment/id"
+    content = "${aws_iam_access_key.deployment.id}"
+}
+resource "aws_s3_bucket_object" "aws-deployment-key" {
+    bucket = "${var.config-bucket}"
+    key = "credentials/deployment/key"
+    content = "${aws_iam_access_key.deployment.secret}"
+}
+
 resource "aws_iam_access_key" "deployment" {
     user = "${aws_iam_user.deployment.name}"
 
