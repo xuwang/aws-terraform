@@ -71,6 +71,6 @@ resource "aws_iam_role" "etcd" {
 
 resource "aws_s3_bucket_object" "cloudinit" {
     bucket = "${var.cloundinit-bucket}"
-    key = "etcd/cloud-config.yaml"
+    key = "etcd2/cloud-config.yaml"
     source = "could-config/etcd.yaml"
 }
