@@ -55,6 +55,10 @@ resource "aws_s3_bucket" "logs" {
     }
 }
 
+output "s3_bucket_cloudinit_id" {
+    value = "${aws_s3_bucket.cloudinit.id}"
+}
+
 output "s3_bucket_config_id" {
     value = "${aws_s3_bucket.config.id}"
 }
