@@ -69,5 +69,8 @@ resource "aws_iam_role" "etcd" {
     assume_role_policy =  "${file(\"policies/assume_role_policy.json\")}"
 }
 
-
-
+resource "aws_s3_bucket_object" "cloudinit" {
+    bucket = "${var.cloundinit-bucket}"
+    key = "etcd/cloud-config.yaml"
+    source = "could-config/etcd.yaml"
+}
