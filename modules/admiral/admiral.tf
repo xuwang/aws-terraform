@@ -9,7 +9,9 @@ resource "aws_autoscaling_group" "admiral" {
   desired_capacity = "${var.cluster_desired_capacity}"
   
   health_check_type = "EC2"
+  health_check_grace_period = 300
   force_delete = true
+  metrics_granularity = "1Minute"
   
   launch_configuration = "${aws_launch_configuration.admiral.name}"
   vpc_zone_identifier = ["${var.admiral_subnet_a_id}","${var.admiral_subnet_b_id}","${var.admiral_subnet_c_id}"]

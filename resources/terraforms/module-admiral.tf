@@ -1,13 +1,13 @@
 module "admiral" {
     source = "../modules/admiral"
 
-    image_type = "t2.micro"
+    image_type = "t2.small"
     cluster_desired_capacity = 1
     root_volume_size =  8
     docker_volume_size =  12
     data_volume_size =  12
     keypair = "admiral"
-    allow_ssh_cidr="0.0.0.0/0"
+    allow_ssh_cidr = "${var.allow_ssh_cidr}"
 
     # aws
     aws_account_id="${var.aws_account.id}"
