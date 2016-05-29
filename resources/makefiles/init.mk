@@ -10,13 +10,13 @@ graph: | $(BUILD)
 refresh: init
 	cd $(BUILD); $(TF_REFRESH)
 
-init: | $(TF_PORVIDER) $(AMI_VARS)
+init: | $(TF_PORVIDER) $(AMI_VAR)
 
 $(BUILD): init_build_dir
 
 $(TF_PORVIDER): update_provider
 
-$(AMI_VARS): update_ami
+$(AMI_VAR): update_ami
 
 $(SITE_CERT): gen_certs
 
@@ -29,7 +29,7 @@ init_build_dir:
 
 update_ami:	| $(BUILD)
 	# Generate default AMI ids
-	$(SCRIPTS)/get-ami.sh > $(AMI_VARS)
+	$(SCRIPTS)/get-ami.sh > $(AMI_VAR)
 
 update_provider: | $(BUILD)
 	# Generate tf provider

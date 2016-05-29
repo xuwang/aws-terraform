@@ -24,7 +24,7 @@ CONFIG := $(BUILD)/cloud-config
 CERTS := $(BUILD)/certs
 SITE_CERT := $(CERTS)/site.pem
 POLICIES := $(BUILD)/policies
-AMI_VARS=$(BUILD)/ami.tf
+AMI_VAR=$(BUILD)/ami.tf
 
 # Terraform files
 TF_PORVIDER := $(BUILD)/provider.tf
@@ -40,6 +40,10 @@ TF_PLAN := terraform plan -module-depth=1
 TF_APPLY := terraform apply
 TF_REFRESH := terraform refresh
 TF_DESTROY := terraform destroy -force
+
+# cidr block to allow ssh; default to  $(curl -s http://ipinfo.io/ip)/32)
+# TF_VAR_allow_ssh_cidr := 
+
 ##########################
 ## End of customization ##
 ##########################
