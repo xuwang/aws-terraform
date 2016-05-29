@@ -9,7 +9,9 @@ resource "aws_autoscaling_group" "worker" {
   desired_capacity = "${var.cluster_desired_capacity}"
   
   health_check_type = "EC2"
+  health_check_grace_period = 300
   force_delete = true
+  metrics_granularity = "1Minute"
   
   launch_configuration = "${aws_launch_configuration.worker.name}"
   vpc_zone_identifier = ["${var.worker_subnet_a_id}","${var.worker_subnet_b_id}","${var.worker_subnet_c_id}"]

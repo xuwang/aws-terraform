@@ -9,7 +9,9 @@ resource "aws_autoscaling_group" "etcd" {
   desired_capacity = "${var.cluster_desired_capacity}"
   
   health_check_type = "EC2"
+  health_check_grace_period = 300
   force_delete = true
+  metrics_granularity = "1Minute"
   
   launch_configuration = "${aws_launch_configuration.etcd.name}"
   vpc_zone_identifier = ["${var.etcd_subnet_a_id}","${var.etcd_subnet_b_id}","${var.etcd_subnet_c_id}"]
@@ -23,7 +25,7 @@ resource "aws_autoscaling_group" "etcd" {
 
 resource "aws_launch_configuration" "etcd" {
   # use system generated name to allow changes of launch_configuration
-  # name = "etcd-${var.ami}"
+  name_prefix = "etcd-"
   image_id = "${var.ami}"
   instance_type = "${var.image_type}"
   iam_instance_profile = "${aws_iam_instance_profile.etcd.name}"
