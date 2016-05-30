@@ -19,6 +19,7 @@ cat <<EOF
 provider "aws" {
   profile = "$AWS_PROFILE"
   max_retries = 3
+  region = "$AWS_REGION"
 EOF
 if [ ! -z $ALLOWED_ACCOUNT_IDS ]; then
     echo  \ \ allowed_account_ids = [ "$ALLOWED_ACCOUNT_IDS" ]
