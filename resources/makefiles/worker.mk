@@ -1,30 +1,32 @@
-worker: etcd plan_worker upload_worker_userdata
+# WORKER_TARGETS must include all resources defined in terraform/worker.tf
+WORKER_TARGETS := -target=aws_security_group.worker -target=module.worker
+
+worker: plan_worker etcd upload_worker_userdata 
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c worker; \
-		$(TF_APPLY) -target module.worker
+		$(TF_APPLY) ${worker_TARGETS}
 	@$(MAKE) worker_ips
 
-plan_worker: plan_etcd init_worker 
+plan_worker: init_worker
 	cd $(BUILD); \
-		$(TF_PLAN) -target module.worker;
+		$(TF_PLAN) ${worker_TARGETS}
 
 refresh_worker: | $(TF_PORVIDER)
 	cd $(BUILD); \
-		$(TF_REFRESH) -target module.worker
+		$(TF_REFRESH) ${worker_TARGETS}
 	@$(MAKE) worker_ips
 
 destroy_worker: | $(TF_PORVIDER)
 	cd $(BUILD); \
-	  $(SCRIPTS)/aws-keypair.sh -d worker; \
-		$(TF_DESTROY) -target module.worker.aws_autoscaling_group.worker; \
-		$(TF_DESTROY) -target module.worker.aws_launch_configuration.worker; \
-		$(TF_DESTROY) -target module.worker 
+		$(SCRIPTS)/aws-keypair.sh -d worker; \
+		$(TF_DESTROY) ${worker_TARGETS}; \
+		rm -f $(BUILD)/worker.tf
 
 clean_worker: destroy_worker
-	rm -f $(BUILD)/module-worker.tf
+	rm -f $(BUILD)/worker.tf
 
 init_worker: init
-	cp -rf $(RESOURCES)/terraforms/module-worker.tf $(BUILD)
+	cp -rf $(RESOURCES)/terraforms/worker.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 
 worker_ips:

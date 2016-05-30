@@ -1,30 +1,32 @@
-etcd: vpc s3 iam plan_etcd upload_etcd_userdata
+# ETCD_TARGETS must include all resources defined in terraform/etcd.tf
+ETCD_TARGETS := -target=aws_security_group.etcd -target=module.etcd
+
+etcd: plan_etcd vpc s3 iam upload_etcd_userdata 
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c etcd; \
-		$(TF_APPLY) -target module.etcd
+		$(TF_APPLY) ${ETCD_TARGETS}
 	@$(MAKE) etcd_ips
 
-plan_etcd: plan_vpc plan_s3 plan_iam init_etcd
+plan_etcd: init_etcd
 	cd $(BUILD); \
-		$(TF_PLAN) -target module.etcd;
+		$(TF_PLAN) ${ETCD_TARGETS}
 
 refresh_etcd: | $(TF_PORVIDER)
 	cd $(BUILD); \
-		$(TF_REFRESH) -target module.etcd
+		$(TF_REFRESH) ${ETCD_TARGETS}
 	@$(MAKE) etcd_ips
 
 destroy_etcd: | $(TF_PORVIDER)
 	cd $(BUILD); \
-	  $(SCRIPTS)/aws-keypair.sh -d etcd; \
-		$(TF_DESTROY) -target module.etcd.aws_autoscaling_group.etcd; \
-		$(TF_DESTROY) -target module.etcd.aws_launch_configuration.etcd; \
-		$(TF_DESTROY) -target module.etcd 
+		$(SCRIPTS)/aws-keypair.sh -d etcd; \
+		$(TF_DESTROY) ${ETCD_TARGETS}; \
+		rm -f $(BUILD)/etcd.tf
 
 clean_etcd: destroy_etcd
-	rm -f $(BUILD)/module-etcd.tf
+	rm -f $(BUILD)/etcd.tf
 
 init_etcd: init
-	cp -rf $(RESOURCES)/terraforms/module-etcd.tf $(BUILD)
+	cp -rf $(RESOURCES)/terraforms/etcd.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 
 upload_etcd_userdata: init_build_dir
