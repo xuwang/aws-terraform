@@ -1,26 +1,17 @@
-iam: plan_iam
-	cd $(BUILD); \
-	$(TF_APPLY) -target module.iam
+iam: plan_iam 
+	cd $(BUILD); $(TF_APPLY)
+	# Wait for iam/subnets to be ready
+	sleep 5
 
-plan_iam: init_iam
-	cd $(BUILD); \
-	$(TF_PLAN) -target module.iam;
+plan_iam: init_iam plan_s3
+	cd $(BUILD); $(TF_PLAN)
 
-refresh_iam: | $(TF_PORVIDER)
-	cd $(BUILD); \
-	$(TF_REFRESH) -target module.iam
+destroy_iam:
+	rm -f $(BUILD)/iam*.tf; 
+	cd $(BUILD); $(TF_APPLY)
 
-destroy_iam: | $(TF_PORVIDER)
-	cd $(BUILD); \
-	$(TF_DESTROY) -target module.iam; \
-	rm -f $(CONFIG)/aws-files.yaml
-
-clean_iam: destroy_iam
-	rm -f $(BUILD)/module-iam.tf
-
-init_iam: init
-	cp -rf $(RESOURCES)/terraforms/module-iam.tf $(BUILD)
+init_iam: init_s3
+	cp -rf $(RESOURCES)/terraforms/iam*.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 
-.PHONY: iam destroy_iam refresh_iam plan_iam init_iam clean_iam
-
+.PHONY: iam destroy_iam plan_iam init_iam

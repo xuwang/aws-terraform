@@ -1,27 +1,18 @@
 vpc: plan_vpc
-	cd $(BUILD); \
-	$(TF_APPLY) -target module.vpc 
+	cd $(BUILD); $(TF_APPLY)
 	# Wait for vpc/subnets to be ready
 	sleep 5
 
 plan_vpc: init_vpc
-	cd $(BUILD); \
-	$(TF_PLAN) -target module.vpc;
+	cd $(BUILD); $(TF_PLAN)
 
-refresh_vpc: | $(TF_PORVIDER)
-	cd $(BUILD); \
-	$(TF_REFRESH) -target module.vpc
-
-destroy_vpc: | $(TF_PORVIDER)
-	cd $(BUILD); \
-	$(TF_DESTROY) -target module.vpc
-
-clean_vpc: destroy_vpc
-	rm -f $(BUILD)/module-vpc.tf
+destroy_vpc:
+	rm -f $(BUILD)/vpc*.tf; 
+	cd $(BUILD); $(TF_APPLY)
 
 init_vpc: init
-	cp -rf $(RESOURCES)/terraforms/module-vpc.tf $(BUILD)
+	cp -rf $(RESOURCES)/terraforms/vpc*.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 
-.PHONY: vpc destroy_vpc refresh_vpc plan_vpc init_vpc clean_vpc
+.PHONY: vpc destroy_vpc plan_vpc init_vpc
 
