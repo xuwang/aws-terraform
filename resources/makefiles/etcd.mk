@@ -1,6 +1,6 @@
 etcd: plan_etcd
 	cd $(BUILD); $(TF_APPLY);
-	@$(MAKE) etcd_ips
+	$(MAKE) etcd_ips
 
 plan_etcd: init_etcd
 	cd $(BUILD); $(TF_PLAN)

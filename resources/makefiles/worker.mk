@@ -1,8 +1,9 @@
 worker: plan_worker
 	cd $(BUILD); $(TF_APPLY);
+	@$(MAKE) etcd_ips
 	@$(MAKE) worker_ips
 
-plan_worker: init_worker update_worker_user_data
+plan_worker: init_worker
 	cd $(BUILD); $(TF_PLAN)
 
 worker_key:
@@ -15,15 +16,19 @@ destroy_worker:
 	$(SCRIPTS)/aws-keypair.sh -d worker;
 
 init_worker: init_etcd init_iam
-	cp -rf $(RESOURCES)/terraforms/worker*.tf $(BUILD)
+	cp -rf $(RESOURCES)/terraforms/worker.tf $(RESOURCES)/terraforms/vpc-subnet-worker.tf $(BUILD)
 	cd $(BUILD); $(TF_GET); \
 		$(SCRIPTS)/aws-keypair.sh -c worker
 
 update_worker_user_data:
 	cd $(BUILD); \
-		cat cloud-config/worker.yaml cloud-config/systemd-units.yaml cloud-config/files.yaml > cloud-config/worker.yaml.tmpl; \
 		${TF_TAINT} aws_s3_bucket_object.worker_cloud_config ; \
 		$(TF_APPLY)
+
+# EFS has to be enabled for the account
+init_efs_target:
+	cp -rf $(RESOURCES)/terraforms/worker-efs-targe.tf $(RESOURCES)/terraforms/worker-efs-target $(BUILD)
+	cd $(BUILD); $(TF_GET);
 
 worker_ips:
 	@echo "worker public ips: " `$(SCRIPTS)/get-ec2-public-id.sh worker`
