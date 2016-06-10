@@ -13,10 +13,7 @@
 
 # Get instance auth token from meta-data
 get_value() {
-  echo -n $(curl -s http://169.254.169.254/latest/meta-data/iam/security-credentials/$roleProfile/ \
-      | grep "$1" \
-      | awk -F":" '{print $2}' \
-      | sed 's/^[ ^t]*//;s/"//g;s/,//g')
+  echo -n $(curl -s http://169.254.169.254/latest/meta-data/iam/security-credentials/$roleProfile | jq -r ".$1")
 }
 
 # Headers for curl
@@ -37,18 +34,18 @@ ${resource}"
 # Log curl call 
 debug_log () {
     echo ""  >> /tmp/s3-bootstrap.log
-    echo "curl -s -O -H \"Host: ${bucket}.s3.amazonaws.com\" 
-  -H \"Content-Type: ${contentType}\" 
-	-H \"Authorization: AWS ${s3Key}:${signature}\" 
-	-H \"x-amz-security-token:${s3Token}\" 
-	-H \"Date: ${dateValue}\" 
+    echo "curl -s -O -H \"Host: ${bucket}.s3.amazonaws.com\"
+  -H \"Content-Type: ${contentType}\"
+  -H \"Authorization: AWS ${s3Key}:${signature}\"
+  -H \"x-amz-security-token:${s3Token}\"
+  -H \"Date: ${dateValue}\"
 	https://${bucket}.s3.amazonaws.com/${filePath} " >> /tmp/s3-bootstrap.log
 }
 
 # Instance profile
-roleProfile=$(curl -s http://169.254.169.254/latest/meta-data/iam/info \
-	| grep -Eo 'instance-profile/([a-zA-Z.-]+)' \
-	| sed  's#instance-profile/##')
+instanceProfile=$(curl -s http://169.254.169.254/latest/meta-data/iam/info \
+        | jq -r '.InstanceProfileArn' \
+	| sed  's#.*instance-profile/##')
 
 # AWS Account
 accountId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document \
@@ -58,6 +55,9 @@ accountId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/docu
 bucket=${accountId}-coreos-cluster-cloudinit
 
 # Path to cloud-config.yaml
+# Remove environment from instanceProfile, if any. Assume all instances sharing the same prefix is the same role.
+# e.g. hosting, hosting-nonprod assuming "hosting" role.
+roleProfile=${instanceProfile/-*/}
 cloudConfigYaml="${roleProfile}/cloud-config.yaml"
 
 # path to initial-cluster urls file
@@ -86,8 +86,8 @@ curl -L -s -H "Host: ${bucket}.s3.amazonaws.com" \
   -H "Authorization: AWS ${s3Key}:${signature}" \
   -H "x-amz-security-token:${s3Token}" \
   -H "Date: ${dateValue}" \
-  https://${bucket}.s3.amazonaws.com/${cloudConfigYaml} \
-  | sed "s/\\$private_ipv4/$private_ipv4/g; s/\\$public_ipv4/$public_ipv4/g" \
+  https://${bucket}.s3.amazonaws.com/${filePath} \
+  | sed "s/\\$private_ipv4/$private_ipv4/g; s/\\$public_ipv4/$public_ipv4/g; s/role=INSTANCE_PROFILE/role=$instanceProfile/g" \
   > ${workDir}/cloud-config.yaml
 
 # Download initial-cluster
@@ -101,12 +101,12 @@ curl -s -L -O -H "Host: ${bucket}.s3.amazonaws.com" \
   -H "Authorization: AWS ${s3Key}:${signature}" \
   -H "x-amz-security-token:${s3Token}" \
   -H "Date: ${dateValue}" \
-  https://${bucket}.s3.amazonaws.com/${initialCluster}
+  https://${bucket}.s3.amazonaws.com/${filePath}
 
 # Copy initial-cluster to the volume that will be picked up by etcd boostraping
 if [ -f ${workDir}/initial-cluster ] && grep -q ETCD_INITIAL_CLUSTER ${workDir}/initial-cluster ;
 then
-  mkdir -p /etc/sysconfig/
+  mkdir -p /etc/sysconfig
   cp ${workDir}/initial-cluster /etc/sysconfig/initial-cluster
 fi
 
@@ -116,6 +116,7 @@ if [ ! -f $coreos_env ];
 then
     echo "COREOS_PRIVATE_IPV4=$private_ipv4" > /etc/environment
     echo "COREOS_PUBLIC_IPV4=$public_ipv4" >> /etc/environment
+    echo "INSTANCE_PROFILE=$instanceProfile" >> /etc/environment
 fi
 
 # Run cloud-init
