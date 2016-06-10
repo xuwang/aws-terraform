@@ -1,15 +1,21 @@
 
 resource "aws_vpc" "cluster_vpc" {
     cidr_block = "10.10.0.0/16"
+
+    enable_dns_support = true
+    enable_dns_hostnames = true
+
     tags {
         Name = "${var.cluster_name}"
     }
-    enable_dns_support = true
-    enable_dns_hostnames = true
 }
 
 resource "aws_internet_gateway" "cluster_vpc" {
     vpc_id = "${aws_vpc.cluster_vpc.id}"
+
+    tags {
+        Name = "${var.cluster_name}"
+    }
 }
 
 resource "aws_route_table" "cluster_vpc" {
@@ -17,6 +23,10 @@ resource "aws_route_table" "cluster_vpc" {
     route {
         cidr_block = "0.0.0.0/0"
         gateway_id = "${aws_internet_gateway.cluster_vpc.id}"
+    }
+
+    tags {
+        Name = "${var.cluster_name}"
     }
 }
 
