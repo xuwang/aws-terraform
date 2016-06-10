@@ -11,7 +11,7 @@ destroy_vpc:
 	cd $(BUILD); $(TF_APPLY)
 
 init_vpc: init
-	cp -rf $(RESOURCES)/terraforms/vpc*.tf $(BUILD)
+	rsync -av $(RESOURCES)/terraforms/vpc*.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 
 .PHONY: vpc destroy_vpc plan_vpc init_vpc

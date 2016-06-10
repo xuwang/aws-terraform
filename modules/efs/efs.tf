@@ -1,13 +1,8 @@
-# EFS cluster
-resource "aws_efs_file_system" "efs" {
-  reference_name = "${var.vpc_name}-efs"
-  tags {
-    Name = "${var.vpc_name}-efs"
-  }
-  tags {
-    Billing = "${var.vpc_name}"
-  }
-}
+# EFS mount targets
+
+variable "efs_subnet_a_id" { }
+variable "efs_subnet_b_id" { }
+variable "efs_subnet_c_id" { }
 
 resource "aws_efs_mount_target" "efs-a" {
   file_system_id = "${aws_efs_file_system.efs.id}"
