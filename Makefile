@@ -40,6 +40,7 @@ TF_PLAN := terraform plan -module-depth=1
 TF_APPLY := terraform apply
 TF_REFRESH := terraform refresh
 TF_DESTROY := terraform destroy -force
+TF_TAINT := terraform taint -allow-missing
 
 # cidr block to allow ssh; default to  $(curl -s http://ipinfo.io/ip)/32)
 # TF_VAR_allow_ssh_cidr := 
