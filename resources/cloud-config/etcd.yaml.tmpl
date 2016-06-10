@@ -129,14 +129,14 @@ write_files:
         AWS_CONFIG_ENV=/root/.aws/envvars
         source $AWS_CONFIG_ENV
         IMAGE=suet/awscli:latest
-        APPBUCKET=s3://${AWS_ACCOUNT}-coreos-cluster-config/apps
+        APPBUCKET=s3://$${AWS_ACCOUNT}-coreos-cluster-config/apps
         DST=/var/lib/apps
-        CMD="aws s3 sync --exact-timestamps --delete $APPBUCKET $DST && chmod 755 ${DST}/bin/*"
+        CMD="aws s3 sync --exact-timestamps --delete $APPBUCKET $DST && chmod 755 $${DST}/bin/*"
         
         # pull the IMAGE if not loaded
         docker history $IMAGE > /dev/null 2>&1 || docker pull $IMAGE
         # sync s3 apps to
-        docker run --rm --name s3sync -v ${DST}:${DST} --env-file=$AWS_CONFIG_ENV $IMAGE /bin/bash -c "$CMD"
+        docker run --rm --name s3sync -v $${DST}:$${DST} --env-file=$AWS_CONFIG_ENV $IMAGE /bin/bash -c "$CMD"
   - path: /opt/bin/post-provision.sh
     permissions: 0700
     owner: root
@@ -153,31 +153,6 @@ write_files:
             do
               /bin/bash -x $i
             done
-        fi
-        exit 0
-  - path: /opt/bin/update-window.sh
-    permissions: 0700
-    owner: root
-    content: |
-        #!/bin/bash
-        # If etcd is active, this uses locksmith. Otherwise, it randomly delays the reboot.
-        delay=$(/usr/bin/expr $RANDOM % 3600 )
-        rebootflag='NEED_REBOOT'
-        hostip=$(hostname -i | tr -d ' ')
-        ismember=$(etcdctl member list |grep -Eo "(http://$hostip:2380)")
-        
-        if update_engine_client -status | grep $rebootflag;
-        then
-            echo -n "etcd2 is "
-            if systemctl is-active etcd2 && [[ $ismember != "" ]];
-            then
-                echo "Update reboot with locksmithctl."
-                locksmithctl reboot
-            else
-                echo "Update reboot in $delay seconds."
-                sleep $delay
-                reboot
-            fi
         fi
         exit 0
   - path: /etc/systemd/system/docker.service.d/50-insecure-registry.conf
@@ -198,4 +173,29 @@ write_files:
       
       # upload etcd initial-cluster urls to s3 bucket for worker cluster's etcd_proxy
       /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ $image /etcd-aws-proxy
+
+  - path: /etc/aws/account.envvars
+    permissions: 0644
+    owner: root
+    content: |
+        AWS_ACCOUNT=${AWS_ACCOUNT}
+        AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+        CLUSTER_NAME=coreos-cluster
+  - path: /root/.aws/envvars
+    permissions: 0600
+    owner: root
+    content: |
+        AWS_ACCOUNT=${AWS_ACCOUNT}
+        AWS_USER=${AWS_USER}
+        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+        AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+        AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+  - path: /root/.aws/config
+    permissions: 0600
+    owner: root
+    content: |
+        [default]
+        aws_access_key_id=${AWS_ACCESS_KEY_ID}
+        aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
+        region=${AWS_DEFAULT_REGION}
 
