@@ -4,7 +4,7 @@ module "etcd" {
   # cluster varaiables
   cluster_name = "etcd"
   # a list of subnet IDs to launch resources in.
-  cluster_vpc_zone_identifiers = "${module.vpc.etcd_subnet_a_id},${module.vpc.etcd_subnet_b_id},${module.vpc.etcd_subnet_c_id}"
+  cluster_vpc_zone_identifiers = "${module.etcd_subnet_a.id},${module.etcd_subnet_b.id},${module.etcd_subnet_c.id}"
   # for etcd, cluster_min_size = cluster_max_size = cluster_desired_capacity = <odd number>
   cluster_min_size = 1
   cluster_max_size = 1
@@ -26,15 +26,34 @@ module "etcd" {
   data_volume_type = "gp2"
   data_volume_size = 100
 
-  keypair = "etcd"
   user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
   iam_role_policy = "${file(\"policies/etcd_policy.json\")}"
 }
 
+# Upload CoreOS cloud-config to a s3 bucket; s3-cloudconfig-bootstrap script in user-data will download 
+# the cloud-config upon reboot to configure the system. This avoids rebuilding machines when 
+# changing cloud-config.
+resource "aws_s3_bucket_object" "etcd_cloud_config" {
+  bucket = "${aws_s3_bucket.cloudinit.id}"
+  key = "etcd/cloud-config.yaml"
+  content = "${template_file.etcd_cloud_config.rendered}"
+}
+resource "template_file" "etcd_cloud_config" {
+    template = "${file("cloud-config/etcd.yaml.tmpl")}"
+    vars {
+        "AWS_ACCOUNT" = "${var.aws_account.id}"
+        "AWS_USER" = "${aws_iam_user.deployment.name}"
+        "AWS_ACCESS_KEY_ID" = "${aws_iam_access_key.deployment.id}"
+        "AWS_SECRET_ACCESS_KEY" = "${aws_iam_access_key.deployment.secret}"
+        "AWS_DEFAULT_REGION" = "${var.aws_account.default_region}"
+    }
+}
+
 resource "aws_security_group" "etcd"  {
   name = "etcd"
-  vpc_id = "${module.vpc.vpc_id}"
+  vpc_id = "${aws_vpc.cluster_vpc.id}"
   description = "etcd"
+  depends_on = ["aws_s3_bucket_object.etcd_cloud_config"]
 
   # Allow all outbound traffic
   egress {
@@ -49,7 +68,7 @@ resource "aws_security_group" "etcd"  {
     from_port = 2380
     to_port = 2380
     protocol = "tcp"
-    cidr_blocks = ["${module.vpc.vpc_cidr}"]
+    cidr_blocks = ["${aws_vpc.cluster_vpc.cidr_block}"]
   }
 
   # Allow etcd clients to communicate
@@ -57,7 +76,7 @@ resource "aws_security_group" "etcd"  {
     from_port = 2379
     to_port = 2379
     protocol = "tcp"
-    cidr_blocks = ["${module.vpc.vpc_cidr}"]
+    cidr_blocks = ["${aws_vpc.cluster_vpc.cidr_block}"]
   }
 
   # Allow SSH from my hosts
@@ -74,12 +93,5 @@ resource "aws_security_group" "etcd"  {
   }
 }
 
-/*
-resource "aws_s3_bucket_object" "cloudinit" {
-  bucket = "${var.cloundinit-bucket}"
-  key = "etcd2/cloud-config.yaml"
-  source = "could-config/etcd.yaml"
-}
-*/
 
 

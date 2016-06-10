@@ -3,8 +3,7 @@ module "worker" {
   # cluster varaiables
   cluster_name = "worker"
   # a list of subnet IDs to launch resources in.
-  cluster_vpc_zone_identifiers =
-     "${module.vpc.worker_subnet_a_id},  ${module.vpc.worker_subnet_b_id}, ${module.vpc.worker_subnet_c_id}"
+  cluster_vpc_zone_identifiers = "${module.worker_subnet_a.id},${module.worker_subnet_b.id},${module.worker_subnet_c.id}"
   cluster_min_size = 1
   cluster_max_size = 1
   cluster_desired_capacity = 1 
@@ -25,14 +24,33 @@ module "worker" {
   data_volume_type = "gp2"
   data_volume_size = 100
 
-  keypair = "worker"
   user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
   iam_role_policy = "${file(\"policies/worker_policy.json\")}"
 }
 
+
+# Upload CoreOS cloud-config to a s3 bucket; s3-cloudconfig-bootstrap script in user-data will download 
+# the cloud-config upon reboot to configure the system. This avoids rebuilding machines when 
+# changing cloud-config.
+resource "aws_s3_bucket_object" "worker_cloud_config" {
+  bucket = "${aws_s3_bucket.cloudinit.id}"
+  key = "worker/cloud-config.yaml"
+  content = "${template_file.worker_cloud_config.rendered}"
+}
+resource "template_file" "worker_cloud_config" {
+    template = "${file("cloud-config/worker.yaml.tmpl")}"
+    vars {
+        "AWS_ACCOUNT" = "${var.aws_account.id}"
+        "AWS_USER" = "${aws_iam_user.deployment.name}"
+        "AWS_ACCESS_KEY_ID" = "${aws_iam_access_key.deployment.id}"
+        "AWS_SECRET_ACCESS_KEY" = "${aws_iam_access_key.deployment.secret}"
+        "AWS_DEFAULT_REGION" = "${var.aws_account.default_region}"
+    }
+}
+
 resource "aws_security_group" "worker"  {
   name = "worker"
-  vpc_id = "${module.vpc.vpc_id}"
+  vpc_id = "${aws_vpc.cluster_vpc.id}"
   description = "worker"
 
   # Allow all outbound traffic
@@ -48,7 +66,7 @@ resource "aws_security_group" "worker"  {
     from_port = 10
     to_port = 65535
     protocol = "tcp"
-    cidr_blocks = ["${module.vpc.vpc_cidr}"]
+    cidr_blocks = ["${aws_vpc.cluster_vpc.cidr_block}"]
   }
 
   # Allow access from vpc
@@ -56,7 +74,7 @@ resource "aws_security_group" "worker"  {
     from_port = 10
     to_port = 65535
     protocol = "udp"
-    cidr_blocks = ["${module.vpc.vpc_cidr}"]
+    cidr_blocks = ["${aws_vpc.cluster_vpc.cidr_block}"]
   }
 
   # Allow SSH from my hosts

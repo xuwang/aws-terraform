@@ -25,7 +25,7 @@ init_build_dir:
 	@cp -rf $(RESOURCES)/cloud-config $(BUILD)
 	@cp -rf $(RESOURCES)/policies $(BUILD)
 	@$(SCRIPTS)/substitute-AWS-ACCOUNT.sh $(POLICIES)/*.json
-	@$(SCRIPTS)/substitute-CLUSTER-NAME.sh $(CONFIG)/*.yaml $(POLICIES)/*.json
+	@$(SCRIPTS)/substitute-CLUSTER-NAME.sh $(CONFIG)/*.yaml*  $(POLICIES)/*.json
 
 update_ami:	| $(BUILD)
 	# Generate default AMI ids
