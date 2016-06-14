@@ -70,17 +70,20 @@ resource "aws_iam_role_policy" "cluster" {
   name = "${var.cluster_name}"
   role = "${aws_iam_role.cluster.id}"
   policy = "${var.iam_role_policy}"
+  lifecycle { create_before_destroy = true }
 }
 
 # setup the cluster ec2 profile
 resource "aws_iam_instance_profile" "cluster" {
   name = "${var.cluster_name}"
   roles = ["${aws_iam_role.cluster.name}"]
+  lifecycle { create_before_destroy = true }
 }
 
 resource "aws_iam_role" "cluster" {
   name = "${var.cluster_name}"
   path = "/"
+  lifecycle { create_before_destroy = true }
   assume_role_policy =  <<EOF
 {
   "Version": "2012-10-17",
