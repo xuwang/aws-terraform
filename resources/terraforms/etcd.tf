@@ -54,6 +54,7 @@ resource "aws_security_group" "etcd"  {
   vpc_id = "${aws_vpc.cluster_vpc.id}"
   description = "etcd"
   depends_on = ["aws_s3_bucket_object.etcd_cloud_config"]
+  lifecycle { create_before_destroy = true }
 
   # Allow all outbound traffic
   egress {

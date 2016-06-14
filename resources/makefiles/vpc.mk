@@ -6,13 +6,20 @@ vpc: plan_vpc
 plan_vpc: init_vpc
 	cd $(BUILD); $(TF_PLAN)
 
-destroy_vpc:
-	rm -f $(BUILD)/vpc*.tf; 
-	cd $(BUILD); $(TF_APPLY)
+plan_destroy_vpc:
+	$(eval TMP := $(shell mktemp -d -t vpc ))
+	mv $(BUILD)/vpc*.tf $(TMP)
+	cd $(BUILD); $(TF_PLAN)
+	mv  $(TMP)/vpc*.tf $(BUILD)
+	rmdir $(TMP)
+
+destroy_vpc:  
+	rm -f $(BUILD)/vpc*.tf;
+	cd $(BUILD); $(TF_APPLY) 
 
 init_vpc: init
 	rsync -av $(RESOURCES)/terraforms/vpc*.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 
-.PHONY: vpc destroy_vpc plan_vpc init_vpc
+.PHONY: vpc plan_destroy_vpc destroy_vpc plan_vpc init_vpc
 

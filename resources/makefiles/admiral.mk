@@ -9,9 +9,16 @@ admiral_key:
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c admiral; \
 
-destroy_admiral: 
-	rm -f $(BUILD)/admiral*.tf; 
-	cd $(BUILD); $(TF_APPLY); \
+plan_destroy_admiral:
+	$(eval TMP := $(shell mktemp -d -t admiral ))
+	mv $(BUILD)/admiral*.tf $(TMP)
+	cd $(BUILD); $(TF_PLAN)
+	mv  $(TMP)/admiral*.tf $(BUILD)
+	rmdir $(TMP)
+
+destroy_admiral:  
+	rm -f $(BUILD)/admiral*.tf
+	cd $(BUILD); $(TF_APPLY) 
 	$(SCRIPTS)/aws-keypair.sh -d admiral;
 
 init_admiral: init_etcd init_iam
@@ -28,4 +35,4 @@ update_admiral_user_data:
 admiral_ips:
 	@echo "admiral public ips: " `$(SCRIPTS)/get-ec2-public-id.sh admiral`
 
-.PHONY: admiral destroy_admiral plan_admiral init_admiral admiral_ips update_admiral_user_data
+.PHONY: admiral plan_destroy_admiral destroy_admiral plan_admiral init_admiral admiral_ips update_admiral_user_data

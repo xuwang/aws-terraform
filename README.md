@@ -110,7 +110,7 @@ The above command will create a __coreos-cluster__ profile authentication sectio
 This default build will create one etcd node and one worker node cluster in a VPC, 
 with application buckets for data, necessary iam roles, polices, keypairs and keys. 
 The instance type for the nodes is t2.micro. You can review the configuration and 
-make changes if needed. See [Customization](#customization) for details.
+make changes if needed. See [Customization](#customization) for details. 
 
 ```
 $ make
@@ -118,6 +118,17 @@ $ make
 ... at last, shows the worker's ip:
 worker public ips: 52.27.156.202
 ...
+```
+
+Although the above quick start will help to understand what the code will do, the common development work flow is to build in steps, for example, you will build VPC first, then etcd, then worker. This is what I usually do for a new environment:
+
+```
+make plan_vpc
+make vpc
+make plan_etcd
+make etcd
+make plan_worker
+make worker
 ```
 
 #### To see the list of resources created:
@@ -262,18 +273,28 @@ Resource | Description
 *efs* | EFS cluster
 *etcd* | Setup ETCD2 cluster
 *worker* | Setup application docker hosting cluster
-*admiral* | Central service cluster (Jenkins, fleet-ui, monitoring, logging, etc)
+*admiral* | (Optional) Service cluster (Jenkins, fleet-ui, monitoring...). You can run these on worker machine, but you might have a different cluster for different access roles. 
 *dockerhub* | Private docker registry cluster
-*rds* | RDS servers
+*rds* | (Optinal) RDS server
 *cloudtrail* | Setup AWS CloudTrail
 
 To build the cluster step by step:
 
 ```
 $ make init
+$ make plan_vpc
 $ make vpc
+$ make plan_etcd
 $ make etcd
+$ make plan_worker
 $ make worker
+```
+
+To destroy:
+
+```
+make plan_destroy_all
+make destroy_all
 ```
 
 Make commands can be re-run. If a resource already exists, it just refreshes the terraform status.
@@ -284,19 +305,18 @@ and execute correspondent terraform cmd to build the resource on AWS.
 To destroy a resource:
 
 ```
+$ make plan_destroy_<resource>
 $ make destroy_<resource> 
 ```
 
 ## Technical notes
-* Etcd cluster is on an autoscaling group. It should be set with a fixed, odd number (1,3,5..), and cluster_desired_capacity=min_size=max_size.
-* Cluster discovery is managed with [dockerage/etcd-aws-cluster](https://hub.docker.com/r/dockerage/etcd-aws-cluster/) image. etcd cluster is formed by self-discover through its auto-scaling group and then an etcd initial cluster is updated automatically to s3://AWS-ACCOUNT-CLUSTER-NAME-cloudinit/etcd/initial-cluster s3 bucket. Worker nodes join the cluster by downloading the etcd initial-cluster file from the s3 bucket during their bootstrap.
+* Etcd cluster is on its own autoscaling group. It should be set with a fixed, odd number (1,3,5..), and cluster_desired_capacity=min_size=max_size.
+* Cluster discovery is managed with [dockerage/etcd-aws-cluster](https://hub.docker.com/r/dockerage/etcd-aws-cluster/) image. etcd cluster is formed by self-discovery through its auto-scaling group and then an etcd initial cluster is updated automatically to s3://AWS-ACCOUNT-CLUSTER-NAME-cloudinit/etcd/initial-cluster s3 bucket. Worker nodes join the cluster by downloading the etcd initial-cluster file from the s3 bucket during their bootstrap.
 * AWS resources are defined in resources and modules directories.
 The build process will copy all resource files from _resources_ to a _build_ directory. 
-The terraform actions are performed under _build_, which is ignored in .gitignore. The original Terraform files in the repo are kept intact. 
-* Makefiles and shell scripts are used to give us more flexibility on tasks Terraform 
-leftover. This provides stream-lined build automation. 
-* All nodes use a common bootstrap shell script as user-data, which downloads initial-cluster file 
-and nodes specific cloud-config.yaml to configure the node. If cloud-config changes, 
+The terraform actions are performed under _build_, which is ignored in .gitignore. Tfstat file will also be stored in _build_ directory. The original Terraform files in the repo are kept intact. 
+* Makefiles and shell scripts are used to give more flexibility to fill the gap between Terraform and AWS API. This provides stream-lined build automation. 
+* All nodes use one common bootstrap script *resources/cloud-config/s3-cloudconfig-bootstrap.sh* as _user-data_ which downloads initial-cluster file and the cluster nodes's specific cloud-config.yaml to configure a node. If cloud-config changes, 
 no need to rebuild an instance. Just reboot it to pick up the change.
 * CoreOS AMI is generated on the fly to keep it up-to-data. Default channel can be changed in Makefile.
 * Terraform auto-generated launch configuration name and CBD feature are used 

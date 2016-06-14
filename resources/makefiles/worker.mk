@@ -10,9 +10,16 @@ worker_key:
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c worker; \
 
-destroy_worker: 
-	rm -f $(BUILD)/worker*.tf; 
-	cd $(BUILD); $(TF_APPLY); \
+plan_destroy_worker:
+	$(eval TMP := $(shell mktemp -d -t worker ))
+	mv $(BUILD)/worker*.tf $(TMP)
+	cd $(BUILD); $(TF_PLAN)
+	mv  $(TMP)/worker*.tf $(BUILD)
+	rmdir $(TMP)
+
+destroy_worker:  
+	rm -f $(BUILD)/worker*.tf
+	cd $(BUILD); $(TF_APPLY) 
 	$(SCRIPTS)/aws-keypair.sh -d worker;
 
 init_worker: init_etcd init_iam
@@ -33,5 +40,5 @@ init_efs_target:
 worker_ips:
 	@echo "worker public ips: " `$(SCRIPTS)/get-ec2-public-id.sh worker`
 
-.PHONY: worker destroy_worker plan_worker init_worker worker_ips update_worker_user_data
+.PHONY: worker plan_destroy_worker destroy_worker plan_worker init_worker worker_ips update_worker_user_data
 

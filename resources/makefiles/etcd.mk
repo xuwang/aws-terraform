@@ -9,9 +9,16 @@ etcd_key:
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c etcd; \
 
+plan_destroy_etcd:
+	$(eval TMP := $(shell mktemp -d -t etcd ))
+	mv $(BUILD)/etcd*.tf $(TMP)
+	cd $(BUILD); $(TF_PLAN)
+	mv  $(TMP)/etcd*.tf $(BUILD)
+	rmdir $(TMP)
+
 destroy_etcd: 
-	rm -f $(BUILD)/etcd*.tf; 
-	cd $(BUILD); $(TF_APPLY); \
+	rm -f $(BUILD)/etcd*.tf; \ 
+	cd $(BUILD); $(TF_APPLY) 
 	$(SCRIPTS)/aws-keypair.sh -d etcd;
 
 init_etcd: init_vpc init_iam
@@ -27,4 +34,4 @@ update_etcd_user_data:
 etcd_ips:
 	@echo "etcd public ips: " `$(SCRIPTS)/get-ec2-public-id.sh etcd`
 
-.PHONY: etcd destroy_etcd plan_etcd init_etcd etcd_ips update_etcd_user_data
+.PHONY: etcd destroy_etcd plan_destroy_etcd plan_etcd init_etcd etcd_ips update_etcd_user_data

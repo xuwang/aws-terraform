@@ -28,18 +28,21 @@ AMI_VAR=$(BUILD)/ami.tf
 
 # Terraform files
 TF_PORVIDER := $(BUILD)/provider.tf
-TF_DESTROY_PLAN := $(BUILD)/destroy.tfplan
-TF_APPLY_PLAN := $(BUILD)/destroy.tfplan
+TF_DESTROY_PLAN_OUT := $(BUILD)/destroy.tfplan
+TF_APPLY_PLAN := $(BUILD)/apply.tfplan
 TF_STATE := $(BUILD)/terraform.tfstate
 
 # Terraform commands
+# Note: for production, set -refresh=true to be safe
+TF_APPLY := terraform apply -refresh=false
+# Note: for proudction, remove --force to confirm destroy. 
+TF_DESTROY := terraform destroy --force
+TF_DESTROY_PLAN := terraform plan -destroy -refresh=false
 TF_GET := terraform get -update
-TF_SHOW := terraform show -module-depth=1
 TF_GRAPH := terraform graph -draw-cycles -verbose
-TF_PLAN := terraform plan -module-depth=1
-TF_APPLY := terraform apply
+TF_PLAN := terraform plan -module-depth=1 -refresh=false
+TF_SHOW := terraform show -module-depth=1
 TF_REFRESH := terraform refresh
-TF_DESTROY := terraform destroy -force
 TF_TAINT := terraform taint -allow-missing
 
 # cidr block to allow ssh; default to  $(curl -s http://ipinfo.io/ip)/32)
@@ -58,27 +61,20 @@ help:
 	@echo "Available resources: vpc s3 route53 iam efs elb etcd worker dockerhub admiral rds"
 	@echo "For example: make plan_worker # to show what resources are planned for worker"
 
+plan_destroy_all:
+	cd $(BUILD); $(TF_DESTROY_PLAN)
+
+destroy_all:
+	cd $(BUILD); $(TF_DESTROY)
+	rm -rf $(BUILD)/*.tf
+
 destroy: 
-	@echo "Usage: make destroy_<resource>"
+	@echo "Usage: make destroy_<resource> | make plan_destroy_all  | make destroy_all"
 	@echo "For example: make destroy_worker"
 	@echo "Node: destroy may fail because of outstanding dependences"
 
-destroy_all: \
-	destroy_admiral \
-	destroy_dockerhub \
-	destroy_worker \
-	destroy_etcd \
-	destroy_efs \
-	destroy_elb \
-	destroy_rds \
-	destroy_iam \
-	destroy_route53 \
-	destroy_s3 \
-	destroy_vpc
-
 clean_all: destroy_all
-	rm -f $(BUILD)/*.tf 
-	#rm -f $(BUILD)/terraform.tfstate
+	rm -rf $(BUILD)
 
 # TODO: Push/Pull terraform states from a tf state repo
 pull_tf_state:
@@ -91,4 +87,4 @@ push_tf_state:
 # Load all resouces makefile
 include resources/makefiles/*.mk
 
-.PHONY: all destroy destroy_all clean_all help pull_tf_state push_tf_state
+.PHONY: all destroy destroy_all plan_destroy_all clean_all help pull_tf_state push_tf_state
