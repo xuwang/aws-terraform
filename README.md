@@ -273,8 +273,7 @@ Resource | Description
 *efs* | EFS cluster
 *etcd* | Setup ETCD2 cluster
 *worker* | Setup application docker hosting cluster
-*admiral* | (Optional) Service cluster (Jenkins, fleet-ui, monitoring...). You can run these on worker machine, but you might have a different cluster for different access roles. 
-*dockerhub* | Private docker registry cluster
+*admiral* | (Optional) Service cluster (Jenkins, fleet-ui, monitoring...). You can run these on worker machine, but you might have a different cluster for different access roles.
 *rds* | (Optinal) RDS server
 *cloudtrail* | Setup AWS CloudTrail
 
