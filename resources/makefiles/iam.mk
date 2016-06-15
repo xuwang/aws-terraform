@@ -17,7 +17,7 @@ destroy_iam:
 	rm -f $(BUILD)/iam*.tf
 	cd $(BUILD); $(TF_APPLY)
 
-init_iam: init_iam
+init_iam: init_s3
 	cp -rf $(RESOURCES)/terraforms/iam*.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 

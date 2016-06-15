@@ -1,3 +1,6 @@
+this_make := $(lastword $(MAKEFILE_LIST))
+$(warning $(this_make))
+
 vpc: plan_vpc
 	cd $(BUILD); $(TF_APPLY)
 	# Wait for vpc/subnets to be ready

@@ -1,3 +1,6 @@
+this_make := $(lastword $(MAKEFILE_LIST))
+$(warning $(this_make))
+
 etcd: plan_etcd
 	cd $(BUILD); $(TF_APPLY);
 	$(MAKE) etcd_ips
@@ -26,6 +29,7 @@ init_etcd: init_vpc init_iam
 	cd $(BUILD); $(TF_GET); \
 		$(SCRIPTS)/aws-keypair.sh -c etcd
 
+# Call this explicitly to re-load user_data
 update_etcd_user_data:
 	cd $(BUILD); \
 		${TF_TAINT} aws_s3_bucket_object.etcd_cloud_config ; \

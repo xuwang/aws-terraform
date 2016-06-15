@@ -1,3 +1,6 @@
+this_make := $(lastword $(MAKEFILE_LIST))
+$(warning $(this_make))
+
 s3: plan_s3
 	cd $(BUILD); $(TF_APPLY)
 	# Wait for s3/subnets to be ready

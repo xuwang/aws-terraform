@@ -1,3 +1,6 @@
+this_make := $(lastword $(MAKEFILE_LIST))
+$(warning $(this_make))
+
 worker: plan_worker
 	cd $(BUILD); $(TF_APPLY);
 	@$(MAKE) etcd_ips
@@ -27,6 +30,7 @@ init_worker: init_etcd init_iam
 	cd $(BUILD); $(TF_GET); \
 		$(SCRIPTS)/aws-keypair.sh -c worker
 
+# Call this explicitly to re-load user_data
 update_worker_user_data:
 	cd $(BUILD); \
 		${TF_TAINT} aws_s3_bucket_object.worker_cloud_config ; \
