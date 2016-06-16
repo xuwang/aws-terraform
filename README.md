@@ -270,11 +270,11 @@ Resource | Description
 *iam* | Setup a deployment user and deployment keys
 *route53* | Setup public and private hosted zones on Route53 DNS service
 *elb* | Setup application ELBs
-*efs* | EFS cluster
+*efs* | EFS cluster. Need to enable EFS preview in your AWS account.
 *etcd* | Setup ETCD2 cluster
 *worker* | Setup application docker hosting cluster
 *admiral* | (Optional) Service cluster (Jenkins, fleet-ui, monitoring...). You can run these on worker machine, but you might have a different cluster for different access roles.
-*rds* | (Optinal) RDS server
+*rds* | (Optinal) RDS server (postgres)
 *cloudtrail* | Setup AWS CloudTrail
 
 To build the cluster step by step:
@@ -309,6 +309,116 @@ $ make destroy_<resource>
 ```
 
 ## Technical notes
+* File tree
+```
+.
+├── LICENSE
+├── Makefile
+├── README.md
+├── Vagrantfile
+├── build
+│   ├── cloud-config
+│   │   ├── admiral.yaml
+│   │   ├── admiral.yaml.tmpl
+│   │   ├── dockerhub.yaml
+│   │   ├── etcd.yaml.tmpl
+│   │   ├── files.yaml
+│   │   ├── s3-cloudconfig-bootstrap.sh
+│   │   ├── systemd-units-flannel.yaml
+│   │   ├── systemd-units.yaml
+│   │   ├── worker.yaml
+│   │   └── worker.yaml.tmpl
+│   ├── keypairs
+│   │   └── admiral.pem
+│   ├── policies
+│   │   ├── admiral_policy.json
+│   │   ├── assume_role_policy.json
+│   │   ├── deployment_policy.json
+│   │   ├── dockerhub_policy.json
+│   │   ├── etcd_policy.json
+│   │   └── worker_policy.json
+│   ├── terraform.tfstate
+│   └── terraform.tfstate.backup
+├── modules
+│   ├── cluster
+│   │   ├── cluster.tf
+│   │   └── variables.tf
+│   ├── efs-target
+│   │   └── efs-target.tf
+│   ├── elb
+│   │   ├── dockerhub.tf
+│   │   ├── security.tf
+│   │   └── variables.tf
+│   └── subnet
+│       └── subnet.tf
+├── resources
+│   ├── certs
+│   │   ├── Makefile
+│   │   ├── README.md
+│   │   ├── etcd-client.cnf
+│   │   ├── etcd.cnf
+│   │   ├── rootCA.cnf
+│   │   └── site.cnf
+│   ├── cloud-config
+│   │   ├── admiral.yaml
+│   │   ├── admiral.yaml.tmpl
+│   │   ├── dockerhub.yaml
+│   │   ├── etcd.yaml.tmpl
+│   │   ├── files.yaml
+│   │   ├── s3-cloudconfig-bootstrap.sh
+│   │   ├── systemd-units-flannel.yaml
+│   │   ├── systemd-units.yaml
+│   │   ├── worker.yaml
+│   │   └── worker.yaml.tmpl
+│   ├── makefiles
+│   │   ├── admiral.mk
+│   │   ├── cloudtrail.mk
+│   │   ├── efs.mk
+│   │   ├── elb.mk
+│   │   ├── etcd.mk
+│   │   ├── iam.mk
+│   │   ├── init.mk
+│   │   ├── rds.mk
+│   │   ├── route53.mk
+│   │   ├── s3.mk
+│   │   ├── vpc.mk
+│   │   └── worker.mk
+│   ├── policies
+│   │   ├── admiral_policy.json
+│   │   ├── assume_role_policy.json
+│   │   ├── deployment_policy.json
+│   │   ├── dockerhub_policy.json
+│   │   ├── etcd_policy.json
+│   │   └── worker_policy.json
+│   └── terraforms
+│       ├── admiral.tf
+│       ├── efs.tf
+│       ├── etcd.tf
+│       ├── iam.tf
+│       ├── module-elb.tf
+│       ├── rds.tf
+│       ├── route53.tf
+│       ├── s3.tf
+│       ├── vpc-subnet-admiral.tf
+│       ├── vpc-subnet-elb.tf
+│       ├── vpc-subnet-etcd.tf
+│       ├── vpc-subnet-rds.tf
+│       ├── vpc-subnet-worker.tf
+│       ├── vpc.tf
+│       ├── worker-efs-target.tf
+│       └── worker.tf
+└── scripts
+    ├── aws-keypair.sh
+    ├── cloudtrail-admin.sh
+    ├── gen-provider.sh
+    ├── get-ami.sh
+    ├── get-ec2-public-id.sh
+    ├── mount-efs.sh
+    ├── read_cfg.sh
+    ├── substitute-AWS-ACCOUNT.sh
+    ├── substitute-CLUSTER-NAME.sh
+    └── wait-cloudinit-bucket.sh
+```
 * Etcd cluster is on its own autoscaling group. It should be set with a fixed, odd number (1,3,5..), and cluster_desired_capacity=min_size=max_size.
 * Cluster discovery is managed with [dockerage/etcd-aws-cluster](https://hub.docker.com/r/dockerage/etcd-aws-cluster/) image. etcd cluster is formed by self-discovery through its auto-scaling group and then an etcd initial cluster is updated automatically to s3://AWS-ACCOUNT-CLUSTER-NAME-cloudinit/etcd/initial-cluster s3 bucket. Worker nodes join the cluster by downloading the etcd initial-cluster file from the s3 bucket during their bootstrap.
 * AWS resources are defined in resources and modules directories.
