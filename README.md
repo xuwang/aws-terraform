@@ -316,29 +316,6 @@ $ make destroy_<resource>
 ├── Makefile
 ├── README.md
 ├── Vagrantfile
-├── build
-│   ├── cloud-config
-│   │   ├── admiral.yaml
-│   │   ├── admiral.yaml.tmpl
-│   │   ├── dockerhub.yaml
-│   │   ├── etcd.yaml.tmpl
-│   │   ├── files.yaml
-│   │   ├── s3-cloudconfig-bootstrap.sh
-│   │   ├── systemd-units-flannel.yaml
-│   │   ├── systemd-units.yaml
-│   │   ├── worker.yaml
-│   │   └── worker.yaml.tmpl
-│   ├── keypairs
-│   │   └── admiral.pem
-│   ├── policies
-│   │   ├── admiral_policy.json
-│   │   ├── assume_role_policy.json
-│   │   ├── deployment_policy.json
-│   │   ├── dockerhub_policy.json
-│   │   ├── etcd_policy.json
-│   │   └── worker_policy.json
-│   ├── terraform.tfstate
-│   └── terraform.tfstate.backup
 ├── modules
 │   ├── cluster
 │   │   ├── cluster.tf
