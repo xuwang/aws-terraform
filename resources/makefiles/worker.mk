@@ -1,7 +1,7 @@
 this_make := $(lastword $(MAKEFILE_LIST))
 $(warning $(this_make))
 
-worker: plan_worker
+worker: etcd plan_worker
 	cd $(BUILD); $(TF_APPLY);
 	@$(MAKE) etcd_ips
 	@$(MAKE) worker_ips
@@ -28,7 +28,7 @@ destroy_worker:
 init_worker: init_etcd init_iam
 	cp -rf $(RESOURCES)/terraforms/worker.tf $(RESOURCES)/terraforms/vpc-subnet-worker.tf $(BUILD)
 	cd $(BUILD); $(TF_GET); \
-		$(SCRIPTS)/aws-keypair.sh -c worker
+	$(SCRIPTS)/aws-keypair.sh -c worker
 
 # Call this explicitly to re-load user_data
 update_worker_user_data:

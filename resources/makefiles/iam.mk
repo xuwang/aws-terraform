@@ -1,3 +1,6 @@
+this_make := $(lastword $(MAKEFILE_LIST))
+$(warning $(this_make))
+
 iam: plan_iam 
 	cd $(BUILD); $(TF_APPLY)
 	# Wait for iam/subnets to be ready

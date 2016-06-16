@@ -24,5 +24,9 @@ init_s3: init
 	cp -rf $(RESOURCES)/terraforms/s3*.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 
+
+cloudinit_bucket:
+	@echo "s3 bucket names: " `$(SCRIPTS)/get-bucket-name.sh cloudinit`
+
 .PHONY: s3 plan_destroy_s3 destroy_s3 plan_s3 init_s3
 

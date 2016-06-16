@@ -1,28 +1,33 @@
-rds: vpc plan_rds
-	cd $(BUILD); \
-	$(TF_APPLY) -target module.rds
+this_make := $(lastword $(MAKEFILE_LIST))
+$(warning $(this_make))
 
-plan_rds: plan_vpc init_rds
-	cd $(BUILD); \
-	$(TF_PLAN) -target module.rds;
+rds: plan_rds
+	cd $(BUILD); $(TF_APPLY)
+	# Wait for s3/subnets to be ready
+	sleep 5
 
-refresh_rds: | $(TF_PORVIDER)
-	cd $(BUILD); \
-	$(TF_REFRESH) -target module.rds
+plan_rds: clean_rds init_rds
+	cd $(BUILD); $(TF_PLAN)
 
-destroy_rds: | $(TF_PORVIDER)
-	cd $(BUILD); \
-	$(TF_DESTROY) -target module.rds; \
-	rm -f $(CONFIG)/aws-files.yaml
+clean_rds:
+	cd $(BUILD); rm -f $(BUILD)/rds*.tf
 
-clean_rds: destroy_rds
-	rm -f $(BUILD)/module-rds.tf
+plan_destroy_rds:
+	$(eval TMP := $(shell mktemp -d -t s3 ))
+	mv $(BUILD)/rds*.tf $(TMP)
+	cd $(BUILD); $(TF_PLAN)
+	mv  $(TMP)/rds.tf $(BUILD)
+	rmdir $(TMP)
 
-init_rds: init
-	cp -rf $(RESOURCES)/terraforms/module-rds.tf $(BUILD)
+destroy_rds:  
+	rm -f $(BUILD)/rds*.tf
+	cd $(BUILD); $(TF_APPLY)
+
+init_rds: init_vpc
+	cp -rf $(RESOURCES)/terraforms/rds*.tf $(BUILD)
 	cd $(BUILD); $(TF_GET);
 
 gen_rds_pass:
 	# Todo: generate or get db_user/db_password
 
-.PHONY: rds destroy_rds refresh_rds plan_rds init_rds clean_rds
+.PHONY: rds plan_rds plan_destroy_rds destroy_rds init_rds gen_rds_pass
