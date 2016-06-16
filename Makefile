@@ -57,8 +57,10 @@ export
 all: worker
 
 help:
-	@echo "Usage: make (<resource> | destroy_<resource> | plan_<resource> | refresh_<resource> | show | graph )"
-	@echo "Available resources: vpc s3 route53 iam efs elb etcd worker dockerhub admiral rds"
+	@echo "Usage: make plan_<resource> | <resource> | plan_destroy_<resource> | destroy_<resource> | refresh_<resource>"
+	@echo "Or make show | graph"
+	@echo "Or make plan_destroy_all | destroy_all
+	@echo "Available resources: vpc s3 route53 iam efs elb etcd worker admiral rds"
 	@echo "For example: make plan_worker # to show what resources are planned for worker"
 
 plan_destroy_all:
