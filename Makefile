@@ -57,9 +57,9 @@ export
 all: worker
 
 help:
-	@echo "Usage: make plan_<resource> | <resource> | plan_destroy_<resource> | destroy_<resource> | refresh_<resource>"
+	@echo "Usage: make plan_<resource> | <resource> | plan_destroy_<resource> | destroy_<resource>"
 	@echo "Or make show | graph"
-	@echo "Or make plan_destroy_all | destroy_all
+	@echo "Or make plan_destroy_all | destroy_all"
 	@echo "Available resources: vpc s3 route53 iam efs elb etcd worker admiral rds"
 	@echo "For example: make plan_worker # to show what resources are planned for worker"
 
