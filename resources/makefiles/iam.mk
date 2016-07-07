@@ -1,5 +1,5 @@
-this_make := $(lastword $(MAKEFILE_LIST))
-$(warning $(this_make))
+#this_make := $(lastword $(MAKEFILE_LIST))
+#$(warning $(this_make))
 
 iam: plan_iam 
 	cd $(BUILD); $(TF_APPLY)

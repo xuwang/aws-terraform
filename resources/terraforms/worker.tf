@@ -5,8 +5,8 @@ module "worker" {
   # a list of subnet IDs to launch resources in.
   cluster_vpc_zone_identifiers = "${module.worker_subnet_a.id},${module.worker_subnet_b.id},${module.worker_subnet_c.id}"
   cluster_min_size = 1
-  cluster_max_size = 1
-  cluster_desired_capacity = 1 
+  cluster_max_size = 2
+  cluster_desired_capacity = 2
   cluster_security_groups = "${aws_security_group.worker.id}"
 
   # Instance specifications
@@ -91,10 +91,3 @@ resource "aws_security_group" "worker"  {
   }
 }
 
-/*
-resource "aws_s3_bucket_object" "cloudinit" {
-  bucket = "${var.cloundinit-bucket}"
-  key = "etcd2/cloud-config.yaml"
-  source = "could-config/etcd.yaml"
-}
-*/

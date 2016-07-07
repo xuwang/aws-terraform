@@ -1,10 +1,10 @@
-this_make := $(lastword $(MAKEFILE_LIST))
-$(warning $(this_make))
+#this_make := $(lastword $(MAKEFILE_LIST))
+#$(warning $(this_make))
 
-worker: etcd wait_cluster plan_worker
+worker: etcd plan_worker
 	cd $(BUILD); $(TF_APPLY);
-	@$(MAKE) etcd_ips
-	@$(MAKE) worker_ips
+	@$(MAKE) get_etcd_ips
+	@$(MAKE) get_worker_ips
 
 plan_worker: init_worker
 	cd $(BUILD); $(TF_PLAN)
@@ -41,12 +41,9 @@ init_efs_target:
 	cp -rf $(RESOURCES)/terraforms/worker-efs-targe.tf $(RESOURCES)/terraforms/worker-efs-target $(BUILD)
 	cd $(BUILD); $(TF_GET);
 
-wait_cluster:
-	@echo "waiting for initial cluster to be ready..."
-	$(SCRIPTS)/wait-cloudinit-bucket.sh
-
 get_worker_ips:
 	@echo "worker public ips: " `$(SCRIPTS)/get-ec2-public-id.sh worker`
 
-.PHONY: worker plan_destroy_worker destroy_worker plan_worker init_worker wait_cluster worker_ips update_worker_user_data
+.PHONY: init_worker init_efs_target get_worker_ips destroy_worker 
+.PHONT: plan_destroy_worker plan_worker update_worker_user_data worker worker_key
 

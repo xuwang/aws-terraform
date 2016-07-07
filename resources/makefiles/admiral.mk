@@ -1,10 +1,10 @@
-this_make := $(lastword $(MAKEFILE_LIST))
-$(warning $(this_make))
+#this_make := $(lastword $(MAKEFILE_LIST))
+#$(warning $(this_make))
 
 admiral: etcd plan_admiral
 	cd $(BUILD); $(TF_APPLY);
-	@$(MAKE) etcd_ips
-	@$(MAKE) admiral_ips
+	@$(MAKE) get_etcd_ips
+	@$(MAKE) get_admiral_ips
 
 plan_admiral: init_admiral
 	cd $(BUILD); $(TF_PLAN)
@@ -39,4 +39,4 @@ update_admiral_user_data:
 get_admiral_ips:
 	@echo "admiral public ips: " `$(SCRIPTS)/get-ec2-public-id.sh admiral`
 
-.PHONY: admiral plan_destroy_admiral destroy_admiral plan_admiral init_admiral admiral_ips update_admiral_user_data
+.PHONY: admiral plan_destroy_admiral destroy_admiral plan_admiral init_admiral get_admiral_ips update_admiral_user_data

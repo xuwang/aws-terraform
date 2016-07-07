@@ -3,7 +3,7 @@ $(warning $(this_make))
 
 etcd: plan_etcd
 	cd $(BUILD); $(TF_APPLY);
-	$(MAKE) etcd_ips
+	$(MAKE) get_etcd_ips
 
 plan_etcd: init_etcd
 	cd $(BUILD); $(TF_PLAN)
@@ -37,4 +37,4 @@ update_etcd_user_data:
 get_etcd_ips:
 	@echo "etcd public ips: " `$(SCRIPTS)/get-ec2-public-id.sh etcd`
 
-.PHONY: etcd destroy_etcd plan_destroy_etcd plan_etcd init_etcd etcd_ips update_etcd_user_data
+.PHONY: etcd destroy_etcd plan_destroy_etcd plan_etcd init_etcd get_etcd_ips update_etcd_user_data

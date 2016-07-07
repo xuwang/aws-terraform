@@ -16,7 +16,7 @@ module "admiral" {
   image_type = "t2.small"
   keypair = "admiral"
 
-  # Note: currently admiral launch_configuration devices can NOT be changed after admiral cluster is up
+  # Note: currently launch_configuration devices can NOT be changed after cluster is up
   # See https://github.com/hashicorp/terraform/issues/2910
   # Instance disks
   root_volume_type = "gp2"
@@ -26,7 +26,6 @@ module "admiral" {
   data_volume_type = "gp2"
   data_volume_size = 100
 
-  keypair = "admiral"
   user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
   iam_role_policy = "${file(\"policies/admiral_policy.json\")}"
 }
