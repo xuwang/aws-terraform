@@ -9,12 +9,12 @@ resource "aws_db_subnet_group" "coreos_cluster_db" {
     subnet_ids = ["${module.rds_subnet_a.id}","${module.rds_subnet_b.id}","${module.rds_subnet_c.id}"]
 }
 
-resource "aws_db_instance" "coreos_cluster" {
-    identifier = "coreos-cluster"
+resource "aws_db_instance" "coreos_cluster-postgres" {
+    identifier = "${var.cluster_name}-postgres"
     allocated_storage = 10
     engine = "postgres"
     engine_version = "9.5.2"
-    instance_class = "db.t2.micro"
+    instance_class = "db.t2.medium"
     storage_type = "gp2"
     name = "dockerage"
     username = "${var.postgres_db_user}"
@@ -30,15 +30,37 @@ resource "aws_db_instance" "coreos_cluster" {
     db_subnet_group_name = "${aws_db_subnet_group.coreos_cluster_db.id}"
 }
 
-/* bug - tfp wanted to re-created the record.
+/* Register with Route53
 resource "aws_route53_record" "star_postgresdb" {
     zone_id = "${var.route53_private_zone_id}"
     name = "*.postgresdb"
     type = "CNAME"
     ttl = "60"
-    records = [ "${aws_db_instance.coreos_cluster.address}" ]
+    records = [ "${aws_db_instance.coreos_cluster-postgres.address}" ]
 }
 */
+
+resource "aws_db_instance" "coreos_cluster-mysql" {
+    identifier = "${var.cluster_name}-mysql"
+    allocated_storage = 10
+    engine = "mysql"
+    engine_version = "5.6.23"
+    instance_class = "db.t2.micro"
+    name = "dockerage"
+    username = "root"
+    password = "${var.postgres_db_password}"
+    multi_az = "false"
+    port = "3306"
+    publicly_accessible = "true"
+    backup_retention_period = "7"
+    maintenance_window = "tue:10:33-tue:11:03"
+    availability_zone = "${module.rds_subnet_a.az}"
+    storage_type="gp2"
+    backup_window = "09:19-10:19"
+    vpc_security_group_ids = [ "${aws_security_group.rds.id}" ]
+    db_subnet_group_name = "${aws_db_subnet_group.coreos_cluster_db.id}"
+    parameter_group_name = "default.mysql5.6"
+}
 
 resource "aws_security_group" "rds"  {
     name = "rds"
