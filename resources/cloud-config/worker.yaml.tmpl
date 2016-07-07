@@ -7,10 +7,20 @@ coreos:
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
   fleet:
     public-ip: $private_ipv4
-    metadata: "env=coreos-cluster,platform=ec2,provider=aws,role=worker"
+    metadata: "env=CLUSTER-NAME,platform=ec2,provider=aws,role=worker"
   update:
-    reboot-strategy: off
+    reboot-strategy: best-effort
+  locksmith:
+    group: workers
   units:
+    - name: locksmithd.service
+      command: start
+      drop-ins:
+      - name: 30-cloudinit.conf
+        content: |
+          [Service]
+          Environment="LOCKSMITHD_REBOOT_WINDOW_START=05:30"
+          Environment="LOCKSMITHD_REBOOT_WINDOW_LENGTH=3h"
     - name: etcd2.service
       command: start
       drop-ins:
@@ -20,21 +30,6 @@ coreos:
             EnvironmentFile=/etc/sysconfig/initial-cluster
     - name: fleet.service
       command: start
-    - name: update-window.service
-      command: start
-      content: |
-        [Unit]
-        Description=Reboot if an update has been downloaded
-        ConditionPathExists=/opt/bin/update-window.sh
-        [Service]
-        ExecStart=/opt/bin/update-window.sh
-    - name: update-window.timer
-      command: start
-      content: |
-        [Unit]
-        Description=Reboot timer
-        [Timer]
-        OnCalendar=*-*-* 05,06:00/30:00
 
 # coreos.units.* components
     - name: format-disk.service
@@ -185,20 +180,6 @@ write_files:
     content: |
         [Service]
         Environment=DOCKER_OPTS='--insecure-registry=10.0.0.0/8,dockerhub.coreos-cluster.local'
-
-  - path: /opt/bin/etcd-init.sh
-    permissions: 0700
-    owner: root
-    content: |
-      #!/bin/bash
-      
-      # dyamically create/join the etcd cluster by querying autoscaling group
-      # see https://github.com/dockerage/etcd-aws-cluster
-      image=dockerage/etcd-aws-cluster
-      /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ $image /etcd-aws-cluster
-      
-      # upload etcd initial-cluster urls to s3 bucket for worker cluster's etcd_proxy
-      /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ $image /etcd-aws-proxy
 
   - path: /etc/aws/account.envvars
     permissions: 0644
