@@ -36,7 +36,7 @@ update_admiral_user_data:
 		${TF_TAINT} aws_s3_bucket_object.admiral_cloud_config ; \
 		$(TF_APPLY)
 
-admiral_ips:
+get_admiral_ips:
 	@echo "admiral public ips: " `$(SCRIPTS)/get-ec2-public-id.sh admiral`
 
 .PHONY: admiral plan_destroy_admiral destroy_admiral plan_admiral init_admiral admiral_ips update_admiral_user_data

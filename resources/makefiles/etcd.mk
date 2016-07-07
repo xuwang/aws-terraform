@@ -3,8 +3,6 @@ $(warning $(this_make))
 
 etcd: plan_etcd
 	cd $(BUILD); $(TF_APPLY);
-	@echo "waiting for initial cluster to be ready..."
-	$(SCRIPTS)/wait-cloudinit-bucket.sh
 	$(MAKE) etcd_ips
 
 plan_etcd: init_etcd
@@ -36,7 +34,7 @@ update_etcd_user_data:
 		${TF_TAINT} aws_s3_bucket_object.etcd_cloud_config ; \
 		$(TF_APPLY)
 
-etcd_ips:
+get_etcd_ips:
 	@echo "etcd public ips: " `$(SCRIPTS)/get-ec2-public-id.sh etcd`
 
 .PHONY: etcd destroy_etcd plan_destroy_etcd plan_etcd init_etcd etcd_ips update_etcd_user_data
