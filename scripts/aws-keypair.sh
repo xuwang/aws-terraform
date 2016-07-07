@@ -42,13 +42,13 @@ destroy(){
       echo "Remove from ssh agent"
       ssh-add -L |grep "${TMP_DIR}/${key}.pem" > ${TMP_DIR}/${key}.pub
       [ -s ${TMP_DIR}/${key}.pub ] && ssh-add -d ${TMP_DIR}/${key}.pub
-      aws --profile ${AWS_PROFILE} s3 rm s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-config/keypairs/${key}.pem
-      echo "Delete aws keypair ${key}"
-      aws --profile ${AWS_PROFILE} ec2 delete-key-pair --key-name ${key}  
-      echo "Revmove from ${TMP_DIR}"
       rm -rf ${TMP_DIR}/${key}.pem
       rm -rf ${TMP_DIR}/${key}.pub
     fi
+    aws --profile ${AWS_PROFILE} s3 rm s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-config/keypairs/${key}.pem
+    echo "Delete aws keypair ${key}"
+    aws --profile ${AWS_PROFILE} ec2 delete-key-pair --key-name ${key}  
+    echo "Revmove from ${TMP_DIR}"
   fi 
 }
 
