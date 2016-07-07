@@ -8,7 +8,19 @@ coreos:
   fleet:
     metadata: env=CLUSTER-NAME,platform=ec2,provider=aws,role=etcd2
     public-ip: $private_ipv4
+  update:
+    reboot-strategy: best-effort
+  locksmith:
+    group: etcd
   units:
+    - name: locksmithd.service
+      command: start
+      drop-ins:
+      - name: 30-cloudinit.conf
+        content: |
+          [Service]
+          Environment="LOCKSMITHD_REBOOT_WINDOW_START=05:30"
+          Environment="LOCKSMITHD_REBOOT_WINDOW_LENGTH=3h"
     - name: etcd2.service
       command: start
       drop-ins:
@@ -169,10 +181,10 @@ write_files:
       # dyamically create/join the etcd cluster by querying autoscaling group
       # see https://github.com/dockerage/etcd-aws-cluster
       image=dockerage/etcd-aws-cluster
-      /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ $image /etcd-aws-cluster
+      /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ $image
       
       # upload etcd initial-cluster urls to s3 bucket for worker cluster's etcd_proxy
-      /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ $image /etcd-aws-proxy
+      /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ --entrypoint /etcd-aws-proxy $image
 
   - path: /etc/aws/account.envvars
     permissions: 0644
