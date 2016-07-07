@@ -156,17 +156,26 @@ $ make show
 ....
 ```
 
-#### Login to the worker node:
+#### Login to cluster node:
 
 ```
-$ ssh -A core@52.27.156.202
+etcd public ips:  50.112.218.23
+xuwang@~/projects/aws-terraform $ ssh core@50.112.218.23
+CoreOS beta (1068.3.0)
+Last login: Thu Jul  7 03:58:22 2016 from 108.84.154.184
+core@ip-10-10-1-60 ~ $ fleetctl list-machines
+MACHINE   IP    METADATA
+5c2f6436... 10.10.1.60  env=coreos-cluster,platform=ec2,provider=aws,role=etcd2
+75440a64... 10.10.5.156 env=coreos-cluster,platform=ec2,provider=aws,role=worker
+77a52b6b... 10.10.5.123 env=coreos-cluster,platform=ec2,provider=aws,role=worker
 
-CoreOS beta (723.3.0)
-core@ip-52.27.156.202 ~ $ fleetctl list-machines
-MACHINE     IP      METADATA
-289a6ba7... 10.0.1.141  env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=etcd2
-320bd4ac... 10.0.5.50   env=coreos-cluster,platform=ec2,provider=aws,region=us-west-2,role=worker
+```
 
+You can always get etcd public ips or worker ips by running:
+
+```
+$ make get_etcd_ips
+$ make get_wocker_ips
 ```
 
 #### Destroy all resources
@@ -179,7 +188,7 @@ This will destroy ALL resources created by this project.
 ## Customization
 
 * The default values for VPC, ec2 instance profile, policies, keys, autoscaling group, lanuch configurations etc., 
-can be override in resources/terraform/module-<resource>.tf` files.
+can be override in resources/terraform/<resource>.tf` files.
 
 * AWS profile and cluster name are defined at the top of  _Makefile_:
 
@@ -193,8 +202,8 @@ can be override in resources/terraform/module-<resource>.tf` files.
 
 ## Build multi-node cluster
 
-The number of etcd nodes and worker nodes are defined in *resource/terraform/module-etcd.tf* 
-and *resource/terraform/module-worker.tf*
+The number of etcd nodes and worker nodes are defined in *resource/terraform/etcd.tf* 
+and *resource/terraform/worker.tf*
 
 Change the cluster_desired_capacity in the file to build multi-nodes etcd/worker cluster,
 for example, change to 3:
@@ -203,7 +212,7 @@ for example, change to 3:
     cluster_desired_capacity = 3
 ```
 
-Note: etcd minimum, maximum and cluster_desired_capacity should be the same and in odd number, e.g. 3, 5, 9
+Note: etcd minimum, maximum and cluster_desired_capacity should be the same and in odd number, e.g. 1, 3, 5, 9.
 
 You should also change the [aws_instance_type](http://aws.amazon.com/ec2/instance-types) 
 from `micro` to `medium` or `large` if heavy docker containers to be hosted on the nodes:
@@ -274,7 +283,7 @@ Resource | Description
 *etcd* | Setup ETCD2 cluster
 *worker* | Setup application docker hosting cluster
 *admiral* | (Optional) Service cluster (Jenkins, fleet-ui, monitoring...). You can run these on worker machine, but you might have a different cluster for different access roles.
-*rds* | (Optinal) RDS server (postgres)
+*rds* | (Optinal) RDS server (postgres and mysql)
 *cloudtrail* | Setup AWS CloudTrail
 
 To build the cluster step by step:
@@ -410,4 +419,5 @@ to allow launch configuration update on a live autoscaling group,
 however, running ec2 instances in the autoscaling group has to be recycled outside of the Terraform management to pick up the new LC.
 * For a production system, the security groups defined in etcd, worker, and admiral module 
 should be carefully reviewed and tightened.
+* Cluster CoreOS upgrade: workers and etcd clusters are defined as separate locksmith group so they can be independently managed by locksmith. The locksmith group, reboot stragtegy (best-effort) and upgrade window are defined under _resources/cloud_config_ directory.
 
