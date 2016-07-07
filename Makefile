@@ -71,7 +71,7 @@ destroy_all:
 	rm -rf $(BUILD)/*.tf
 
 destroy: 
-	@echo "Usage: make destroy_<resource> | make plan_destroy_all  | make destroy_all"
+	@echo "Usage: make destroy_<resource> | make plan_destroy_all | make destroy_all"
 	@echo "For example: make destroy_worker"
 	@echo "Node: destroy may fail because of outstanding dependences"
 
@@ -79,6 +79,8 @@ clean_all: destroy_all
 	rm -rf $(BUILD)
 
 # TODO: Push/Pull terraform states from a tf state repo
+# For team work, you need to commit terraform to a remote location, such as git repo, S3 
+# Should implement a locking method to prevent alter infrastructure at the same time.
 pull_tf_state:
 	@mkdir -p $(BUILD)
 	@echo pull terraform state from ....
