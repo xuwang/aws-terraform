@@ -6,10 +6,20 @@ coreos:
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
   fleet:
     public-ip: $private_ipv4
-    metadata: "env=coreos-cluster,platform=ec2,provider=aws,role=admiral"
+    metadata: "env=CLUSTER-NAME,platform=ec2,provider=aws,role=admiral"
   update:
-    reboot-strategy: off
+    reboot-strategy: best-effort
+  locksmith:
+    group: worker
   units:
+    - name: locksmithd.service
+      command: start
+      drop-ins:
+      - name: 30-cloudinit.conf
+        content: |
+          [Service]
+          Environment="LOCKSMITHD_REBOOT_WINDOW_START=05:30"
+          Environment="LOCKSMITHD_REBOOT_WINDOW_LENGTH=3h"
     - name: etcd2.service
       command: start
       drop-ins:
@@ -55,22 +65,6 @@ coreos:
         What=/dev/xvdc
         Where=/opt/data
         Type=ext4
-    - name: update-window.service
-      command: start
-      content: |
-        [Unit]
-        Description=Reboot if an update has been downloaded
-        ConditionPathExists=/opt/bin/update-window.sh
-        [Service]
-        ExecStart=/opt/bin/update-window.sh
-    - name: update-window.timer
-      command: start
-      content: |
-        [Unit]
-        Description=Reboot timer
-        [Timer]
-        OnCalendar=*-*-* 05,06:00/30:00
-
 
 # coreos.units.* components
     - name: format-disk.service
@@ -192,31 +186,7 @@ write_files:
             done
         fi
         exit 0
-  - path: /opt/bin/update-window.sh
-    permissions: 0700
-    owner: root
-    content: |
-        #!/bin/bash
-        # If etcd is active, this uses locksmith. Otherwise, it randomly delays the reboot.
-        delay=$(/usr/bin/expr $RANDOM % 3600 )
-        rebootflag='NEED_REBOOT'
-        hostip=$(hostname -i | tr -d ' ')
-        ismember=$(etcdctl member list |grep -Eo "(http://$hostip:2380)")
-        
-        if update_engine_client -status | grep $rebootflag;
-        then
-            echo -n "etcd2 is "
-            if systemctl is-active etcd2 && [[ $ismember != "" ]];
-            then
-                echo "Update reboot with locksmithctl."
-                locksmithctl reboot
-            else
-                echo "Update reboot in $delay seconds."
-                sleep $delay
-                reboot
-            fi
-        fi
-        exit 0
+
   - path: /etc/systemd/system/docker.service.d/50-insecure-registry.conf
     content: |
         [Service]
