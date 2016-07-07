@@ -18,7 +18,7 @@ get_value() {
 
 # Headers for curl
 create_string_to_sign() {
-  contentType="application/x-compressed-tar"
+  contentType="application/x-compressed-tar"F
   contentType=""
   dateValue="`date +'%a, %d %b %Y %H:%M:%S %z'`"
 
@@ -96,15 +96,25 @@ create_string_to_sign
 signature=$(/bin/echo -n "$stringToSign" | openssl sha1 -hmac ${s3Secret} -binary | base64)
 filePath=${initialCluster}
 debug_log
-curl -s -L -O -H "Host: ${bucket}.s3.amazonaws.com" \
-  -H "Content-Type: ${contentType}" \
-  -H "Authorization: AWS ${s3Key}:${signature}" \
-  -H "x-amz-security-token:${s3Token}" \
-  -H "Date: ${dateValue}" \
-  https://${bucket}.s3.amazonaws.com/${filePath}
+retry=4
+ready=0
+until [[ $retry -eq 0 ]]  || [[ $ready -eq 1  ]]
+do
+  curl -s -L -O -H "Host: ${bucket}.s3.amazonaws.com" \
+    -H "Content-Type: ${contentType}" \
+    -H "Authorization: AWS ${s3Key}:${signature}" \
+    -H "x-amz-security-token:${s3Token}" \
+    -H "Date: ${dateValue}" https://${bucket}.s3.amazonaws.com/${filePath}
+  if [ -f ${workDir}/initial-cluster ] && grep -q ETCD_INITIAL_CLUSTER ${workDir}/initial-cluster ;
+  then
+    ready=1
+  else
+    let "retry--"
+  fi
+done
 
 # Copy initial-cluster to the volume that will be picked up by etcd boostraping
-if [ -f ${workDir}/initial-cluster ] && grep -q ETCD_INITIAL_CLUSTER ${workDir}/initial-cluster ;
+if [ $ready -eq 1 ];
 then
   mkdir -p /etc/sysconfig
   cp ${workDir}/initial-cluster /etc/sysconfig/initial-cluster
