@@ -18,7 +18,7 @@ get_value() {
 
 # Headers for curl
 create_string_to_sign() {
-  contentType="application/x-compressed-tar"F
+  contentType="application/x-compressed-tar"
   contentType=""
   dateValue="`date +'%a, %d %b %Y %H:%M:%S %z'`"
 
