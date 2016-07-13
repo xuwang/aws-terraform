@@ -175,7 +175,7 @@ You can always get etcd public ips or worker ips by running:
 
 ```
 $ make get_etcd_ips
-$ make get_wocker_ips
+$ make get_worker_ips
 ```
 
 #### Destroy all resources

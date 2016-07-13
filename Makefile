@@ -35,7 +35,7 @@ TF_STATE := $(BUILD)/terraform.tfstate
 # Terraform commands
 # Note: for production, set -refresh=true to be safe
 TF_APPLY := terraform apply -refresh=false
-# Note: for proudction, remove --force to confirm destroy. 
+# Note: for production, remove --force to confirm destroy.
 TF_DESTROY := terraform destroy --force
 TF_DESTROY_PLAN := terraform plan -destroy -refresh=false
 TF_GET := terraform get -update > /dev/null 2>&1
