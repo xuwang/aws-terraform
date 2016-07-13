@@ -7,7 +7,7 @@ coreos:
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
   fleet:
     public-ip: $private_ipv4
-    metadata: "env=CLUSTER-NAME,platform=ec2,provider=aws,role=worker"
+    metadata: env=${CLUSTER_NAME},platform=ec2,provider=aws,role=worker
   update:
     reboot-strategy: best-effort
   locksmith:
@@ -151,31 +151,6 @@ write_files:
             done
         fi
         exit 0
-  - path: /opt/bin/update-window.sh
-    permissions: 0700
-    owner: root
-    content: |
-        #!/bin/bash
-        # If etcd is active, this uses locksmith. Otherwise, it randomly delays the reboot.
-        delay=$(/usr/bin/expr $RANDOM % 3600 )
-        rebootflag='NEED_REBOOT'
-        hostip=$(hostname -i | tr -d ' ')
-        ismember=$(etcdctl member list |grep -Eo "(http://$hostip:2380)")
-        
-        if update_engine_client -status | grep $rebootflag;
-        then
-            echo -n "etcd2 is "
-            if systemctl is-active etcd2 && [[ $ismember != "" ]];
-            then
-                echo "Update reboot with locksmithctl."
-                locksmithctl reboot
-            else
-                echo "Update reboot in $delay seconds."
-                sleep $delay
-                reboot
-            fi
-        fi
-        exit 0
   - path: /etc/systemd/system/docker.service.d/50-insecure-registry.conf
     content: |
         [Service]
@@ -187,7 +162,7 @@ write_files:
     content: |
         AWS_ACCOUNT=${AWS_ACCOUNT}
         AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-        CLUSTER_NAME=coreos-cluster
+        CLUSTER_NAME=${CLUSTER_NAME}
   - path: /root/.aws/envvars
     permissions: 0600
     owner: root
