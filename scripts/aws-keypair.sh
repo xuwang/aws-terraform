@@ -50,7 +50,7 @@ destroy(){
     aws --profile ${AWS_PROFILE} s3 rm s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-config/keypairs/${key}.pem
     echo "Delete aws keypair ${key}"
     aws --profile ${AWS_PROFILE} ec2 delete-key-pair --key-name ${key}  
-    echo "Revmove from ${TMP_DIR}"
+    echo "Remove from ${TMP_DIR}"
   fi 
 }
 
