@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
 # This is a coreos-cluster-cloudinit bootstrap script. It is passed in as 'user-data' file during the machine build. 
-# Then the script is excecuted to download the CoreOs "cloud-config.yaml" file  and "intial-cluster" files.
+# Then the script is executed to download the CoreOs "cloud-config.yaml" file  and "initial-cluster" files.
 # These files  will configure the system to join the CoreOS cluster. The second stage cloud-config.yaml can 
-# be changed to allow system configuration changes wihtout having to rebuild the system. All it takes is a reboot.
+# be changed to allow system configuration changes without having to rebuild the system. All it takes is a reboot.
 # If this script changes, the machine will need to be rebuild (user-data change)
 
 # Convention: 
