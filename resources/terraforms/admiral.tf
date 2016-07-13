@@ -46,6 +46,7 @@ resource "template_file" "admiral_cloud_config" {
         "AWS_ACCESS_KEY_ID" = "${aws_iam_access_key.deployment.id}"
         "AWS_SECRET_ACCESS_KEY" = "${aws_iam_access_key.deployment.secret}"
         "AWS_DEFAULT_REGION" = "${var.aws_account.default_region}"
+        "CLUSTER_NAME" = "${var.cluster_name}"
     }
 }
 

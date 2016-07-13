@@ -6,7 +6,7 @@ coreos:
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
   fleet:
     public-ip: $private_ipv4
-    metadata: "env=CLUSTER-NAME,platform=ec2,provider=aws,role=admiral"
+    metadata: env=${CLUSTER_NAME},platform=ec2,provider=aws,role=admiral
   update:
     reboot-strategy: best-effort
   locksmith:
@@ -212,7 +212,7 @@ write_files:
     content: |
         AWS_ACCOUNT=${AWS_ACCOUNT}
         AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-        CLUSTER_NAME=coreos-cluster
+        CLUSTER_NAME=${CLUSTER_NAME}
   - path: /root/.aws/envvars
     permissions: 0600
     owner: root
