@@ -7,7 +7,7 @@ vpc: plan_vpc
 	sleep 5
 
 plan_vpc: init_vpc
-	cd $(BUILD); $(TF_PLAN)
+	cd $(BUILD); $(TF_GET); $(TF_PLAN)
 
 plan_destroy_vpc:
 	$(eval TMP := $(shell mktemp -d -t vpc ))
@@ -22,7 +22,6 @@ destroy_vpc:
 
 init_vpc: init
 	rsync -av $(RESOURCES)/terraforms/vpc*.tf $(BUILD)
-	cd $(BUILD); $(TF_GET);
 
 .PHONY: vpc plan_destroy_vpc destroy_vpc plan_vpc init_vpc
 

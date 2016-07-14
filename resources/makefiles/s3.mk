@@ -7,7 +7,7 @@ s3: plan_s3
 	sleep 5
 
 plan_s3: init_s3
-	cd $(BUILD); $(TF_PLAN)
+	cd $(BUILD); $(TF_GET); $(TF_PLAN)
 
 plan_destroy_s3:
 	$(eval TMP := $(shell mktemp -d -t s3 ))
@@ -22,7 +22,6 @@ destroy_s3:
 
 init_s3: init
 	cp -rf $(RESOURCES)/terraforms/s3*.tf $(BUILD)
-	cd $(BUILD); $(TF_GET);
 
 
 cloudinit_bucket:

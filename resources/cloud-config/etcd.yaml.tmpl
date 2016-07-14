@@ -6,7 +6,7 @@ coreos:
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
     listen-peer-urls: http://$private_ipv4:2380
   fleet:
-    metadata: env=CLUSTER-NAME,platform=ec2,provider=aws,role=etcd2
+    metadata: env=${CLUSTER_NAME},platform=ec2,provider=aws,role=etcd2
     public-ip: $private_ipv4
   update:
     reboot-strategy: best-effort
@@ -184,7 +184,7 @@ write_files:
       /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ $image
       
       # upload etcd initial-cluster urls to s3 bucket for worker cluster's etcd_proxy
-      /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ --entrypoint /etcd-aws-proxy $image
+      /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ --env S3BUCKET="s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-cloudinit" --entrypoint /etcd-aws-proxy $image
 
   - path: /etc/aws/account.envvars
     permissions: 0644

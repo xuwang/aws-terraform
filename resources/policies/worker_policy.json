@@ -18,12 +18,12 @@
         "s3:Get*"
       ],
       "Resource": [
-        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-cloudinit/etcd/initial-cluster",
-        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-cloudinit",
-        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-cloudinit/worker",
-        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-cloudinit/worker/*",
-        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-config",
-        "arn:aws:s3:::AWS-ACCOUNT-CLUSTER-NAME-config/*"
+        "arn:aws:s3:::${AWS_ACCOUNT}-${CLUSTER_NAME}-cloudinit/etcd/initial-cluster",
+        "arn:aws:s3:::${AWS_ACCOUNT}-${CLUSTER_NAME}-cloudinit",
+        "arn:aws:s3:::${AWS_ACCOUNT}-${CLUSTER_NAME}-cloudinit/worker",
+        "arn:aws:s3:::${AWS_ACCOUNT}-${CLUSTER_NAME}-cloudinit/worker/*",
+        "arn:aws:s3:::${AWS_ACCOUNT}-${CLUSTER_NAME}-config",
+        "arn:aws:s3:::${AWS_ACCOUNT}-${CLUSTER_NAME}-config/*"
       ]
     }
   ]

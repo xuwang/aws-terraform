@@ -14,7 +14,7 @@ module "admiral" {
   # Instance specifications
   ami = "${var.ami}"
   image_type = "t2.small"
-  keypair = "admiral"
+  keypair = "${var.cluster_name}-admiral"
 
   # Note: currently launch_configuration devices can NOT be changed after cluster is up
   # See https://github.com/hashicorp/terraform/issues/2910
@@ -27,7 +27,7 @@ module "admiral" {
   data_volume_size = 100
 
   user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
-  iam_role_policy = "${file(\"policies/admiral_policy.json\")}"
+  iam_role_policy ="${template_file.admiral_policy_json.rendered}"
 }
 
 # Upload CoreOS cloud-config to a s3 bucket; s3-cloudconfig-bootstrap script in user-data will download 
@@ -46,6 +46,14 @@ resource "template_file" "admiral_cloud_config" {
         "AWS_ACCESS_KEY_ID" = "${aws_iam_access_key.deployment.id}"
         "AWS_SECRET_ACCESS_KEY" = "${aws_iam_access_key.deployment.secret}"
         "AWS_DEFAULT_REGION" = "${var.aws_account.default_region}"
+        "CLUSTER_NAME" = "${var.cluster_name}"
+    }
+}
+
+resource "template_file" "admiral_policy_json" {
+    template = "${file(\"policies/admiral_policy.json\")}"
+    vars {
+        "AWS_ACCOUNT" = "${var.aws_account.id}"
         "CLUSTER_NAME" = "${var.cluster_name}"
     }
 }

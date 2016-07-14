@@ -12,7 +12,7 @@ module "worker" {
   # Instance specifications
   ami = "${var.ami}"
   image_type = "t2.small"
-  keypair = "worker"
+  keypair = "${var.cluster_name}-worker"
 
   # Note: currently launch_configuration devices can NOT be changed after cluster is up
   # See https://github.com/hashicorp/terraform/issues/2910
@@ -25,7 +25,7 @@ module "worker" {
   data_volume_size = 100
 
   user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
-  iam_role_policy = "${file(\"policies/worker_policy.json\")}"
+  iam_role_policy = "${template_file.worker_policy_json.rendered}"
 }
 
 
@@ -45,6 +45,14 @@ resource "template_file" "worker_cloud_config" {
         "AWS_ACCESS_KEY_ID" = "${aws_iam_access_key.deployment.id}"
         "AWS_SECRET_ACCESS_KEY" = "${aws_iam_access_key.deployment.secret}"
         "AWS_DEFAULT_REGION" = "${var.aws_account.default_region}"
+        "CLUSTER_NAME" = "${var.cluster_name}"
+    }
+}
+
+resource "template_file" "worker_policy_json" {
+    template = "${file(\"policies/worker_policy.json\")}"
+    vars {
+        "AWS_ACCOUNT" = "${var.aws_account.id}"
         "CLUSTER_NAME" = "${var.cluster_name}"
     }
 }

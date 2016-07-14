@@ -4,8 +4,8 @@ variable "mysql_db_user" { default = "root" }
 variable "mysql_db_password" { default = "dbchangeme" }
 
 resource "aws_db_subnet_group" "coreos_cluster_db" {
-    name = "coreos-cluster-db"
-    description = "db subnets for coreos-cluster applications"
+    name = "${var.cluster_name}-db"
+    description = "db subnets for ${var.cluster_name} applications"
     subnet_ids = ["${module.rds_subnet_a.id}","${module.rds_subnet_b.id}","${module.rds_subnet_c.id}"]
 }
 

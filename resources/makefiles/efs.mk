@@ -3,8 +3,7 @@ efs: plan_efs
 	cd $(BUILD); $(TF_APPLY);
 
 plan_efs: init_efs
-	cd $(BUILD); \
-	$(TF_PLAN)
+	cd $(BUILD); $(TF_GET); $(TF_PLAN)
 
 plan_destroy_efs:
 	$(eval TMP := $(shell mktemp -d -t efs ))
@@ -19,6 +18,5 @@ destroy_efs:
 
 init_efs: init_vpc
 	cp -rf $(RESOURCES)/terraforms/efs.tf $(BUILD)
-	cd $(BUILD); $(TF_GET);
 
 .PHONY: efs plan_destroy_efs destroy_efs plan_efs init_efs clean_efs

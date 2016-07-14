@@ -14,7 +14,7 @@ module "etcd" {
   # Instance specifications
   ami = "${var.ami}"
   image_type = "t2.small"
-  keypair = "etcd"
+  keypair = "${var.cluster_name}-etcd"
 
   # Note: currently etcd launch_configuration devices can NOT be changed after etcd cluster is up
   # See https://github.com/hashicorp/terraform/issues/2910
@@ -27,7 +27,7 @@ module "etcd" {
   data_volume_size = 100
 
   user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
-  iam_role_policy = "${file(\"policies/etcd_policy.json\")}"
+  iam_role_policy = "${template_file.etcd_policy_json.rendered}"
 }
 
 # Upload CoreOS cloud-config to a s3 bucket; s3-cloudconfig-bootstrap script in user-data will download 
@@ -49,7 +49,13 @@ resource "template_file" "etcd_cloud_config" {
         "CLUSTER_NAME" = "${var.cluster_name}"
     }
 }
-
+resource "template_file" "etcd_policy_json" {
+    template = "${file(\"policies/etcd_policy.json\")}"
+    vars {
+        "AWS_ACCOUNT" = "${var.aws_account.id}"
+        "CLUSTER_NAME" = "${var.cluster_name}"
+    }
+}
 resource "aws_security_group" "etcd"  {
   name = "etcd"
   vpc_id = "${aws_vpc.cluster_vpc.id}"

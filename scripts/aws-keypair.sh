@@ -35,7 +35,7 @@ create(){
 }
 
 destroy(){
-  if  ! aws --profile ${AWS_PROFILE} ec2 describe-key-pairs --key-name ${key} > /dev/null 2>&1 ;
+  if  ! aws --profile ${AWS_PROFILE} --region ${AWS_REGION} ec2 describe-key-pairs --key-name ${key} > /dev/null 2>&1 ;
   then
     echo "keypair ${key} does not exists."
   else
@@ -47,9 +47,9 @@ destroy(){
       rm -rf ${TMP_DIR}/${key}.pem
       rm -rf ${TMP_DIR}/${key}.pub
     fi
-    aws --profile ${AWS_PROFILE} s3 rm s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-config/keypairs/${key}.pem
+    aws --profile ${AWS_PROFILE} --region ${AWS_REGION}  s3 rm s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-config/keypairs/${key}.pem
     echo "Delete aws keypair ${key}"
-    aws --profile ${AWS_PROFILE} ec2 delete-key-pair --key-name ${key}  
+    aws --profile ${AWS_PROFILE} --region ${AWS_REGION} ec2 delete-key-pair --key-name ${key}  
     echo "Remove from ${TMP_DIR}"
   fi 
 }

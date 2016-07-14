@@ -7,7 +7,7 @@ iam: plan_iam
 	sleep 5
 
 plan_iam: init_iam plan_s3
-	cd $(BUILD); $(TF_PLAN)
+	cd $(BUILD); $(TF_GET); $(TF_PLAN)
 
 plan_destroy_iam:
 	$(eval TMP := $(shell mktemp -d -t iam ))
@@ -22,6 +22,5 @@ destroy_iam:
 
 init_iam: init_s3
 	cp -rf $(RESOURCES)/terraforms/iam*.tf $(BUILD)
-	cd $(BUILD); $(TF_GET);
 
 .PHONY: iam plan_destroy_iam destroy_iam plan_iam init_iam

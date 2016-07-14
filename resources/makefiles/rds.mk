@@ -7,7 +7,7 @@ rds: plan_rds
 	sleep 5
 
 plan_rds: clean_rds init_rds
-	cd $(BUILD); $(TF_PLAN)
+	cd $(BUILD); $(TF_GET); $(TF_PLAN)
 
 clean_rds:
 	cd $(BUILD); rm -f $(BUILD)/rds*.tf
@@ -25,7 +25,6 @@ destroy_rds:
 
 init_rds: init_vpc
 	cp -rf $(RESOURCES)/terraforms/rds*.tf $(BUILD)
-	cd $(BUILD); $(TF_GET);
 
 gen_rds_pass:
 	# Todo: generate or get db_user/db_password
