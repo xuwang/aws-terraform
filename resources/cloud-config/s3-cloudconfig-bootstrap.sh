@@ -52,7 +52,7 @@ accountId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/docu
 	| grep -Eo '([[:digit:]]{12})')
 
 # Bucket path for the cloud-config.yaml 
-bucket=${accountId}-iam-dev-cluster-cloudinit
+bucket=${accountId}-CLUSTER-NAME-cloudinit
 
 # Path to cloud-config.yaml
 # Remove environment from instanceProfile, if any. Assume all instances sharing the same prefix is the same role.
