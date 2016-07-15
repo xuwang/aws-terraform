@@ -1,7 +1,7 @@
 #this_make := $(lastword $(MAKEFILE_LIST))
 #$(warning $(this_make))
 
-admiral: | clean_admiral etcd plan_admiral
+admiral: etcd plan_admiral
 	cd $(BUILD); $(TF_APPLY);
 	@$(MAKE) get_etcd_ips
 	@$(MAKE) get_admiral_ips

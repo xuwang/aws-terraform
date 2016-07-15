@@ -1,7 +1,7 @@
 #this_make := $(lastword $(MAKEFILE_LIST))
 #$(warning $(this_make))
 
-worker: | clean_worker etcd plan_worker
+worker: etcd plan_worker
 	cd $(BUILD); $(TF_APPLY);
 	@$(MAKE) get_etcd_ips
 	@$(MAKE) get_worker_ips
