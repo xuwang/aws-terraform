@@ -26,9 +26,8 @@ destroy_etcd: destroy_etcd_key
 	rm -f $(BUILD)/etcd*.tf
 	cd $(BUILD); $(TF_APPLY);
 
-init_etcd: init_vpc init_iam
+init_etcd: init_vpc init_iam etcd_key
 	cp -rf $(RESOURCES)/terraforms/etcd*.tf $(BUILD)
-	$(SCRIPTS)/aws-keypair.sh -c $(CLUSTER_NAME)-etcd
 
 # Call this explicitly to re-load user_data
 update_etcd_user_data:

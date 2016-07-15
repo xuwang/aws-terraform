@@ -78,6 +78,13 @@ resource "aws_iam_instance_profile" "cluster" {
   name = "${var.cluster_name}"
   roles = ["${aws_iam_role.cluster.name}"]
   lifecycle { create_before_destroy = true }
+
+  # Sleep a little to wait the IAM profile to be ready - 
+  # This seems to fix:
+  #     aws_launch_configuration.cluster: Error creating launch configuration: ValidationError: You are not authorized to #       perform this operation
+  provisioner "local-exec" {
+    command = "sleep ${var.wait_time}"
+  }
 }
 
 resource "aws_iam_role" "cluster" {

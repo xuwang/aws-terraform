@@ -29,9 +29,8 @@ plan_destroy_worker:
 destroy_worker: destroy_worker_key clean_worker
 	cd $(BUILD); $(TF_APPLY) ;
 
-init_worker: init_etcd init_iam
+init_worker: init_etcd init_iam worker_key
 	cp -rf $(RESOURCES)/terraforms/worker.tf $(RESOURCES)/terraforms/vpc-subnet-worker.tf $(BUILD)
-	$(SCRIPTS)/aws-keypair.sh -c $(CLUSTER_NAME)-worker
 
 # Call this explicitly to re-load user_data
 update_worker_user_data:

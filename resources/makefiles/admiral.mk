@@ -29,9 +29,8 @@ plan_destroy_admiral:
 destroy_admiral: destroy_admiral_key clean_admiral
 	cd $(BUILD); $(TF_APPLY) 
 
-init_admiral: init_etcd init_iam
+init_admiral: init_etcd init_iam admiral_key
 	cp -rf $(RESOURCES)/terraforms/admiral.tf $(RESOURCES)/terraforms/vpc-subnet-admiral.tf $(BUILD)
-	$(SCRIPTS)/aws-keypair.sh -c $(CLUSTER_NAME)-admiral
 
 # Call this explicitly to re-load user_data
 update_admiral_user_data:
