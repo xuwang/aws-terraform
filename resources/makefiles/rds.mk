@@ -1,7 +1,5 @@
-this_make := $(lastword $(MAKEFILE_LIST))
-$(warning $(this_make))
-
 rds: plan_rds
+	@echo "### Working on $@"
 	cd $(BUILD); $(TF_APPLY)
 	# Wait for s3/subnets to be ready
 	sleep 5
@@ -13,6 +11,7 @@ clean_rds:
 	cd $(BUILD); rm -f $(BUILD)/rds*.tf
 
 plan_destroy_rds:
+	@echo "### Working on $@"
 	$(eval TMP := $(shell mktemp -d -t s3 ))
 	mv $(BUILD)/rds*.tf $(TMP)
 	cd $(BUILD); $(TF_PLAN)
@@ -20,6 +19,7 @@ plan_destroy_rds:
 	rmdir $(TMP)
 
 destroy_rds:  
+	@echo "### Working on $@"
 	rm -f $(BUILD)/rds*.tf
 	cd $(BUILD); $(TF_APPLY)
 

@@ -3,6 +3,7 @@
 
 admiral: etcd plan_admiral
 	cd $(BUILD); $(TF_APPLY);
+	$(MAKE) upload_admiral_key
 	@$(MAKE) get_etcd_ips
 	@$(MAKE) get_admiral_ips
 
@@ -12,9 +13,13 @@ plan_admiral: init_admiral
 clean_admiral:
 	rm -f $(BUILD)/admiral*.tf
 
-admiral_key:
+create_admiral_key:
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c $(CLUSTER_NAME)-admiral;
+
+upload_admiral_key:
+	cd $(BUILD); \
+		$(SCRIPTS)/aws-keypair.sh -u $(CLUSTER_NAME)-admiral;
 
 destroy_admiral_key:
 	cd $(BUILD); $(SCRIPTS)/aws-keypair.sh -d $(CLUSTER_NAME)-admiral;
@@ -42,4 +47,4 @@ get_admiral_ips:
 	@echo "admiral public ips: " `$(SCRIPTS)/get-ec2-public-id.sh admiral`
 
 .PHONY: admiral plan_destroy_admiral destroy_admiral plan_admiral init_admiral get_admiral_ips update_admiral_user_data
-.PHONY: destroy_admiral_key clean_admiral
+.PHONY: create_admiral_key destroy_admiral_key  upload_admiral_key clean_admiral

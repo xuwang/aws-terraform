@@ -1,6 +1,3 @@
-this_make := $(lastword $(MAKEFILE_LIST))
-$(warning $(this_make))
-
 route53: vpc plan_route53
 	cd $(BUILD); \
 	$(TF_APPLY) -target module.route53

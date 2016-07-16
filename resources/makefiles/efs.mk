@@ -1,18 +1,21 @@
-# EFS is an AWS preview feature. You need to requset to enable this feature in your account.
 efs: plan_efs
+	@echo "#### Working on $@"
 	cd $(BUILD); $(TF_APPLY);
 
 plan_efs: init_efs
+	@echo "#### Working on $@"
 	cd $(BUILD); $(TF_GET); $(TF_PLAN)
 
 plan_destroy_efs:
+	@echo "#### Working on $@"
 	$(eval TMP := $(shell mktemp -d -t efs ))
 	mv $(BUILD)/efs*.tf $(TMP)
 	cd $(BUILD); $(TF_PLAN)
 	mv  $(TMP)/efs*.tf $(BUILD)
 	rmdir $(TMP)
 
-destroy_efs:  
+destroy_efs: 
+	@echo "#### Working on $@"
 	rm -f $(BUILD)/efs*.tf
 	cd $(BUILD); $(TF_APPLY)
 

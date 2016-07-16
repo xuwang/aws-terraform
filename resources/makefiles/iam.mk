@@ -1,7 +1,5 @@
-#this_make := $(lastword $(MAKEFILE_LIST))
-#$(warning $(this_make))
-
 iam: plan_iam 
+	@echo "#### Working on $@"
 	cd $(BUILD); $(TF_APPLY)
 	# Wait for iam/subnets to be ready
 	sleep 5
