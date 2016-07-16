@@ -9,7 +9,6 @@ plan_iam: init_iam
 
 destroy_iam:  
 	cd $(BUILD)/iam; $(TF_DESTROY)
-	rm $(BUILD)/iam_vars.tf
 
 show_iam:  
 	cd $(BUILD)/iam; $(TF_SHOW) 

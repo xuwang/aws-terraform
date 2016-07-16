@@ -8,8 +8,7 @@ plan_vpc: init_vpc
 	cd $(BUILD)/vpc; $(TF_GET); $(TF_PLAN)
 
 destroy_vpc:  
-	cd $(BUILD)/vpc; $(TF_DESTROY) 
-	rm $(BUILD)/vpc_vars.tf
+	cd $(BUILD)/vpc; $(TF_DESTROY)
 
 show_vpc:  
 	cd $(BUILD)/vpc; $(TF_SHOW) 

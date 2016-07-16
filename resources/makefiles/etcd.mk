@@ -9,7 +9,6 @@ plan_etcd: init_etcd
 
 destroy_etcd: destroy_etcd_key 
 	cd $(BUILD)/etcd; $(TF_DESTROY)
-	rm $(BUILD)/etcd_vars.tf
 
 show_etcd:  
 	cd $(BUILD)/etcd; $(TF_SHOW) 

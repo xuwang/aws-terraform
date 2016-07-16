@@ -9,7 +9,6 @@ plan_worker: init_worker
 
 destroy_worker: destroy_worker_key 
 	cd $(BUILD)/worker; $(TF_DESTROY)
-	rm $(BUILD)/worker_vars.tf
 
 show_worker:  
 	cd $(BUILD)/worker; $(TF_SHOW) 
