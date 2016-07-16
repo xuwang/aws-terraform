@@ -24,21 +24,21 @@ CONFIG := $(BUILD)/cloud-config
 CERTS := $(BUILD)/certs
 SITE_CERT := $(CERTS)/site.pem
 POLICIES := $(BUILD)/policies
-AMI_VAR=$(BUILD)/ami.tf
+AMI_VAR := ami.tf
 
 # Terraform files
-TF_PORVIDER := $(BUILD)/provider.tf
-TF_DESTROY_PLAN_OUT := $(BUILD)/destroy.tfplan
-TF_APPLY_PLAN := $(BUILD)/apply.tfplan
-TF_STATE := $(BUILD)/terraform.tfstate
+TF_PORVIDER := provider.tf
+TF_DESTROY_PLAN_OUT := destroy.tfplan
+TF_APPLY_PLAN := apply.tfplan
+TF_STATE := terraform.tfstate
 
 # Terraform commands
 # Note: for production, set -refresh=true to be safe
 TF_APPLY := terraform apply -refresh=false
 # Note: for production, remove --force to confirm destroy.
-TF_DESTROY := terraform destroy --force
+TF_DESTROY := terraform destroy -force
 TF_DESTROY_PLAN := terraform plan -destroy -refresh=false
-TF_GET := terraform get -update > /dev/null 2>&1
+TF_GET := terraform get -update 
 TF_GRAPH := terraform graph -draw-cycles -verbose
 TF_PLAN := terraform plan -module-depth=1 -refresh=false
 TF_SHOW := terraform show -module-depth=1

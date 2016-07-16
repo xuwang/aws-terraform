@@ -1,12 +1,18 @@
-this_make := $(lastword $(MAKEFILE_LIST))
-$(warning $(this_make))
-
 etcd: plan_etcd
-	cd $(BUILD); $(TF_APPLY);
-	$(MAKE) get_etcd_ips
+	cd $(BUILD)/etcd; $(TF_APPLY)
+	# Wait for vpc/subnets to be ready
+	sleep 5
+	@$(MAKE) get_etcd_ips
 
 plan_etcd: init_etcd
-	cd $(BUILD); $(TF_GET); $(TF_PLAN)
+	cd $(BUILD)/etcd; $(TF_GET); $(TF_PLAN)
+
+destroy_etcd: destroy_etcd_key 
+	cd $(BUILD)/etcd; $(TF_DESTROY)
+	rm $(BUILD)/etcd_vars.tf
+
+show_etcd:  
+	cd $(BUILD)/etcd; $(TF_SHOW) 
 
 etcd_key:
 	cd $(BUILD); \
@@ -15,28 +21,26 @@ etcd_key:
 destroy_etcd_key:
 	cd $(BUILD); $(SCRIPTS)/aws-keypair.sh -d $(CLUSTER_NAME)-etcd;
 
-plan_destroy_etcd:
-	$(eval TMP := $(shell mktemp -d -t etcd ))
-	mv $(BUILD)/etcd*.tf $(TMP)
-	cd $(BUILD); $(TF_PLAN)
-	mv $(TMP)/etcd*.tf $(BUILD)
-	rmdir $(TMP)
+init_etcd: vpc iam s3 etcd_key 
+	mkdir -p $(BUILD)/etcd
+	rsync -av  $(RESOURCES)/terraforms/etcd*.tf $(BUILD)/etcd
+	ln -sf $(BUILD)/*.tf $(BUILD)/etcd
 
-destroy_etcd: destroy_etcd_key
-	rm -f $(BUILD)/etcd*.tf
-	cd $(BUILD); $(TF_APPLY);
+clean_etcd:
+	rm -rf $(BUILD)/etcd
 
-init_etcd: init_vpc init_iam etcd_key
-	cp -rf $(RESOURCES)/terraforms/etcd*.tf $(BUILD)
-
-# Call this explicitly to re-load user_data
-update_etcd_user_data:
-	cd $(BUILD); \
-		${TF_TAINT} aws_s3_bucket_object.etcd_cloud_config ; \
-		$(TF_APPLY)
+gen_etcd_vars:
+	cd $(BUILD)/etcd; ${SCRIPTS}/gen_tf_vars.sh > $(BUILD)/etcd_vars.tf
 
 get_etcd_ips:
 	@echo "etcd public ips: " `$(SCRIPTS)/get-ec2-public-id.sh etcd`
 
+# Call this explicitly to re-load user_data
+update_etcd_user_data:
+	cd $(BUILD)/etcd; \
+		${TF_TAINT} aws_s3_bucket_object.etcd_cloud_config ; \
+		$(TF_APPLY)
+
+
 .PHONY: etcd destroy_etcd plan_destroy_etcd plan_etcd init_etcd get_etcd_ips update_etcd_user_data
-.PHONY: destroy_etcd_key
+.PHONY: show_etcd etcd_key destroy_etcd_key gen_etcd_vars clean_etcd

@@ -28,11 +28,11 @@ init_build_dir:
 
 update_ami:	| $(BUILD)
 	# Generate default AMI ids
-	$(SCRIPTS)/get-ami.sh > $(AMI_VAR)
+	$(SCRIPTS)/get-ami.sh > $(BUILD)/$(AMI_VAR)
 
 update_provider: | $(BUILD)
 	# Generate tf provider
-	$(SCRIPTS)/gen-provider.sh > $(TF_PORVIDER)
+	$(SCRIPTS)/gen-provider.sh > $(BUILD)/$(TF_PORVIDER)
 
 gen_certs: $(BUILD)
 	@cp -rf $(RESOURCES)/certs $(BUILD)

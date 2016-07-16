@@ -1,5 +1,5 @@
 module "etcd_subnet_a" {
-  source = "../modules/subnet"
+  source = "../../modules/subnet"
 
   subnet_name = "etcd_a"
   subnet_cidr = "10.10.1.0/26"
@@ -9,7 +9,7 @@ module "etcd_subnet_a" {
 }
 
 module "etcd_subnet_b" {
-  source = "../modules/subnet"
+  source = "../../modules/subnet"
 
   subnet_name = "etcd_b"
   subnet_cidr = "10.10.1.64/26"
@@ -19,7 +19,7 @@ module "etcd_subnet_b" {
 }
 
 module "etcd_subnet_c" {
-  source = "../modules/subnet"
+  source = "../../modules/subnet"
 
   subnet_name = "etcd_c"
   subnet_cidr = "10.10.1.128/26"
@@ -27,3 +27,10 @@ module "etcd_subnet_c" {
   vpc_id = "${aws_vpc.cluster_vpc.id}"
   route_table_id = "${aws_route_table.cluster_vpc.id}"
 }
+
+output "etcd_subnet_a_id" { value = "${module.etcd_subnet_a.id}" }
+output "etcd_subnet_a_az" { value = "${module.etcd_subnet_a.az}" }
+output "etcd_subnet_b_id" { value = "${module.etcd_subnet_b.id}" }
+output "etcd_subnet_b_az" { value = "${module.etcd_subnet_b.az}" }
+output "etcd_subnet_c_id" { value = "${module.etcd_subnet_c.id}" }
+output "etcd_subnet_c_az" { value = "${module.etcd_subnet_c.az}" }

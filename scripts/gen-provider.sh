@@ -4,6 +4,7 @@
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 ROOT_DIR=$(dirname $DIR)
 BUILD=${BUILD:-$ROOT_DIR/build}
+TF_MODULES_DIR=${TF_MODULES_DIR:-$ROOT_DIR/modules}
 
 AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
 CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
@@ -42,5 +43,8 @@ variable "build_dir" {
 }
 variable "allow_ssh_cidr" {
     default = "${ALLOW_SSH_CIDR}"
+}
+variable "modules_dir" {
+    default = "${TF_MODULES_DIR}"
 }
 EOF

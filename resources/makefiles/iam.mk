@@ -1,26 +1,29 @@
-#this_make := $(lastword $(MAKEFILE_LIST))
-#$(warning $(this_make))
-
-iam: plan_iam 
-	cd $(BUILD); $(TF_APPLY)
-	# Wait for iam/subnets to be ready
+iam: plan_iam
+	cd $(BUILD)/iam; $(TF_APPLY)
+	# Wait for vpc/subnets to be ready
 	sleep 5
+	$(MAKE) gen_iam_vars
 
-plan_iam: init_iam plan_s3
-	cd $(BUILD); $(TF_GET); $(TF_PLAN)
-
-plan_destroy_iam:
-	$(eval TMP := $(shell mktemp -d -t iam ))
-	mv $(BUILD)/iam*.tf $(TMP)
-	cd $(BUILD); $(TF_PLAN)
-	mv  $(TMP)/iam*.tf $(BUILD)
-	rmdir $(TMP)
+plan_iam: init_iam
+	cd $(BUILD)/iam; $(TF_GET); $(TF_PLAN)
 
 destroy_iam:  
-	rm -f $(BUILD)/iam*.tf
-	cd $(BUILD); $(TF_APPLY)
+	cd $(BUILD)/iam; $(TF_DESTROY)
+	rm $(BUILD)/iam_vars.tf
 
-init_iam: init_s3
-	cp -rf $(RESOURCES)/terraforms/iam*.tf $(BUILD)
+show_iam:  
+	cd $(BUILD)/iam; $(TF_SHOW) 
 
-.PHONY: iam plan_destroy_iam destroy_iam plan_iam init_iam
+init_iam: s3
+	mkdir -p $(BUILD)/iam
+	rsync -av  $(RESOURCES)/terraforms/iam*.tf $(BUILD)/iam
+	ln -sf $(BUILD)/*.tf $(BUILD)/iam
+
+clean_iam:
+	rm -rf $(BUILD)/iam
+
+gen_iam_vars:
+	cd $(BUILD)/iam; ${SCRIPTS}/gen_tf_vars.sh > $(BUILD)/iam_vars.tf
+
+.PHONY: iam plan_destroy_iam destroy_iam plan_iam init_iam gen_iam_vars clean_iam
+
