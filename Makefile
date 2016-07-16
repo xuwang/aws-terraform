@@ -4,9 +4,12 @@
 # Profile/Cluster name
 AWS_PROFILE := coreos-cluster
 CLUSTER_NAME := coreos-cluster
+
 # To prevent you mistakenly using a wrong account (and end up destroying live environment),
 # a list of allowed AWS account IDs should be defined:
 #ALLOWED_ACCOUNT_IDS := "123456789012","012345678901"
+AWS_ACCOUNT := $(shell aws --profile ${AWS_PROFILE} iam get-user | jq -r ".User.Arn" | grep -Eo '[[:digit:]]{12}')
+ALLOWED_ACCOUNT_IDS := "${AWS_ACCOUNT}"
 
 # For get-ami.sh
 COREOS_UPDATE_CHANNE=beta
@@ -66,7 +69,7 @@ help:
 plan_destroy_all:
 	cd $(BUILD); $(TF_DESTROY_PLAN)
 
-destroy_all:
+destroy_all: destroy_admiral_key destroy_etcd_key destroy_worker_key
 	cd $(BUILD); $(TF_DESTROY)
 	rm -rf $(BUILD)/*.tf
 
