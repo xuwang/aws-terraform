@@ -1,16 +1,18 @@
 #!/bin/bash
 
-# Default key name
-key='coreos-cluster'
-
 AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
 CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
-
+AWS_ACCOUNT=${AWS_ACCOUNT:-}
 AWS_REGION=${AWS_REGION:-us-west-2}
 
-echo "Getting AWS account number..."
-AWS_ACCOUNT=$(aws --profile ${AWS_PROFILE} iam get-user | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')
-echo $AWS_ACCOUNT
+# Default keypair name
+key="${CLUSTER_NAME}-default"
+
+if [ "X${AWS_ACCOUNT}" = "X" ];
+then
+  echo "Getting AWS account number..."
+  AWS_ACCOUNT=$(aws --profile ${AWS_PROFILE} iam get-user | jq ".User.Arn" | grep -Eo '[[:digit:]]{12}')
+fi
 
 TMP_DIR=keypairs
 
