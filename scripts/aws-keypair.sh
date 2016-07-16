@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Default key name
-key='coreos-cluster'
-
 AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
 CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
 AWS_ACCOUNT=${AWS_ACCOUNT:-}
@@ -10,7 +7,6 @@ AWS_REGION=${AWS_REGION:-us-west-2}
 
 # Default keypair name
 key="${CLUSTER_NAME}-default"
-
 
 if [ "X${AWS_ACCOUNT}" = "X" ];
 then
