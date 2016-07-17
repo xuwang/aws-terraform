@@ -15,14 +15,14 @@ show_iam:
 
 init_iam: s3
 	mkdir -p $(BUILD)/iam
-	rsync -av  $(RESOURCES)/terraforms/iam*.tf $(BUILD)/iam
+	rsync -av  $(RESOURCES)/terraforms/iam/ $(BUILD)/iam
 	ln -sf $(BUILD)/*.tf $(BUILD)/iam
 
 clean_iam:
 	rm -rf $(BUILD)/iam
 
 gen_iam_vars:
-	cd $(BUILD)/iam; ${SCRIPTS}/gen_tf_vars.sh > $(BUILD)/iam_vars.tf
+	cd $(BUILD)/iam; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/iam_vars.tf
 
 .PHONY: iam plan_destroy_iam destroy_iam plan_iam init_iam gen_iam_vars clean_iam
 

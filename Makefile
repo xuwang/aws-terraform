@@ -2,7 +2,7 @@
 ## Customization ##
 ###################
 # Profile/Cluster name
-AWS_PROFILE := coreos-cluster
+AWS_PROFILE := coeros-cluster
 CLUSTER_NAME := coreos-cluster
 # To prevent you mistakenly using a wrong account (and end up destroying live environment),
 # a list of allowed AWS account IDs should be defined:
@@ -34,6 +34,9 @@ TF_DESTROY_PLAN_OUT := destroy.tfplan
 TF_APPLY_PLAN := apply.tfplan
 TF_STATE := terraform.tfstate
 
+# Application repository. Automatically synced to /var/lib/apps
+APP_REPOSITORY := https://github.com/dockerage/coreos-cluster-apps
+
 # Terraform commands
 # Note: for production, set -refresh=true to be safe
 TF_APPLY := terraform apply -refresh=false
@@ -60,7 +63,7 @@ all: worker
 
 help:
 	@echo "Usage: make plan_<resource> | <resource> | plan_destroy_<resource> | destroy_<resource>"
-	@echo "Or make show | graph"
+	@echo "Or make show_<resource> | graph"
 	@echo "Or make plan_destroy_all | destroy_all"
 	@echo "Available resources: vpc s3 route53 iam efs elb etcd worker admiral rds"
 	@echo "For example: make plan_worker # to show what resources are planned for worker"
@@ -68,7 +71,16 @@ help:
 plan_destroy_all:
 	cd $(BUILD); $(TF_DESTROY_PLAN)
 
-destroy_all: | destroy_admiral_key destroy_etcd_key destroy_worker_key destroy_worker destroy_etcd destroy_vpc destroy_iam destroy_s3
+destroy_all: destroy_confirm
+	$(MAKE) destroy_admiral_key destroy_etcd_key destroy_worker_key \
+	destroy_worker destroy_admiral destroy_etcd \
+	destroy_iam destroy_s3 destroy_efs destroy_vpc
+
+destroy_confirm:
+	@echo "Are you sure to continue? [Y/N]: "; read ANSWER ; echo $$ANSWER; \
+	if [ ! "$$ANSWER" == "Y" ]; then \
+	  echo "Exiting." ; exit 1 ; \
+	fi 
 
 destroy: 
 	@echo "Usage: make destroy_<resource> | make plan_destroy_all | make destroy_all"

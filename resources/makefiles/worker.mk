@@ -2,6 +2,14 @@ worker: plan_worker
 	cd $(BUILD)/worker; $(TF_APPLY)
 	# Wait for vpc/subnets to be ready
 	sleep 5
+	$(MAKE) gen_worker_vars
+	@$(MAKE) get_worker_ips
+
+# Use this for ongoing changes if you only changed worker.tf.
+worker_only:
+	cd $(BUILD)/worker; $(TF_APPLY)
+	# Wait for vpc/subnets to be ready
+	sleep 5
 	@$(MAKE) get_worker_ips
 
 plan_worker: init_worker
@@ -20,25 +28,27 @@ worker_key:
 destroy_worker_key:
 	cd $(BUILD); $(SCRIPTS)/aws-keypair.sh -d $(CLUSTER_NAME)-worker;
 
-#init_worker: etcd
-init_worker:
+init_worker: etcd worker_key
 	mkdir -p $(BUILD)/worker
-	rsync -av  $(RESOURCES)/terraforms/worker.tf $(BUILD)/worker
+	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
 	ln -sf $(BUILD)/*.tf $(BUILD)/worker
 
 clean_worker:
 	rm -rf $(BUILD)/worker
 
 gen_worker_vars:
-	cd $(BUILD)/worker; ${SCRIPTS}/gen_tf_vars.sh > $(BUILD)/worker_vars.tf
+	cd $(BUILD)/worker; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/worker_vars.tf
 
 get_worker_ips:
 	@echo "worker public ips: " `$(SCRIPTS)/get-ec2-public-id.sh worker`
 
-# EFS has to be enabled for the account
-init_efs_target:
-	cp -rf $(RESOURCES)/terraforms/worker-efs-targe.tf $(RESOURCES)/terraforms/worker-efs-target $(BUILD)/worker
-	cd $(BUILD)/worker; $(TF_GET);
+# EFS target
+worker_efs_target: plan_worker_efs_target
+	cd $(BUILD)/worker; $(TF_GET); $(TF_APPLY);
+
+plan_worker_efs_target:
+	cp -rf $(RESOURCES)/terraforms/worker/worker-efs-target.tf $(BUILD)/worker
+	cd $(BUILD)/worker; $(TF_GET); $(TF_PLAN)
 
 # Call this explicitly to re-load user_data
 update_worker_user_data:

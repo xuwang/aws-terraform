@@ -10,8 +10,8 @@ resource "aws_efs_file_system" "efs" {
 }
 
 resource "aws_security_group" "efs"  {
-    name = "efs"
-    vpc_id = "${aws_vpc.cluster_vpc.id}"
+    name = "${var.cluster_name}-efs"
+    vpc_id = "${var.cluster_vpc_id}"
     description = "efs"
 
     # Allow all outound traffic
@@ -22,15 +22,18 @@ resource "aws_security_group" "efs"  {
       cidr_blocks = ["0.0.0.0/0"]
     }
 
-    # EFS
+    # EFS client port
     ingress {
       from_port = 2049
       to_port = 2049
       protocol = "tcp"
-      cidr_blocks = ["10.42.0.0/16"]
+      cidr_blocks = ["${var.cluster_vpc_cidr}"]
     }
 
     tags {
-      Name = "efs"
+      Name = "${var.cluster_name}-efs"
     }
 }
+
+output "efs_file_system_efs_id" { value = "${aws_efs_file_system.efs.id}" }
+output "security_group_efs_id" { value = "${aws_security_group.efs.id}" }

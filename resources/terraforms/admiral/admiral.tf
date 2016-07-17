@@ -1,14 +1,13 @@
 module "admiral" {
-  source = "../modules/cluster"
+  source = "../../modules/cluster"
 
   # cluster varaiables
   cluster_name = "admiral"
   # a list of subnet IDs to launch resources in.
-  cluster_vpc_zone_identifiers = "${module.admiral_subnet_a.id},${module.admiral_subnet_b.id},${module.admiral_subnet_c.id}"
-
+  cluster_vpc_zone_identifiers = "${var.admiral_subnet_a_id},${var.admiral_subnet_b_id},${var.admiral_subnet_c_id}"
   cluster_min_size = 1
   cluster_max_size = 1
-  cluster_desired_capacity = 1 
+  cluster_desired_capacity = 1
   cluster_security_groups = "${aws_security_group.admiral.id}"
 
   # Instance specifications
@@ -16,7 +15,7 @@ module "admiral" {
   image_type = "t2.small"
   keypair = "${var.cluster_name}-admiral"
 
-  # Note: currently launch_configuration devices can NOT be changed after cluster is up
+  # Note: currently admiral launch_configuration devices can NOT be changed after admiral cluster is up
   # See https://github.com/hashicorp/terraform/issues/2910
   # Instance disks
   root_volume_type = "gp2"
@@ -26,32 +25,33 @@ module "admiral" {
   data_volume_type = "gp2"
   data_volume_size = 100
 
-  user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
-  iam_role_policy ="${template_file.admiral_policy_json.rendered}"
+  user_data = "${file("../cloud-config/s3-cloudconfig-bootstrap.sh")}"
+  iam_role_policy = "${template_file.admiral_policy_json.rendered}"
 }
 
 # Upload CoreOS cloud-config to a s3 bucket; s3-cloudconfig-bootstrap script in user-data will download 
 # the cloud-config upon reboot to configure the system. This avoids rebuilding machines when 
 # changing cloud-config.
 resource "aws_s3_bucket_object" "admiral_cloud_config" {
-  bucket = "${aws_s3_bucket.cloudinit.id}"
+  bucket = "${var.s3_cloudinit_bucket}"
   key = "admiral/cloud-config.yaml"
   content = "${template_file.admiral_cloud_config.rendered}"
 }
+
 resource "template_file" "admiral_cloud_config" {
-    template = "${file("cloud-config/admiral.yaml.tmpl")}"
+    template = "${file("../cloud-config/admiral.yaml.tmpl")}"
     vars {
         "AWS_ACCOUNT" = "${var.aws_account.id}"
-        "AWS_USER" = "${aws_iam_user.deployment.name}"
-        "AWS_ACCESS_KEY_ID" = "${aws_iam_access_key.deployment.id}"
-        "AWS_SECRET_ACCESS_KEY" = "${aws_iam_access_key.deployment.secret}"
+        "AWS_USER" = "${var.deployment_user}"
+        "AWS_ACCESS_KEY_ID" = "${var.deployment_key_id}"
+        "AWS_SECRET_ACCESS_KEY" = "${var.deployment_key_secret}"
         "AWS_DEFAULT_REGION" = "${var.aws_account.default_region}"
         "CLUSTER_NAME" = "${var.cluster_name}"
     }
 }
 
 resource "template_file" "admiral_policy_json" {
-    template = "${file(\"policies/admiral_policy.json\")}"
+    template = "${file(\"../policies/admiral_policy.json\")}"
     vars {
         "AWS_ACCOUNT" = "${var.aws_account.id}"
         "CLUSTER_NAME" = "${var.cluster_name}"
@@ -59,9 +59,13 @@ resource "template_file" "admiral_policy_json" {
 }
 
 resource "aws_security_group" "admiral"  {
-  name = "admiral"
-  vpc_id = "${aws_vpc.cluster_vpc.id}"
+  name = "${var.cluster_name}-admiral"
+  vpc_id = "${var.cluster_vpc_id}"
   description = "admiral"
+  # Hacker's note: the cloud_config has to be uploaded to s3 before instances fireup
+  # but module can't have 'depends_on', so we have to make 
+  # this indrect dependency through security group
+  depends_on = ["aws_s3_bucket_object.admiral_cloud_config"]
 
   # Allow all outbound traffic
   egress {
@@ -76,7 +80,7 @@ resource "aws_security_group" "admiral"  {
     from_port = 10
     to_port = 65535
     protocol = "tcp"
-    cidr_blocks = ["${aws_vpc.cluster_vpc.cidr_block}"]
+    cidr_blocks = ["${var.cluster_vpc_cidr}"]
   }
 
   # Allow access from vpc
@@ -84,19 +88,22 @@ resource "aws_security_group" "admiral"  {
     from_port = 10
     to_port = 65535
     protocol = "udp"
-    cidr_blocks = ["${aws_vpc.cluster_vpc.cidr_block}"]
+    cidr_blocks = ["${var.cluster_vpc_cidr}"]
   }
 
   # Allow SSH from my hosts
   ingress {
     from_port = 22
     to_port = 22
-    protocol = "tcp"
+    protocol = "tcp" 
     cidr_blocks = ["${split(",", var.allow_ssh_cidr)}"]
     self = true
   }
 
   tags {
-    Name = "admiral"
+    Name = "${var.cluster_name}-admiral"
   }
 }
+
+output "admiral_security_group" { value = "${aws_security_group.admiral.id}" }
+

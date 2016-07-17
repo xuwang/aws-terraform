@@ -1,5 +1,5 @@
-this_make := $(lastword $(MAKEFILE_LIST))
-$(warning $(this_make))
+#this_make := $(lastword $(MAKEFILE_LIST))
+#$(warning $(this_make))
 
 rds: plan_rds
 	cd $(BUILD); $(TF_APPLY)
@@ -24,7 +24,7 @@ destroy_rds:
 	cd $(BUILD); $(TF_APPLY)
 
 init_rds: init_vpc
-	cp -rf $(RESOURCES)/terraforms/rds*.tf $(BUILD)
+	cp -rf $(RESOURCES)/terraforms/rds/ $(BUILD)/rds
 
 gen_rds_pass:
 	# Todo: generate or get db_user/db_password

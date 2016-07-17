@@ -2,6 +2,7 @@ etcd: plan_etcd
 	cd $(BUILD)/etcd; $(TF_APPLY)
 	# Wait for vpc/subnets to be ready
 	sleep 5
+	$(MAKE) gen_etcd_vars
 	@$(MAKE) get_etcd_ips
 
 plan_etcd: init_etcd
@@ -22,14 +23,14 @@ destroy_etcd_key:
 
 init_etcd: vpc iam s3 etcd_key 
 	mkdir -p $(BUILD)/etcd
-	rsync -av  $(RESOURCES)/terraforms/etcd*.tf $(BUILD)/etcd
+	rsync -av  $(RESOURCES)/terraforms/etcd/ $(BUILD)/etcd
 	ln -sf $(BUILD)/*.tf $(BUILD)/etcd
 
 clean_etcd:
 	rm -rf $(BUILD)/etcd
 
 gen_etcd_vars:
-	cd $(BUILD)/etcd; ${SCRIPTS}/gen_tf_vars.sh > $(BUILD)/etcd_vars.tf
+	cd $(BUILD)/etcd; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/etcd_vars.tf
 
 get_etcd_ips:
 	@echo "etcd public ips: " `$(SCRIPTS)/get-ec2-public-id.sh etcd`

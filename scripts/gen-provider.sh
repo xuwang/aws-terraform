@@ -47,4 +47,7 @@ variable "allow_ssh_cidr" {
 variable "modules_dir" {
     default = "${TF_MODULES_DIR}"
 }
+variable "app_repository" {
+    default = "${APP_REPOSITORY}"
+}
 EOF

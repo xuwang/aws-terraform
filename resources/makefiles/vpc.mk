@@ -15,14 +15,14 @@ show_vpc:
 
 init_vpc: init
 	mkdir -p $(BUILD)/vpc
-	rsync -av $(RESOURCES)/terraforms/vpc*.tf $(BUILD)/vpc
+	rsync -av $(RESOURCES)/terraforms/vpc/ $(BUILD)/vpc
 	ln -sf $(BUILD)/*.tf $(BUILD)/vpc
 
 clean_vpc:
 	rm -rf $(BUILD)/vpc
 
 gen_vpc_vars:
-	cd $(BUILD)/vpc; ${SCRIPTS}/gen_tf_vars.sh > $(BUILD)/vpc_vars.tf
+	cd $(BUILD)/vpc; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/vpc_vars.tf
 
 .PHONY: vpc plan_destroy_vpc destroy_vpc plan_vpc init_vpc show_vpc clean_vpc
 

@@ -1,5 +1,5 @@
-show: | $(BUILD)
-	cd $(BUILD); $(TF_SHOW)
+show:
+	@echo "show_<resource>"
 
 show_state: init
 	cat $(BUILD)/terraform.tfstate

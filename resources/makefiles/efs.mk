@@ -1,22 +1,28 @@
-# EFS is an AWS preview feature. You need to requset to enable this feature in your account.
+# Create EFS cluster
 efs: plan_efs
-	cd $(BUILD); $(TF_APPLY);
+	cd $(BUILD)/efs; $(TF_APPLY);
+	sleep 5
+	$(MAKE) gen_efs_vars
 
-plan_efs: init_efs
-	cd $(BUILD); $(TF_GET); $(TF_PLAN)
+init_efs: init_vpc
+	mkdir -p $(BUILD)/efs
+	rsync -avq  $(RESOURCES)/terraforms/efs/ $(BUILD)/efs
+	ln -sf $(BUILD)/*.tf $(BUILD)/efs
+
+destroy_efs:
+	cd $(BUILD)/efs; $(TF_DESTROY)
+
+gen_efs_vars:
+	cd $(BUILD)/efs; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/efs_vars.tf
 
 plan_destroy_efs:
 	$(eval TMP := $(shell mktemp -d -t efs ))
-	mv $(BUILD)/efs*.tf $(TMP)
-	cd $(BUILD); $(TF_PLAN)
-	mv  $(TMP)/efs*.tf $(BUILD)
+	mv $(BUILD)/efs/efs*.tf $(TMP)
+	cd $(BUILD)/efs; $(TF_PLAN)
+	mv $(TMP)/efs*.tf $(BUILD)/efs
 	rmdir $(TMP)
 
-destroy_efs:  
-	rm -f $(BUILD)/efs*.tf
-	cd $(BUILD); $(TF_APPLY)
+plan_efs: init_efs
+	cd $(BUILD)/efs; $(TF_GET); $(TF_PLAN)
 
-init_efs: init_vpc
-	cp -rf $(RESOURCES)/terraforms/efs.tf $(BUILD)
-
-.PHONY: efs plan_destroy_efs destroy_efs plan_efs init_efs clean_efs
+.PHONY: efs init_efs gen_etcd_vars plan_destroy_efs destroy_efs plan_efs

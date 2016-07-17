@@ -1,5 +1,3 @@
-this_make := $(lastword $(MAKEFILE_LIST))
-$(warning $(this_make))
 
 route53: vpc plan_route53
 	cd $(BUILD); \
@@ -28,8 +26,8 @@ clean_route53: destroy_route53
 	rm -f $(BUILD)/module-route53.tf
 
 init_route53: init
-	cp -rf $(RESOURCES)/terraforms/module-route53.tf $(BUILD)
+	cp -rf $(RESOURCES)/terraforms/terraforms/route53/module-route53.tf $(BUILD)/route53
 	cd $(BUILD); $(TF_GET);
 
-.PHONY: route53 plan_destroy_route53 destroy_route53 refresh_route53 plan_route53 init_route53 clean_route53
+.PHONY: route53 plan_destroy_route53 destroy_route53 refresh_route53 plan_route53 init_route53
 

@@ -33,7 +33,7 @@ module "worker" {
 # the cloud-config upon reboot to configure the system. This avoids rebuilding machines when 
 # changing cloud-config.
 resource "aws_s3_bucket_object" "worker_cloud_config" {
-  bucket = "${s3_cloudinit_bucket}"
+  bucket = "${var.s3_cloudinit_bucket}"
   key = "worker/cloud-config.yaml"
   content = "${template_file.worker_cloud_config.rendered}"
 }
@@ -59,9 +59,13 @@ resource "template_file" "worker_policy_json" {
 }
 
 resource "aws_security_group" "worker"  {
-  name = "worker"
+  name = "${var.cluster_name}-worker"
   vpc_id = "${var.cluster_vpc_id}"
   description = "worker"
+  # Hacker's note: the cloud_config has to be uploaded to s3 before instances fireup
+  # but module can't have 'depends_on', so we have to make 
+  # this indrect dependency through security group
+  depends_on = ["aws_s3_bucket_object.worker_cloud_config"]
 
   # Allow all outbound traffic
   egress {
@@ -91,13 +95,13 @@ resource "aws_security_group" "worker"  {
   ingress {
     from_port = 22
     to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["${var.cluster_vpc_cidr}"]
+    protocol = "tcp" 
+    cidr_blocks = ["${split(",", var.allow_ssh_cidr)}"]
     self = true
   }
 
   tags {
-    Name = "worker"
+    Name = "${var.cluster_name}-worker"
   }
 }
 

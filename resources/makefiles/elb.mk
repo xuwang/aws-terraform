@@ -22,7 +22,7 @@ clean_elb: destroy_elb
 
 # init elb build dir, may add init_route53 as dependence if dns registration is needed.
 init_elb: | $(SITE_CERT) init
-	cp -rf $(RESOURCES)/terraforms/module-elb.tf $(BUILD)
+	cp -rf $(RESOURCES)/terraforms/elb/module-elb.tf $(BUILD)/elb
 	cd $(BUILD); $(TF_GET);
 
 elb_names: 

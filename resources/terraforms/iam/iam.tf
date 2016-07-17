@@ -2,11 +2,7 @@ variable "deployment_user" {
 	default = "deployment"
 }
 
-variable "cloud_config_file_path" {
-	default = "cloud-config/aws-files.yaml"
-}
-
-# deployment user for elb registrations etc.
+# deployment user for elb registrations, s3 access, efs mount etc.
 resource "aws_iam_user" "deployment" {
     name = "${var.deployment_user}"
     path = "/system/"
@@ -15,6 +11,12 @@ resource "aws_iam_user_policy" "deployment" {
     name = "deployment"
     user = "${aws_iam_user.deployment.name}"
     policy = "${file(\"../policies/deployment_policy.json\")}"
+}
+
+resource "aws_iam_policy_attachment" "efs-readonly" {
+    name = "efs-readonly"
+    users = ["${aws_iam_user.deployment.name}"]
+    policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemReadOnlyAccess"
 }
 
 # Save deployment credetials to config bucket
