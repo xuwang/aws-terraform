@@ -9,7 +9,6 @@ admiral: plan_admiral
 admiral_only:
 	cd $(BUILD)/admiral; $(TF_APPLY)
 	# Wait for vpc/subnets to be ready
-	sleep 5
 	@$(MAKE) get_admiral_ips
 
 plan_admiral: init_admiral

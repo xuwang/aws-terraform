@@ -6,3 +6,4 @@ build
 .terraform
 .vagrant
 coreos-cluster
+envs.sh

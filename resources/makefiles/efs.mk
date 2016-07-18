@@ -1,8 +1,10 @@
-# Create EFS cluster
-efs: plan_efs
-	cd $(BUILD)/efs; $(TF_APPLY);
-	sleep 5
+# Create EFS cluster servers and EFS mount targets
+efs: session_start plan_efs confirm
+	cd $(BUILD)/efs; $(TF_APPLY)
 	$(MAKE) gen_efs_vars
+
+plan_efs: init_efs
+	cd $(BUILD)/efs; $(TF_GET); $(TF_PLAN)
 
 init_efs: init_vpc
 	mkdir -p $(BUILD)/efs
@@ -14,15 +16,5 @@ destroy_efs:
 
 gen_efs_vars:
 	cd $(BUILD)/efs; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/efs_vars.tf
-
-plan_destroy_efs:
-	$(eval TMP := $(shell mktemp -d -t efs ))
-	mv $(BUILD)/efs/efs*.tf $(TMP)
-	cd $(BUILD)/efs; $(TF_PLAN)
-	mv $(TMP)/efs*.tf $(BUILD)/efs
-	rmdir $(TMP)
-
-plan_efs: init_efs
-	cd $(BUILD)/efs; $(TF_GET); $(TF_PLAN)
 
 .PHONY: efs init_efs gen_etcd_vars plan_destroy_efs destroy_efs plan_efs

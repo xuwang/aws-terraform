@@ -1,4 +1,5 @@
 worker: plan_worker
+	$(MAKE) confirm
 	cd $(BUILD)/worker; $(TF_APPLY)
 	# Wait for vpc/subnets to be ready
 	sleep 5
@@ -28,11 +29,6 @@ worker_key:
 destroy_worker_key:
 	cd $(BUILD); $(SCRIPTS)/aws-keypair.sh -d $(CLUSTER_NAME)-worker;
 
-init_worker: etcd worker_key
-	mkdir -p $(BUILD)/worker
-	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
-	ln -sf $(BUILD)/*.tf $(BUILD)/worker
-
 clean_worker:
 	rm -rf $(BUILD)/worker
 
@@ -42,13 +38,6 @@ gen_worker_vars:
 get_worker_ips:
 	@echo "worker public ips: " `$(SCRIPTS)/get-ec2-public-id.sh worker`
 
-# EFS target
-worker_efs_target: plan_worker_efs_target
-	cd $(BUILD)/worker; $(TF_GET); $(TF_APPLY);
-
-plan_worker_efs_target:
-	cp -rf $(RESOURCES)/terraforms/worker/worker-efs-target.tf $(BUILD)/worker
-	cd $(BUILD)/worker; $(TF_GET); $(TF_PLAN)
 
 # Call this explicitly to re-load user_data
 update_worker_user_data:
@@ -57,4 +46,4 @@ update_worker_user_data:
 		$(TF_APPLY)
 
 .PHONY: worker destroy_worker plan_destroy_worker plan_worker init_worker get_worker_ips update_worker_user_data
-.PHONY: show_worker worker_key destroy_worker_key gen_worker_vars init_efs_target clean_worker
+.PHONY: show_worker worker_key destroy_worker_key gen_worker_vars clean_worker
