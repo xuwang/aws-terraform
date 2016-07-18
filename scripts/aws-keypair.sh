@@ -36,6 +36,14 @@ create(){
   fi
 }
 
+exist(){
+  if aws --profile ${AWS_PROFILE} --region ${AWS_REGION} ec2 describe-key-pairs --key-name ${key} > /dev/null 2>&1 ;
+  then
+    return 0
+  else
+    return 1
+  fi
+}
 destroy(){
   if  ! aws --profile ${AWS_PROFILE} --region ${AWS_REGION} ec2 describe-key-pairs --key-name ${key} > /dev/null 2>&1 ;
   then
@@ -56,7 +64,7 @@ destroy(){
   fi 
 }
 
-while getopts ":c:d:h" OPTION
+while getopts ":c:d:e:h" OPTION
 do
   key=$OPTARG
   case $OPTION in
@@ -66,10 +74,12 @@ do
     d)
       destroy
       ;;
+    e)
+      exist
+      ;;
     *)
-      echo "Usage: $(basename $0) -c|-d keyname"
+      echo "Usage: $(basename $0) -c|-d|-e keyname"
       exit 1
       ;;
   esac
 done
-exit 0
