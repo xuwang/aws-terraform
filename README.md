@@ -39,6 +39,8 @@ Go to [AWS Console](https://console.aws.amazon.com/).
 1. Create a user `coreos-cluster` and __Download__ the user credentials.
 1. Add user `coreos-cluster` to group `coreos-cluster`.
 
+Of course you can change the group and user name to your specific implementation.
+
 ## Install tools
 
 If you use [Vagrant](https://www.vagrantup.com/), you can skip this section and go to 
@@ -120,6 +122,14 @@ worker public ips: 52.27.156.202
 ...
 ```
 
+The code will try to add keypairs to the ssh-agent on your laptop, so if you run `ssh-add -l`, you should see the keypairs. You can also find them in *build/keypairs* directory, and in `s3://<aws-account>-<cluster-name>-config/keypairs`. When you destroy the
+cluster, these will be removed too.  The build directory and *.pem, *.key are all ignored in .gitignore. 
+
+Now you shouild be able to login:
+```
+$ ssh core@52.27.156.202
+```
+
 Although the above quick start will help to understand what the code will do, the common development work flow is to build in steps, for example, you will build VPC first, then etcd, then worker. This is what I usually do for a new environment:
 
 ```
@@ -133,8 +143,10 @@ make worker
 
 #### To see the list of resources created:
 
+In addition to the key paris that you will find in build/keypairs directory, by default ssh port 22 is open to your local machine IP. You should be able to login. 
+
 ```
-$ make show
+$ make show_all | more -R
 ...
   module.etcd.aws_autoscaling_group.etcd:
   id = etcd
@@ -188,17 +200,32 @@ This will destroy ALL resources created by this project.
 ## Customization
 
 * The default values for VPC, ec2 instance profile, policies, keys, autoscaling group, lanuch configurations etc., 
-can be override in resources/terraform/<resource>.tf` files.
+can be override in resources/terraform/<resource>/<resource>.tf` files.
 
-* AWS profile and cluster name are defined at the top of  _Makefile_:
+* Default values defined at the top of _Makefile_:
 
-  ```
-  AWS_PROFILE := coreos-cluster
-  CLUSTER_NAME := coreos-cluster
-  ```
+```
+AWS_PROFILE ?= coreos-cluster
+CLUSTER_NAME ?= coreos-cluster
+APP_REPOSITORY ?= https://github.com/dockerage/coreos-cluster-apps
+COREOS_UPDATE_CHANNE ?= beta
+AWS_REGION ?= us-west-2
+VM_TYPE ?= hvm
+```
   
-  These can also be customized to match your AWS profile and cluster name.
+These can be changed to match your AWS implementation, or the easist way is to create an envs.sh file to override some
+of these values, so you don't need to chnge Makefile:
 
+```
+export AWS_PROFILE=my-dev-cluster
+export CLUSTER_NAME=my-dev-cluser
+export COREOS_UPDATE_CHANNE=stable
+```
+
+Then run
+```
+$ source ./envs.sh
+```
 
 ## Build multi-node cluster
 
