@@ -141,9 +141,7 @@ make plan_worker
 make worker
 ```
 
-#### To see the list of resources created:
-
-In addition to the key paris that you will find in build/keypairs directory, by default ssh port 22 is open to your local machine IP. You should be able to login. 
+#### To see the list of resources created
 
 ```
 $ make show_all | more -R
@@ -169,6 +167,9 @@ $ make show_all | more -R
 ```
 
 #### Login to cluster node:
+
+
+In addition to the key paris that you will find in build/keypairs directory, by default ssh port 22 is open to your local machine IP. You should be able to login. 
 
 ```
 etcd public ips:  50.112.218.23
