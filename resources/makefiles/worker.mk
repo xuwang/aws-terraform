@@ -8,6 +8,7 @@ worker: session_start plan_worker
 
 # Use this for ongoing changes if you only changed worker.tf.
 worker_only:
+	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
 	cd $(BUILD)/worker; $(TF_APPLY)
 	# Wait for vpc/subnets to be ready
 	sleep 5
@@ -15,6 +16,12 @@ worker_only:
 
 plan_worker: init_worker
 	cd $(BUILD)/worker; $(TF_GET); $(TF_PLAN)
+
+init_worker: etcd worker_key
+	mkdir -p $(BUILD)/worker
+	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
+	ln -sf $(BUILD)/*.tf $(BUILD)/worker
+
 
 destroy_worker: destroy_worker_key 
 	cd $(BUILD)/worker; $(TF_DESTROY)
