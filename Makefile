@@ -36,9 +36,9 @@ SITE_CERT := $(CERTS)/site.pem
 POLICIES := $(BUILD)/policies
 AMI_VAR := ami.tf
 
-# LOCKKEY to prevent multiple terraform runs
-LOCKKEY := $(CLUSTER_NAME)-tfstate-lock
-LOCKKEYPEM := $(BUILD)/keypairs/$(CLUSTER_NAME)-tfstate-lock.pem
+# LOCKKEY to prevent multiple terraform runs. The private key for the lock will be put in $HOME/.aws/{LOCK_KEYNAME}.pem
+# which is used to valide if you own the lock.
+LOCK_KEYNAME := $(CLUSTER_NAME)-tfstate-lock
 
 # Terraform files
 TF_PORVIDER := provider.tf
@@ -77,42 +77,14 @@ help:
 	@echo "Available resources: vpc s3 route53 iam efs elb etcd worker admiral rds"
 	@echo "For example: make plan_worker # to show what resources are planned for worker"
 
-session_start: 
-	@cd $(BUILD); \
-		$(SCRIPTS)/aws-keypair.sh -e $(LOCKKEY) > /dev/null 2>&1; \
-	    if [[ $$? -eq 1 ]]; then \
-	    	$(SCRIPTS)/aws-keypair.sh -c $(LOCKKEY); \
-        elif [[ ! -f $(LOCKKEYPEM) ]]; then \
-        	echo "$(LOCKKEY) in use by another person. Cannot start a new sessions."; exit 1; \
-        else \
-            FINGERPRINT_PUB=$(aws --profile $(CLUSTER_NAME) ec2 --region $(AWS_REGION) describe-key-pairs --key-names \
-	  			$(LOCKKEY) | jq -r ".KeyPairs[].KeyFingerprint") ; \
-			FINGERPRINT_PEM=$(openssl pkcs8 -in $(LOCKKEYPEM) -inform PEM -outform DER -topk8 -nocrypt | openssl sha1 -c) ; \
-        	if [[ "$(FINGERPRINT_PUB)" != "$(FINGERPRINT_PEM)" ]] ; then \
-				echo "$(LOCKKEY) exists, but doesn't match the $(LOCKKEY) fingerprint. "; exit 1 ; \
-        	else \
-				echo "You have $(LOCKKEY). Session started. Don't forget to release the lock." ; \
-			fi ; \
-		fi
+session_start:
+	$(SCRIPTS)/session-lock.sh -l $(LOCK_KEYNAME)
+	$(MAKE) pull_tf_state
 
 session_end:
-	@cd $(BUILD); \
-		$(SCRIPTS)/aws-keypair.sh -e $(LOCKKEY) > /dev/null 2>&1; \
-	    if [[ $$? -eq 1 ]]; then \
-	    	echo "$(LOCKKEY) keypair doesn't exist. Nothing to remove." ; exit 1 ; \
-        elif [[ ! -f $(LOCKKEYPEM) ]]; then \
-        	echo "$(LOCKKEY) in use but you don't own the private key"; exit 1; \
-        else \
-        	FINGERPRINT_PUB=$(aws --profile $(CLUSTER_NAME) ec2 --region $(AWS_REGION) describe-key-pairs --key-names \
-	  			$(LOCKKEY) | jq -r ".KeyPairs[].KeyFingerprint") ; \
-			FINGERPRINT_PEM=$(openssl pkcs8 -in $(LOCKKEYPEM) -inform PEM -outform DER -topk8 -nocrypt | openssl sha1 -c) ; \
-			if [[ "$(FINGERPRINT_PUB)" != "$(FINGERPRINT_PEM)" ]] ; then \
-				echo "$(LOCKKEY) exists, but doesn't match the $(LOCKKEY) fingerprint. "; exit 1 ; \
-        	else \
-        		$(SCRIPTS)/aws-keypair.sh -d $(LOCKKEY) ; \
-				echo "You have $(LOCKKEY). Session started. Don't forget to release the lock." ; \
-			fi ; \
-        fi
+	$(MAKE) push_tf_state
+	$(SCRIPTS)/session-lock.sh -u $(LOCK_KEYNAME)
+
 confirm:
 	@echo "CONTINUE? [Y/N]: "; read ANSWER; \
 	if [ ! "$$ANSWER" == "Y" ]; then \
@@ -143,10 +115,12 @@ show_all:
 # Should implement a locking method to prevent alter infrastructure at the same time.
 pull_tf_state:
 	@mkdir -p $(BUILD)
-	@echo pull terraform state from ....
+	@echo pull terraform state from ...
+	git pull --rebase
 
 push_tf_state:
 	@echo push terraform state to ....
+	git status
 
 # Load all resouces makefile
 include resources/makefiles/*.mk
