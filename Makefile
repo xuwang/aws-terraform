@@ -3,7 +3,7 @@
 ###################
 # Change here or use environment variables, e.g. export AWS_PROFILE=<aws profile name>.
 
-# Default AWS profile and cluster name. Choose cluster name carefully. It will used as prefix in many AWS resources to be created.
+# Default AWS profile and cluster name. Please choose cluster name carefully. It will used as prefix in many AWS resources to be created.
 AWS_PROFILE ?= coreos-cluster
 CLUSTER_NAME ?= coreos-cluster
 # Application repository. Automatically synced to /var/lib/apps every minute
@@ -79,9 +79,15 @@ help:
 
 session_start:
 	$(SCRIPTS)/session-lock.sh -l $(LOCK_KEYNAME)
+	@if ! git diff-index --name-status --exit-code HEAD -- ; then \
+		echo "You have unpublished changes:"; $(MAKE) confirm ; \
+	fi
 	$(MAKE) pull_tf_state
 
 session_end:
+	@if ! git diff-index --name-status --exit-code HEAD -- ; then \
+		echo "You have unpublished changes:"; $(MAKE) confirm ; \
+	fi
 	$(MAKE) push_tf_state
 	$(SCRIPTS)/session-lock.sh -u $(LOCK_KEYNAME)
 
@@ -116,11 +122,11 @@ show_all:
 pull_tf_state:
 	@mkdir -p $(BUILD)
 	@echo pull terraform state from ...
-	git pull --rebase
+	git pull --rebase 
 
 push_tf_state:
 	@echo push terraform state to ....
-	git status
+	git push
 
 # Load all resouces makefile
 include resources/makefiles/*.mk
