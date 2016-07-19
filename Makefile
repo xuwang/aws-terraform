@@ -95,7 +95,7 @@ plan_destroy_all:
 	@echo $(BUILD_SUBDIRS)
 	$(foreach resource,$(BUILD_SUBDIRS),cd $(BUILD)/$(resource) && $(TF_DESTROY_PLAN)  2> /tmp/destroy.err;)
 
-destroy_all: confirm
+destroy_all: session_start confirm
 	$(MAKE) destroy_admiral_key destroy_etcd_key destroy_worker_key \
 	destroy_worker destroy_admiral destroy_etcd \
 	destroy_iam destroy_s3 destroy_efs destroy_vpc
