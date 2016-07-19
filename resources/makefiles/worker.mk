@@ -1,4 +1,4 @@
-worker: plan_worker
+worker: session_start plan_worker
 	$(MAKE) confirm
 	cd $(BUILD)/worker; $(TF_APPLY)
 	# Wait for vpc/subnets to be ready
