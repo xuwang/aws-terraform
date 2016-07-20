@@ -8,6 +8,7 @@ AWS_PROFILE ?= coreos-cluster
 CLUSTER_NAME ?= coreos-cluster
 # Application repository. Automatically synced to /var/lib/apps every minute
 APP_REPOSITORY ?= https://github.com/dockerage/coreos-cluster-apps
+APP_REPOSITORY_DEPLOKEY ?= ''
 
 # For get-ami.sh
 COREOS_UPDATE_CHANNE ?= beta
@@ -19,8 +20,7 @@ VM_TYPE ?= hvm
 #ALLOWED_ACCOUNT_IDS := "123456789012","012345678901"
 AWS_ACCOUNT := $(shell aws --profile ${AWS_PROFILE} iam get-user | jq -r ".User.Arn" | grep -Eo '[[:digit:]]{12}')
 AWS_USER := $(shell aws --profile ${AWS_PROFILE} iam get-user | jq -r ".User.UserName")
-ALLOWED_ACCOUNT_IDS := "${AWS_ACCOUNT}"
-
+ALLOWED_ACCOUNT_IDS := "$(AWS_ACCOUNT)"
 
 # Working Directories
 ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
