@@ -1,4 +1,6 @@
 build
+secrets
+hushhush
 *.pem
 *.key
 .DS_Store
