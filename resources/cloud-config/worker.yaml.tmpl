@@ -113,7 +113,7 @@ write_files:
             cd /var/lib/apps; git pull
         else
             make -p /var/lib
-            git clone ${APP_REPOSITORIES} /var/lib/apps
+            git clone ${APP_REPOSITORY} /var/lib/apps
         fi
   - path: /opt/bin/s3sync.sh
     permissions: 0700
