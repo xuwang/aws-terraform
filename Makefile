@@ -77,19 +77,21 @@ help:
 	@echo "Available resources: vpc s3 route53 iam efs elb etcd worker admiral rds"
 	@echo "For example: make plan_worker # to show what resources are planned for worker"
 
-session_start:
+lock:
 	$(SCRIPTS)/session-lock.sh -l $(LOCK_KEYNAME)
-	@if ! git diff-index --name-status --exit-code HEAD -- ; then \
-		echo "You have unpublished changes:"; $(MAKE) confirm ; \
-	fi
+
+unlock:
+	$(SCRIPTS)/session-lock.sh -u $(LOCK_KEYNAME)
+
+session_start: lock
 	$(MAKE) pull_tf_state
 
 session_end:
 	@if ! git diff-index --name-status --exit-code HEAD -- ; then \
-		echo "You have unpublished changes:"; $(MAKE) confirm ; \
+	    echo "You have unpublished changes:"; exit 1 ; \
 	fi
 	$(MAKE) push_tf_state
-	$(SCRIPTS)/session-lock.sh -u $(LOCK_KEYNAME)
+	$(SCRIPTS)/session-lock.sh -u $(LOCK_KEYNAME) && rm session_start
 
 confirm:
 	@echo "CONTINUE? [Y/N]: "; read ANSWER; \
