@@ -1,5 +1,5 @@
 
-route53: vpc plan_route53
+route53: vpc plan_route53 confirm
 	cd $(BUILD); \
 	$(TF_APPLY) -target module.route53
 

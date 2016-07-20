@@ -18,7 +18,7 @@ AWS_ACCOUNT=${AWS_ACCOUNT:-}
 AWS_REGION=${AWS_REGION:-us-west-2}
 
 # Default keypair name, to be used as a lock
-LOCK_KEYNAME="${CLUSTER_NAME}-tfstat-lock"
+LOCK_KEYNAME="${CLUSTER_NAME}-tfstate-lock"
 LOCK_KEY_PEMFILE="${HOME}/.aws/${LOCK_KEYNAME}.pem"
 
 # AWS key command

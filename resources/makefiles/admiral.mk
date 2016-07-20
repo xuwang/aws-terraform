@@ -1,4 +1,4 @@
-admiral: plan_admiral
+admiral: plan_admiral confirm
 	cd $(BUILD)/admiral; $(TF_APPLY)
 	# Wait for vpc/subnets to be ready
 	sleep 5

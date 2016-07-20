@@ -1,4 +1,4 @@
-vpc: plan_vpc
+vpc: plan_vpc confirm
 	cd $(BUILD)/vpc; $(TF_APPLY)
 	# Wait for vpc/subnets to be ready
 	sleep 5

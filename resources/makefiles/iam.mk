@@ -1,4 +1,4 @@
-iam: plan_iam
+iam: plan_iam confirm
 	cd $(BUILD)/iam; $(TF_APPLY)
 	# Wait for vpc/subnets to be ready
 	sleep 5

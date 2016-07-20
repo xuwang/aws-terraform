@@ -1,7 +1,7 @@
 #this_make := $(lastword $(MAKEFILE_LIST))
 #$(warning $(this_make))
 
-rds: plan_rds
+rds: plan_rds confirm
 	cd $(BUILD); $(TF_APPLY)
 	# Wait for s3/subnets to be ready
 	sleep 5

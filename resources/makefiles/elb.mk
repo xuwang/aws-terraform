@@ -1,4 +1,4 @@
-elb: vpc plan_elb
+elb: vpc plan_elb confirm
 	cd $(BUILD); \
 		$(TF_APPLY) -target module.elb
 	@$(MAKE) elb_names

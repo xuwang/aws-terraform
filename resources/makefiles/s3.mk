@@ -1,7 +1,5 @@
-s3: plan_s3
+s3: plan_s3 confirm
 	cd $(BUILD)/s3; $(TF_APPLY)
-	# Wait for vpc/subnets to be ready
-	sleep 5
 	$(MAKE) gen_s3_vars
 
 plan_s3: init_s3

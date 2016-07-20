@@ -1,4 +1,4 @@
-etcd: plan_etcd
+etcd: plan_etcd confirm
 	cd $(BUILD)/etcd; $(TF_APPLY)
 	# Wait for vpc/subnets to be ready
 	sleep 5
