@@ -47,6 +47,7 @@ resource "template_file" "admiral_cloud_config" {
         "AWS_SECRET_ACCESS_KEY" = "${var.deployment_key_secret}"
         "AWS_DEFAULT_REGION" = "${var.aws_account.default_region}"
         "CLUSTER_NAME" = "${var.cluster_name}"
+        "APP_REPOSITORY" = "${var.app_repository}"
     }
 }
 
