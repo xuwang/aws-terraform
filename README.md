@@ -353,6 +353,8 @@ $ make destroy_<resource>
 ├── Makefile
 ├── README.md
 ├── Vagrantfile
+├── app-deploy-key.pem.yaml.sample
+├── envs.sh.sample
 ├── modules
 │   ├── cluster
 │   │   ├── cluster.tf
@@ -374,16 +376,18 @@ $ make destroy_<resource>
 │   │   ├── rootCA.cnf
 │   │   └── site.cnf
 │   ├── cloud-config
-│   │   ├── admiral.yaml
 │   │   ├── admiral.yaml.tmpl
 │   │   ├── dockerhub.yaml
 │   │   ├── etcd.yaml.tmpl
 │   │   ├── files.yaml
+│   │   ├── git-sync-rsa.pem
 │   │   ├── s3-cloudconfig-bootstrap.sh
 │   │   ├── systemd-units-flannel.yaml
 │   │   ├── systemd-units.yaml
-│   │   ├── worker.yaml
 │   │   └── worker.yaml.tmpl
+│   ├── hushhush
+│   │   ├── iam-app-gitsync_rsa.pub
+│   │   └── iam-app-gitsync_rsa.yaml
 │   ├── makefiles
 │   │   ├── admiral.mk
 │   │   ├── cloudtrail.mk
@@ -405,33 +409,41 @@ $ make destroy_<resource>
 │   │   ├── etcd_policy.json
 │   │   └── worker_policy.json
 │   └── terraforms
-│       ├── admiral.tf
-│       ├── efs.tf
-│       ├── etcd.tf
-│       ├── iam.tf
-│       ├── module-elb.tf
-│       ├── rds.tf
-│       ├── route53.tf
-│       ├── s3.tf
-│       ├── vpc-subnet-admiral.tf
-│       ├── vpc-subnet-elb.tf
-│       ├── vpc-subnet-etcd.tf
-│       ├── vpc-subnet-rds.tf
-│       ├── vpc-subnet-worker.tf
-│       ├── vpc.tf
-│       ├── worker-efs-target.tf
-│       └── worker.tf
+│       ├── admiral
+│       │   └── admiral.tf
+│       ├── efs
+│       │   └── efs.tf
+│       ├── elb
+│       │   └── module-elb.tf
+│       ├── etcd
+│       │   └── etcd.tf
+│       ├── iam
+│       │   └── iam.tf
+│       ├── rds
+│       │   └── rds.tf
+│       ├── route53
+│       │   └── route53.tf
+│       ├── s3
+│       │   └── s3.tf
+│       ├── vpc
+│       │   ├── vpc-subnet-admiral.tf
+│       │   ├── vpc-subnet-elb.tf
+│       │   ├── vpc-subnet-etcd.tf
+│       │   ├── vpc-subnet-rds.tf
+│       │   ├── vpc-subnet-worker.tf
+│       │   └── vpc.tf
+│       └── worker
+│           └── worker.tf
 └── scripts
     ├── aws-keypair.sh
     ├── cloudtrail-admin.sh
     ├── gen-provider.sh
+    ├── gen-tf-vars.sh
     ├── get-ami.sh
     ├── get-ec2-public-id.sh
-    ├── mount-efs.sh
-    ├── read_cfg.sh
+    ├── session-lock.sh
     ├── substitute-AWS-ACCOUNT.sh
-    ├── substitute-CLUSTER-NAME.sh
-    └── wait-cloudinit-bucket.sh
+    └── substitute-CLUSTER-NAME.sh
 ```
 * Etcd cluster is on its own autoscaling group. It should be set with a fixed, odd number (1,3,5..), and cluster_desired_capacity=min_size=max_size.
 * Cluster discovery is managed with [dockerage/etcd-aws-cluster](https://hub.docker.com/r/dockerage/etcd-aws-cluster/) image. etcd cluster is formed by self-discovery through its auto-scaling group and then an etcd initial cluster is updated automatically to s3://AWS-ACCOUNT-CLUSTER-NAME-cloudinit/etcd/initial-cluster s3 bucket. Worker nodes join the cluster by downloading the etcd initial-cluster file from the s3 bucket during their bootstrap.
