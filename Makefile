@@ -107,7 +107,7 @@ destroy_all: session_start confirm
 	$(MAKE) destroy_admiral_key destroy_etcd_key destroy_worker_key \
 	destroy_worker destroy_admiral destroy_etcd \
 	destroy_iam destroy_s3 destroy_efs destroy_vpc
-	rm -rf $(BUIILD)
+	rm -rf $(BUILD)
 
 destroy: 
 	@echo "Usage: make destroy_<resource> | make plan_destroy_all | make destroy_all"
