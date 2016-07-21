@@ -15,7 +15,7 @@ COREOS_UPDATE_CHANNE ?= beta
 AWS_REGION ?= us-west-2
 VM_TYPE ?= hvm
 
-# To prevent you mistakenly using a wrong account (and end up destroying live environment),
+# To prevent you from mistakenly using a wrong account (and end up destroying live environment),
 # a list of allowed AWS account IDs should be defined:
 #ALLOWED_ACCOUNT_IDS := "123456789012","012345678901"
 AWS_ACCOUNT := $(shell aws --profile ${AWS_PROFILE} iam get-user | jq -r ".User.Arn" | grep -Eo '[[:digit:]]{12}')
