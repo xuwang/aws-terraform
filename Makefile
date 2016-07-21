@@ -9,7 +9,7 @@ CLUSTER_NAME := coreos-cluster
 # a list of allowed AWS account IDs should be defined:
 #ALLOWED_ACCOUNT_IDS := "123456789012","012345678901"
 AWS_ACCOUNT := $(shell aws --profile ${AWS_PROFILE} iam get-user | jq -r ".User.Arn" | grep -Eo '[[:digit:]]{12}')
-ALLOWED_ACCOUNT_IDS := "${AWS_ACCOUNT}"
+ALLOWED_ACCOUNT_IDS := "$(AWS_ACCOUNT)"
 
 # For get-ami.sh
 COREOS_UPDATE_CHANNE=beta
