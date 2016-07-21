@@ -108,11 +108,12 @@ write_files:
     content: |
         #!/bin/bash
         # This script sync /var/lib/apps with github repo
+        export GIT_SSH_COMMAND="ssh -i /root/.ssh/git-sync-rsa.pem"
         if [[ -d /var/lib/apps ]]; 
         then 
             cd /var/lib/apps; git pull
         else
-            make -p /var/lib
+            mkdir -p /var/lib
             git clone ${APP_REPOSITORY} /var/lib/apps
         fi
   - path: /opt/bin/s3sync.sh
@@ -125,9 +126,9 @@ write_files:
         AWS_CONFIG_ENV=/root/.aws/envvars
         source $AWS_CONFIG_ENV
         IMAGE=suet/awscli:latest
-        APPBUCKET=s3://$${AWS_ACCOUNT}-coreos-cluster-config/apps
+        APPBUCKET=s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-config/apps
         DST=/var/lib/apps
-        CMD="aws s3 sync --exact-timestamps --delete $APPBUCKET $DST && chmod 755 $${DST}/bin/*"
+        CMD="aws s3 sync --exact-timestamps --delete $APPBUCKET $DST && chmod 755 $DST/bin/*"
         
         # pull the IMAGE if not loaded
         docker history $IMAGE > /dev/null 2>&1 || docker pull $IMAGE

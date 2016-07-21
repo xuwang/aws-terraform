@@ -143,11 +143,12 @@ write_files:
     content: |
         #!/bin/bash
         # This script sync /var/lib/apps with github repo
+        export GIT_SSH_COMMAND="ssh -i /root/.ssh/git-sync-rsa.pem"
         if [[ -d /var/lib/apps ]]; 
         then 
             cd /var/lib/apps; git pull
         else
-            make -p /var/lib
+            mkdir -p /var/lib
             git clone ${APP_REPOSITORY} /var/lib/apps
         fi
   - path: /opt/bin/s3sync.sh
@@ -156,7 +157,7 @@ write_files:
     content: |
         #!/bin/bash
         # This script run a awscli docker to sync /var/lib/apps with s3 bucket
-        # this allows us to dynamically config hosted applications
+        # this allows us to dynamicarlly config hosted applications
         AWS_CONFIG_ENV=/root/.aws/envvars
         source $AWS_CONFIG_ENV
         IMAGE=suet/awscli:latest

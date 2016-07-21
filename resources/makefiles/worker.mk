@@ -21,7 +21,9 @@ init_worker: etcd worker_key
 	mkdir -p $(BUILD)/worker
 	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
 	ln -sf $(BUILD)/*.tf $(BUILD)/worker
-
+	@if [ -f $(APP_REPOSITORY_DEPLOYKEY) ]; then \
+  		cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/worker.yaml.tmpl; \
+  	fi
 
 destroy_worker: destroy_worker_key 
 	cd $(BUILD)/worker; $(TF_DESTROY)
