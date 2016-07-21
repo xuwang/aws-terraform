@@ -1,7 +1,9 @@
 # You can override default values in Makefile by creating envs.sh and run source ./envs.sh
 export AWS_PROFILE=my-aws-profile
 export CLUSTER_NAME=my-cluster
-export REGIONE=us-west-2
+export REGION=us-west-2
 # If you have a private repo needs to be synced to host under /var/lib/app. :
-export APP_REPOSITORY=git@example.com:user/app-repo.git
-export APP_REPOSITORY_DEPLOYKEY=./resources/secrets/app-deploy-key.pem.yaml
+#export APP_REPOSITORY=git@example.com:user/app-repo.git
+#export APP_REPOSITORY_DEPLOYKEY=./resources/secrets/app-deploy-key.pem.yaml
+# If you have a public repo
+#export APP_REPOSITORY=https://github.com/user/app-repo.git
