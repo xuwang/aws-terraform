@@ -1,8 +1,5 @@
 worker: plan_worker confirm
-	$(MAKE) confirm
 	cd $(BUILD)/worker; $(TF_APPLY)
-	# Wait for vpc/subnets to be ready
-	sleep 5
 	$(MAKE) gen_worker_vars
 	@$(MAKE) get_worker_ips
 
@@ -21,7 +18,7 @@ init_worker: etcd worker_key
 	mkdir -p $(BUILD)/worker
 	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
 	ln -sf $(BUILD)/*.tf $(BUILD)/worker
-	@if [ -f $(APP_REPOSITORY_DEPLOYKEY) ]; then \
+	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
   		cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/worker.yaml.tmpl; \
   	fi
 

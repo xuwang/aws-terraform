@@ -25,7 +25,7 @@ init_etcd: vpc iam s3 etcd_key
 	mkdir -p $(BUILD)/etcd
 	rsync -av  $(RESOURCES)/terraforms/etcd/ $(BUILD)/etcd
 	ln -sf $(BUILD)/*.tf $(BUILD)/etcd
-	@if [ -f $(APP_REPOSITORY_DEPLOYKEY) ]; then \
+	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
   		cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/etcd.yaml.tmpl; \
   	fi
 
