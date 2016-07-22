@@ -1,5 +1,5 @@
-worker: plan_worker confirm
-	cd $(BUILD)/worker; $(TF_APPLY)
+worker: plan_worker
+	cd $(BUILD)/$@ ; $(SCRIPTS)/tf_apply_confirm.sh
 	$(MAKE) gen_worker_vars
 	@$(MAKE) get_worker_ips
 

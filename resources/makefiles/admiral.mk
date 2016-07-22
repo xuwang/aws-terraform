@@ -1,5 +1,5 @@
-admiral: plan_admiral confirm
-	cd $(BUILD)/admiral; $(TF_APPLY)
+admiral: init_admiral
+	cd $(BUILD)/$@ ; $(SCRIPTS)/tf_apply_confirm.sh
 	# Wait for vpc/subnets to be ready
 	sleep 5
 	$(MAKE) gen_admiral_vars

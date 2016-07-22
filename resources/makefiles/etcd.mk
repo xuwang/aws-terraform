@@ -1,9 +1,9 @@
-etcd: plan_etcd confirm
-	cd $(BUILD)/etcd; $(TF_APPLY)
+etcd: init_etcd 
+	@cd $(BUILD)/$@ ; $(SCRIPTS)/tf_apply_confirm.sh
 	# Wait for vpc/subnets to be ready
 	sleep 5
-	$(MAKE) gen_etcd_vars
-	@$(MAKE) get_etcd_ips
+	@$(MAKE) gen_etcd_vars
+	$(MAKE) get_etcd_ips
 
 plan_etcd: init_etcd
 	cd $(BUILD)/etcd; $(TF_GET); $(TF_PLAN)

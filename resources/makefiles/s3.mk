@@ -1,6 +1,6 @@
-s3: plan_s3 confirm
-	cd $(BUILD)/s3; $(TF_APPLY)
-	$(MAKE) gen_s3_vars
+s3: init_s3
+	@cd $(BUILD)/$@; $(SCRIPTS)/tf_apply_confirm.sh
+	@$(MAKE) gen_s3_vars
 
 plan_s3: init_s3
 	cd $(BUILD)/s3; $(TF_GET); $(TF_PLAN)

@@ -1,7 +1,7 @@
 # Create EFS cluster servers and EFS mount targets
-efs: plan_efs confirm
-	cd $(BUILD)/efs; $(TF_APPLY)
-	$(MAKE) gen_efs_vars
+efs: init_efs
+	@cd $(BUILD)/$@ ; $(SCRIPTS)/tf_apply_confirm.sh
+	@$(MAKE) gen_efs_vars
 
 plan_efs: init_efs
 	cd $(BUILD)/efs; $(TF_GET); $(TF_PLAN)

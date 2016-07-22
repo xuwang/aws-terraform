@@ -1,5 +1,5 @@
-vpc: plan_vpc confirm
-	cd $(BUILD)/vpc; $(TF_APPLY)
+vpc: init_vpc
+	@cd $(BUILD)/$@ ; $(SCRIPTS)/tf_apply_confirm.sh
 	# Wait for vpc/subnets to be ready
 	sleep 5
 	$(MAKE) gen_vpc_vars
@@ -7,7 +7,9 @@ vpc: plan_vpc confirm
 plan_vpc: init_vpc
 	cd $(BUILD)/vpc; $(TF_GET); $(TF_PLAN)
 
-destroy_vpc:  
+destroy_vpc:
+	@echo "In $@."
+	@$(MAKE) confirm
 	cd $(BUILD)/vpc; $(TF_DESTROY)
 
 show_vpc:  

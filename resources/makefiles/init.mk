@@ -10,7 +10,7 @@ graph: | $(BUILD)
 refresh: init
 	cd $(BUILD); $(TF_REFRESH)
 
-init: | lock $(TF_PORVIDER) $(AMI_VAR)
+init: | $(TF_PORVIDER) $(AMI_VAR)
 
 $(BUILD): init_build_dir
 

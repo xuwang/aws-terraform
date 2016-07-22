@@ -1,8 +1,7 @@
-iam: plan_iam confirm
-	cd $(BUILD)/iam; $(TF_APPLY)
-	# Wait for vpc/subnets to be ready
-	sleep 5
-	$(MAKE) gen_iam_vars
+iam: init_iam 
+	@cd $(BUILD)/$@; $(SCRIPTS)/tf_apply_confirm.sh
+	@$(MAKE) gen_s3_vars
+	@$(MAKE) gen_iam_vars
 
 plan_iam: init_iam
 	cd $(BUILD)/iam; $(TF_GET); $(TF_PLAN)
