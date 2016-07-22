@@ -104,11 +104,10 @@ plan_destroy_all:
 	$(foreach resource,$(BUILD_SUBDIRS),cd $(BUILD)/$(resource) && $(TF_DESTROY_PLAN)  2> /tmp/destroy.err;)
 
 destroy_all: session_start confirm
-	$(MAKE) destroy_admiral_key destroy_etcd_key destroy_worker_key
-	for i in admiral worker etcd iam efs vpc; do \
-		if [ -d $(BUILD)/$$i ]; then \
-			destroy_$ii ; \
-		fi ; \
+	@for i in admiral worker etcd iam efs vpc; do \
+	  if [ -d $(BUILD)/$$i ]; then \
+	    $(MAKE) destroy_$$i ; \
+	  fi ; \
 	done
 	rm -rf $(BUILD)
 
