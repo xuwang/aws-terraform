@@ -5,6 +5,16 @@ etcd: init_etcd
 	@$(MAKE) gen_etcd_vars
 	$(MAKE) get_etcd_ips
 
+etcd-only:
+	mkdir -p $(BUILD)/etcd
+	rsync -av  $(RESOURCES)/terraforms/etcd/ $(BUILD)/etcd
+	ln -sf $(BUILD)/*.tf $(BUILD)/etcd
+	@cd $(BUILD)/etcd ; $(SCRIPTS)/tf_apply_confirm.sh
+	# Wait for vpc/subnets to be ready
+	sleep 5
+	@$(MAKE) gen_etcd_vars
+	$(MAKE) get_etcd_ips
+
 plan_etcd: init_etcd
 	cd $(BUILD)/etcd; $(TF_GET); $(TF_PLAN)
 
@@ -26,7 +36,7 @@ init_etcd: vpc iam s3 etcd_key
 	rsync -av  $(RESOURCES)/terraforms/etcd/ $(BUILD)/etcd
 	ln -sf $(BUILD)/*.tf $(BUILD)/etcd
 	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
-  		cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/etcd.yaml.tmpl; \
+  		 cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/etcd.yaml.tmpl; \
   	fi
 
 clean_etcd:
@@ -44,6 +54,5 @@ update_etcd_user_data:
 		${TF_TAINT} aws_s3_bucket_object.etcd_cloud_config ; \
 		$(TF_APPLY)
 
-
-.PHONY: etcd destroy_etcd plan_destroy_etcd plan_etcd init_etcd get_etcd_ips update_etcd_user_data
+.PHONY: etcd etcd-only destroy_etcd plan_destroy_etcd plan_etcd init_etcd get_etcd_ips update_etcd_user_data
 .PHONY: show_etcd etcd_key destroy_etcd_key gen_etcd_vars clean_etcd

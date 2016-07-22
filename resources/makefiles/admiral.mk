@@ -7,8 +7,8 @@ admiral: init_admiral
 
 # Use this for ongoing changes if you only changed admiral.tf.
 admiral_only:
-	cd $(BUILD)/admiral; $(TF_APPLY)
-	# Wait for vpc/subnets to be ready
+	cp -rf $(RESOURCES)/terraforms/admiral/admiral.tf $(BUILD)/admiral
+	cd $(BUILD)/admiral; $(SCRIPTS)/tf_apply_confirm.sh
 	@$(MAKE) get_admiral_ips
 
 plan_admiral: init_admiral

@@ -8,7 +8,7 @@ AWS_PROFILE ?= coreos-cluster
 CLUSTER_NAME ?= coreos-cluster
 # Application repository. Automatically synced to /var/lib/apps every minute
 APP_REPOSITORY ?= https://github.com/dockerage/coreos-cluster-apps
-APP_REPOSITORY_DEPLOKEY ?= ''
+APP_REPOSITORY_DEPLOYKEY ?= ''
 
 # For get-ami.sh
 COREOS_UPDATE_CHANNE ?= beta

@@ -6,9 +6,7 @@ worker: plan_worker
 # Use this for ongoing changes if you only changed worker.tf.
 worker_only:
 	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
-	cd $(BUILD)/worker; $(TF_APPLY)
-	# Wait for vpc/subnets to be ready
-	sleep 5
+	cd $(BUILD)/worker ; $(SCRIPTS)/tf_apply_confirm.sh
 	@$(MAKE) get_worker_ips
 
 plan_worker: init_worker
