@@ -1,5 +1,5 @@
 
-# cluster varaiables
+# cluster variables
 variable "cluster_name" { }
 # a list of subnet IDs to launch resources in.
 variable "cluster_vpc_zone_identifiers" { }

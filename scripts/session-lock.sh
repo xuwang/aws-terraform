@@ -55,17 +55,18 @@ lock(){
 unlock(){
 	if  ! ${AWS_EC2_CLI} describe-key-pairs --key-name ${LOCK_KEYNAME} > /dev/null 2>&1 ; then
 		echo "keypair ${key} does not exist. Nothing to remove."
+    return 0
 	elif [ ! -f ${LOCK_KEY_PEMFILE} ]; then
     	echo "${LOCK_KEY_PEMFILE} in use but you don't own the private key. Won't remove."
     	return 1
-    else 
+  else 
     	check_finger_print
     	if [ $? -eq 1 ]; then
     		echo "${LOCK_KEY_PEMFILE} exists, but doesn't match the ${LOCK_KEYNAME}'s fingerprint. Won't remove."
     		return 1
     	fi
-  	fi
-    ${AWS_EC2_CLI} delete-key-pair --key-name ${LOCK_KEYNAME} \
+  fi
+  ${AWS_EC2_CLI} delete-key-pair --key-name ${LOCK_KEYNAME} \
        && echo "Deleted ${LOCK_KEYNAME}." \
        && rm -rf ${LOCK_KEY_PEMFILE} && echo "Removed ${LOCK_KEY_PEMFILE}."
 }

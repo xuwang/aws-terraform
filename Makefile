@@ -29,7 +29,7 @@ MODULES := $(ROOT_DIR)modules
 RESOURCES := $(ROOT_DIR)resources
 TF_RESOURCES := $(ROOT_DIR)resources/terraforms
 BUILD := $(ROOT_DIR)build
-BUILD_SUBDIRS = $(shell cd $(BUILD); ls -d */ | tr '/' ' ')
+#BUILD_SUBDIRS = $(shell cd $(BUILD); ls -d */ | tr '/' ' ')
 CONFIG := $(BUILD)/cloud-config
 CERTS := $(BUILD)/certs
 SITE_CERT := $(CERTS)/site.pem
@@ -93,17 +93,11 @@ session_end:
 	$(MAKE) push_tf_state
 	$(SCRIPTS)/session-lock.sh -u $(LOCK_KEYNAME) && rm session_start
 
-confirm:
-	@echo "CONTINUE? [Y/N]: "; read ANSWER; \
-	if [ ! "$$ANSWER" == "Y" ]; then \
-	  echo "Exiting." ; exit 1 ; \
-	fi 
-
 plan_destroy_all:
 	@echo $(BUILD_SUBDIRS)
 	$(foreach resource,$(BUILD_SUBDIRS),cd $(BUILD)/$(resource) && $(TF_DESTROY_PLAN)  2> /tmp/destroy.err;)
 
-destroy_all: session_start confirm
+destroy_all: confirm
 	@for i in admiral worker etcd iam efs vpc; do \
 	  if [ -d $(BUILD)/$$i ]; then \
 	    $(MAKE) destroy_$$i ; \
@@ -126,11 +120,11 @@ show_all:
 pull_tf_state:
 	@mkdir -p $(BUILD)
 	@echo pull terraform state from ...
-	git pull --rebase 
+	#git pull --rebase 
 
 push_tf_state:
 	@echo push terraform state to ....
-	git push
+	#git push
 
 # Load all resouces makefile
 include resources/makefiles/*.mk
