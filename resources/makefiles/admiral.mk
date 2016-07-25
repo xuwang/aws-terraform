@@ -10,6 +10,9 @@ admiral_only: admiral_key
 	mkdir -p $(BUILD)/admiral
 	cp -rf $(RESOURCES)/terraforms/admiral/admiral.tf $(BUILD)/admiral
 	ln -sf $(BUILD)/*.tf $(BUILD)/admiral
+	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
+  		cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/admiral.yaml.tmpl; \
+  	fi
 	cd $(BUILD)/admiral; $(SCRIPTS)/tf_apply_confirm.sh
 	$(MAKE) gen_admiral_vars
 	@$(MAKE) get_admiral_ips

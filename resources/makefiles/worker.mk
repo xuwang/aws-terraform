@@ -7,7 +7,10 @@ worker: init_worker
 worker_only: worker_key
 	mkdir -p $(BUILD)/worker
 	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
-	ln -sf $(BUILD)/*.tf $(BUILD)/worker
+	ln -sf $(BUILD)/*.tf $(BUILD)/worker	
+	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
+  		cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/worker.yaml.tmpl; \
+  	fi
 	cd $(BUILD)/worker ; $(SCRIPTS)/tf_apply_confirm.sh
 	@$(MAKE) gen_worker_vars
 	@$(MAKE) get_worker_ips
