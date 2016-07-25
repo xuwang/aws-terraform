@@ -29,7 +29,7 @@ MODULES := $(ROOT_DIR)modules
 RESOURCES := $(ROOT_DIR)resources
 TF_RESOURCES := $(ROOT_DIR)resources/terraforms
 BUILD := $(ROOT_DIR)build
-BUILD_SUBDIRS = $(shell cd $(BUILD); ls -d */ | tr '/' ' ')
+BUILD_SUBDIRS = $(shell [ -d $(BUILD) ] && cd $(BUILD) && ls -d */ | tr '/' ' ')
 CONFIG := $(BUILD)/cloud-config
 CERTS := $(BUILD)/certs
 SITE_CERT := $(CERTS)/site.pem
@@ -68,7 +68,7 @@ TF_TAINT := terraform taint -allow-missing
 
 export
 
-all: worker
+all: worker admiral
 
 help:
 	@echo "Usage: make plan_<resource> | <resource> | plan_destroy_<resource> | destroy_<resource>"
@@ -97,8 +97,14 @@ plan_destroy_all:
 	@echo $(BUILD_SUBDIRS)
 	$(foreach resource,$(BUILD_SUBDIRS),cd $(BUILD)/$(resource) && $(TF_DESTROY_PLAN)  2> /tmp/destroy.err;)
 
-destroy_all: confirm
-	@for i in admiral worker etcd iam efs vpc; do \
+confirm:
+	@echo "CONTINUE? [Y/N]: "; read ANSWER; \
+	if [ ! "$$ANSWER" == "Y" ]; then \
+		echo "Exiting." ; exit 1 ; \
+    fi
+
+destroy_all: | plan_destroy_all confirm
+	@for i in admiral worker etcd iam efs s3 vpc; do \
 	  if [ -d $(BUILD)/$$i ]; then \
 	    $(MAKE) destroy_$$i ; \
 	  fi ; \
