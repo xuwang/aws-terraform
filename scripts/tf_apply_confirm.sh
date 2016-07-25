@@ -22,4 +22,7 @@ then
     else
 	$TF_APPLY
     fi
+else
+   echo "Nothing to change."
 fi
+
