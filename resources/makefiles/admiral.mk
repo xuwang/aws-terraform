@@ -7,6 +7,7 @@ admiral: init_admiral
 
 # Use this for ongoing changes if you only changed admiral.tf.
 admiral_only:
+	mkdir -p $(BUILD)/admiral
 	cp -rf $(RESOURCES)/terraforms/admiral/admiral.tf $(BUILD)/admiral
 	ln -sf $(BUILD)/*.tf $(BUILD)/admiral
 	cd $(BUILD)/admiral; $(SCRIPTS)/tf_apply_confirm.sh
