@@ -4,7 +4,7 @@ worker: init_worker
 	@$(MAKE) get_worker_ips
 
 # Use this for ongoing changes if you only changed worker.tf.
-worker_only: worker_key
+worker_only: init worker_key
 	mkdir -p $(BUILD)/worker
 	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
 	ln -sf $(BUILD)/*.tf $(BUILD)/worker	

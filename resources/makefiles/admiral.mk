@@ -6,7 +6,7 @@ admiral: init_admiral
 	@$(MAKE) get_admiral_ips
 
 # Use this for ongoing changes if you only changed admiral.tf.
-admiral_only: admiral_key
+admiral_only: init admiral_key
 	mkdir -p $(BUILD)/admiral
 	cp -rf $(RESOURCES)/terraforms/admiral/admiral.tf $(BUILD)/admiral
 	ln -sf $(BUILD)/*.tf $(BUILD)/admiral
