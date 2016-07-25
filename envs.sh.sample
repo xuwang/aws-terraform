@@ -1,4 +1,5 @@
 # You can override default values in Makefile by creating envs.sh and run source ./envs.sh
+unset AWS_PROFILE  CLUSTER_NAME REGION APP_REPOSITORY APP_REPOSITORY_DEPLOYKEY
 export AWS_PROFILE=my-aws-profile
 export CLUSTER_NAME=my-cluster
 export REGION=us-west-2
