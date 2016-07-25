@@ -1,12 +1,15 @@
-worker: plan_worker
+worker: init_worker
 	cd $(BUILD)/$@ ; $(SCRIPTS)/tf_apply_confirm.sh
-	$(MAKE) gen_worker_vars
+	@$(MAKE) gen_worker_vars
 	@$(MAKE) get_worker_ips
 
 # Use this for ongoing changes if you only changed worker.tf.
 worker_only:
+	mkdir -p $(BUILD)/worker
 	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
+	ln -sf $(BUILD)/*.tf $(BUILD)/worker
 	cd $(BUILD)/worker ; $(SCRIPTS)/tf_apply_confirm.sh
+	@$(MAKE) gen_worker_vars
 	@$(MAKE) get_worker_ips
 
 plan_worker: init_worker
@@ -49,5 +52,5 @@ update_worker_user_data:
 		${TF_TAINT} aws_s3_bucket_object.worker_cloud_config ; \
 		$(TF_APPLY)
 
-.PHONY: worker destroy_worker plan_destroy_worker plan_worker init_worker get_worker_ips update_worker_user_data
+.PHONY: worker worker_only destroy_worker plan_destroy_worker plan_worker init_worker get_worker_ips update_worker_user_data
 .PHONY: show_worker worker_key destroy_worker_key gen_worker_vars clean_worker

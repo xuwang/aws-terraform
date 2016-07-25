@@ -8,7 +8,9 @@ admiral: init_admiral
 # Use this for ongoing changes if you only changed admiral.tf.
 admiral_only:
 	cp -rf $(RESOURCES)/terraforms/admiral/admiral.tf $(BUILD)/admiral
+	ln -sf $(BUILD)/*.tf $(BUILD)/admiral
 	cd $(BUILD)/admiral; $(SCRIPTS)/tf_apply_confirm.sh
+	$(MAKE) gen_admiral_vars
 	@$(MAKE) get_admiral_ips
 
 plan_admiral: init_admiral
@@ -58,5 +60,5 @@ update_admiral_user_data:
 		${TF_TAINT} aws_s3_bucket_object.admiral_cloud_config ; \
 		$(TF_APPLY)
 
-.PHONY: admiral destroy_admiral plan_destroy_admiral plan_admiral init_admiral get_admiral_ips update_admiral_user_data
+.PHONY: admiral admiral_only destroy_admiral plan_destroy_admiral plan_admiral init_admiral get_admiral_ips update_admiral_user_data
 .PHONY: show_admiral admiral_key destroy_admiral_key gen_admiral_vars init_efs_target clean_admiral

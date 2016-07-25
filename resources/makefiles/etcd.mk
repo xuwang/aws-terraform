@@ -5,7 +5,7 @@ etcd: init_etcd
 	@$(MAKE) gen_etcd_vars
 	$(MAKE) get_etcd_ips
 
-etcd-only:
+etcd_only:
 	mkdir -p $(BUILD)/etcd
 	rsync -av  $(RESOURCES)/terraforms/etcd/ $(BUILD)/etcd
 	ln -sf $(BUILD)/*.tf $(BUILD)/etcd
