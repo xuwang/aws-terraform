@@ -2,9 +2,9 @@
 #
 # Decide if we should carry out terraform apply based on if there is a change
 
-TF_PLAN="terraform plan -module-depth=1"
-TF_GET="terraform get -update"
-TF_APPLY="terraform apply -refresh=false"
+TF_PLAN=${TF_PLAN:-"terraform plan -module-depth=1"}
+TF_GET=${TF_GET:-"terraform get -update"}
+TF_APPLY=${TF_APPLY:-"terraform apply -refresh=false"}
 resource=$(basename $(PWD))
 
 $TF_GET
