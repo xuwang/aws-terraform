@@ -12,6 +12,9 @@ refresh: init
 
 init: | $(TF_PORVIDER) $(AMI_VAR)
 
+get_vpc_id:
+	$(SCRIPTS)/get-vpc-id.sh
+
 $(BUILD): init_build_dir
 
 $(TF_PORVIDER): update_provider
@@ -32,7 +35,7 @@ update_ami:	| $(BUILD)
 
 update_provider: | $(BUILD)
 	# Generate tf provider
-	$(SCRIPTS)/gen-provider.sh > $(BUILD)/$(TF_PORVIDER)
+	$(SCRIPTS)/gen-provider.sh > /dev/null 2>&1 &&  $(SCRIPTS)/gen-provider.sh > $(BUILD)/$(TF_PORVIDER)
 
 gen_certs: $(BUILD)
 	@cp -rf $(RESOURCES)/certs $(BUILD)
