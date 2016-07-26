@@ -1,5 +1,5 @@
 etcd: init_etcd 
-	@cd $(BUILD)/$@ ; $(SCRIPTS)/tf_apply_confirm.sh
+	@cd $(BUILD)/$@ ; $(SCRIPTS)/tf-apply-confirm.sh
 	# Wait for vpc/subnets to be ready
 	sleep 5
 	@$(MAKE) gen_etcd_vars
@@ -12,7 +12,7 @@ etcd_only: init etcd_key
 	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
   		 cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/etcd.yaml.tmpl; \
   	fi
-	@cd $(BUILD)/etcd ; $(SCRIPTS)/tf_apply_confirm.sh
+	@cd $(BUILD)/etcd ; $(SCRIPTS)/tf-apply-confirm.sh
 	# Wait for vpc/subnets to be ready
 	sleep 5
 	@$(MAKE) gen_etcd_vars

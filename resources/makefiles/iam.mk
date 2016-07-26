@@ -1,5 +1,5 @@
 iam: init_iam 
-	@cd $(BUILD)/$@; $(SCRIPTS)/tf_apply_confirm.sh
+	@cd $(BUILD)/$@; $(SCRIPTS)/tf-apply-confirm.sh
 	@$(MAKE) gen_s3_vars
 	@$(MAKE) gen_iam_vars
 

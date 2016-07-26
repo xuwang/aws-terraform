@@ -1,5 +1,5 @@
 vpc: init_vpc
-	@cd $(BUILD)/$@ ; $(SCRIPTS)/tf_apply_confirm.sh
+	@cd $(BUILD)/$@ ; $(SCRIPTS)/tf-apply-confirm.sh
 	# Wait for vpc/subnets to be ready
 	sleep 5
 	$(MAKE) gen_vpc_vars
@@ -26,5 +26,5 @@ clean_vpc:
 gen_vpc_vars:
 	cd $(BUILD)/vpc; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/vpc_vars.tf
 
-.PHONY: vpc plan_destroy_vpc destroy_vpc plan_vpc init_vpc show_vpc clean_vpc
+.PHONY: get_vpc_ids vpc plan_destroy_vpc destroy_vpc plan_vpc init_vpc show_vpc clean_vpc
 

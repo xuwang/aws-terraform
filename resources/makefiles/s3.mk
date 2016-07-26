@@ -1,5 +1,5 @@
 s3: init_s3
-	@cd $(BUILD)/$@; $(SCRIPTS)/tf_apply_confirm.sh
+	@cd $(BUILD)/$@; $(SCRIPTS)/tf-apply-confirm.sh
 	@$(MAKE) gen_s3_vars
 
 plan_s3: init_s3

@@ -1,5 +1,5 @@
 admiral: init_admiral
-	cd $(BUILD)/$@ ; $(SCRIPTS)/tf_apply_confirm.sh
+	cd $(BUILD)/$@ ; $(SCRIPTS)/tf-apply-confirm.sh
 	# Wait for vpc/subnets to be ready
 	sleep 5
 	$(MAKE) gen_admiral_vars
@@ -13,7 +13,7 @@ admiral_only: init admiral_key
 	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
   		cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/admiral.yaml.tmpl; \
   	fi
-	cd $(BUILD)/admiral; $(SCRIPTS)/tf_apply_confirm.sh
+	cd $(BUILD)/admiral; $(SCRIPTS)/tf-apply-confirm.sh
 	$(MAKE) gen_admiral_vars
 	@$(MAKE) get_admiral_ips
 
