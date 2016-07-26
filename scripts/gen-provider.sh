@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 #
 # Init variables and sanity checks
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
