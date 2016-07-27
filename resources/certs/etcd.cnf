@@ -19,8 +19,8 @@ req_extensions     = v3_req
 
 # distinguished_name
 [ req_distinguished_name ]
-commonName             = "etcd.dockerage.com"      # CN=
-emailAddress           = "admin@dockerage.com"     # CN/emailAddress=
+commonName             = "etcd.DOMAIN"      # CN=
+emailAddress           = "admin@DOMAIN"     # CN/emailAddress=
 
 # req_extensions
 [ v3_req ]

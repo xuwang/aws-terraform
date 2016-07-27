@@ -19,10 +19,10 @@ distinguished_name = req_distinguished_name
 [ req_distinguished_name ]
 countryName            = "US"                     # C=
 stateOrProvinceName    = "CA"                     # ST=
-localityName           = "Half Moon Bay"          # L=
+localityName           = "Example City"          # L=
 postalCode             = "94019"                  # L/postalcode=
 organizationName       = "Dockerage"              # O=
 organizationalUnitName = "IT Department"          # OU=
-commonName             = "ca.dockerage.com"        # CN=
-emailAddress           = "admin@ca.dockerage.com"    # CN/emailAddress=
+commonName             = "ca.DOMAIN"        # CN=
+emailAddress           = "admin@ca.DOMAIN"    # CN/emailAddress=
 

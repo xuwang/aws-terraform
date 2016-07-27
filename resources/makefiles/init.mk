@@ -38,7 +38,7 @@ update_provider: | $(BUILD)
 	$(SCRIPTS)/gen-provider.sh > /dev/null 2>&1 &&  $(SCRIPTS)/gen-provider.sh > $(BUILD)/$(TF_PORVIDER)
 
 gen_certs: $(BUILD)
-	@cp -rf $(RESOURCES)/certs $(BUILD)
+	@cp -rf $(RESOURCES)/certs $(BUILD); sed -i '' "s/DOMAIN/$(APP_DOMAIN)/g" $(BUILD)/certs/*
 	@if [ ! -f "$(SITE_CERT)" ] ; \
 	then \
 		$(MAKE) -C $(CERTS) ; \
