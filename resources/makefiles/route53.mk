@@ -1,14 +1,15 @@
-route53: vpc plan_route53
-	cd $(BUILD); \
-	$(TF_APPLY) -target module.route53
+
+route53: init_route53
+	@cd $(BUILD)/$@ ; $(SCRIPTS)/tf-apply-confirm.sh
+	@$(MAKE) gen_route53_vars
 
 plan_route53: plan_vpc init_route53
-	cd $(BUILD); \
-	$(TF_PLAN) -target module.route53;
+	cd $(BUILD)/route53; $(TF_PLAN)
 
-refresh_route53: | $(TF_PORVIDER)
-	cd $(BUILD); \
-	$(TF_REFRESH) -target module.route53
+init_route53: vpc
+	mkdir -p $(BUILD)/route53
+	rsync -avq  $(RESOURCES)/terraforms/route53/ $(BUILD)/route53
+	ln -sf $(BUILD)/*.tf $(BUILD)/route53
 
 plan_destroy_route53:
 	$(eval TMP := $(shell mktemp -d -t route53 ))
@@ -17,16 +18,13 @@ plan_destroy_route53:
 	mv  $(TMP)/route53*.tf $(BUILD)
 	rmdir $(TMP)
 
-destroy_route53:  
-	rm -f $(BUILD)/route53*.tf
-	cd $(BUILD); $(TF_APPLY)
+gen_route53_vars:
+	cd $(BUILD)/route53; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/route53_vars.tf
+
+destroy_route53:
+	cd $(BUILD)/route53; $(TF_DESTROY)
 
 clean_route53: destroy_route53
 	rm -f $(BUILD)/module-route53.tf
 
-init_route53: init
-	cp -rf $(RESOURCES)/terraforms/module-route53.tf $(BUILD)
-	cd $(BUILD); $(TF_GET);
-
-.PHONY: route53 plan_destroy_route53 destroy_route53 refresh_route53 plan_route53 init_route53 clean_route53
-
+.PHONY: route53 plan_route53 init_route53 plan_destroy_route53 gen_route53_vars destroy_route53 clean_route53

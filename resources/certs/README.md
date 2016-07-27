@@ -15,7 +15,7 @@
 
 ###To test ssl connection and the cert:
 
-    $ openssl s_client -showcerts -connect dockerhub.dockerage.com:443
+    $ openssl s_client -showcerts -connect dockerhub.DOMAIN:443
 
 
 

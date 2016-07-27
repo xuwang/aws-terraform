@@ -1,4 +1,6 @@
 build
+secrets
+hushhush
 *.pem
 *.key
 .DS_Store
@@ -6,3 +8,4 @@ build
 .terraform
 .vagrant
 coreos-cluster
+envs.sh

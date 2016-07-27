@@ -1,25 +1,20 @@
-efs: plan_efs
-	@echo "#### Working on $@"
-	cd $(BUILD); $(TF_APPLY);
+# Create EFS cluster servers and EFS mount targets
+efs: init_efs
+	@cd $(BUILD)/$@ ; $(SCRIPTS)/tf-apply-confirm.sh
+	@$(MAKE) gen_efs_vars
 
 plan_efs: init_efs
-	@echo "#### Working on $@"
-	cd $(BUILD); $(TF_GET); $(TF_PLAN)
-
-plan_destroy_efs:
-	@echo "#### Working on $@"
-	$(eval TMP := $(shell mktemp -d -t efs ))
-	mv $(BUILD)/efs*.tf $(TMP)
-	cd $(BUILD); $(TF_PLAN)
-	mv  $(TMP)/efs*.tf $(BUILD)
-	rmdir $(TMP)
-
-destroy_efs: 
-	@echo "#### Working on $@"
-	rm -f $(BUILD)/efs*.tf
-	cd $(BUILD); $(TF_APPLY)
+	cd $(BUILD)/efs; $(TF_GET); $(TF_PLAN)
 
 init_efs: init_vpc
-	cp -rf $(RESOURCES)/terraforms/efs.tf $(BUILD)
+	mkdir -p $(BUILD)/efs
+	rsync -avq  $(RESOURCES)/terraforms/efs/ $(BUILD)/efs
+	ln -sf $(BUILD)/*.tf $(BUILD)/efs
 
-.PHONY: efs plan_destroy_efs destroy_efs plan_efs init_efs clean_efs
+destroy_efs:
+	cd $(BUILD)/efs; $(TF_DESTROY)
+
+gen_efs_vars:
+	cd $(BUILD)/efs; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/efs_vars.tf
+
+.PHONY: efs init_efs gen_etcd_vars plan_destroy_efs destroy_efs plan_efs

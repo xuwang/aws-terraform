@@ -1,17 +1,30 @@
-#this_make := $(lastword $(MAKEFILE_LIST))
-#$(warning $(this_make))
+admiral: init_admiral
+	cd $(BUILD)/$@ ; $(SCRIPTS)/tf-apply-confirm.sh
+	# Wait for vpc/subnets to be ready
+	sleep 5
+	$(MAKE) gen_admiral_vars
+	@$(MAKE) get_admiral_ips
 
-admiral: etcd plan_admiral
-	cd $(BUILD); $(TF_APPLY);
-	$(MAKE) upload_admiral_key
-	@$(MAKE) get_etcd_ips
+# Use this for ongoing changes if you only changed admiral.tf.
+admiral_only: init admiral_key
+	mkdir -p $(BUILD)/admiral
+	cp -rf $(RESOURCES)/terraforms/admiral/admiral.tf $(BUILD)/admiral
+	ln -sf $(BUILD)/*.tf $(BUILD)/admiral
+	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
+  		cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/admiral.yaml.tmpl; \
+  	fi
+	cd $(BUILD)/admiral; $(SCRIPTS)/tf-apply-confirm.sh
+	$(MAKE) gen_admiral_vars
 	@$(MAKE) get_admiral_ips
 
 plan_admiral: init_admiral
-	cd $(BUILD); $(TF_GET); $(TF_PLAN)
+	cd $(BUILD)/admiral; $(TF_GET); $(TF_PLAN)
 
-clean_admiral:
-	rm -f $(BUILD)/admiral*.tf
+destroy_admiral: destroy_admiral_key 
+	cd $(BUILD)/admiral; $(TF_DESTROY)
+
+show_admiral:  
+	cd $(BUILD)/admiral; $(TF_SHOW) 
 
 create_admiral_key:
 	cd $(BUILD); \
@@ -24,27 +37,36 @@ upload_admiral_key:
 destroy_admiral_key:
 	cd $(BUILD); $(SCRIPTS)/aws-keypair.sh -d $(CLUSTER_NAME)-admiral;
 
-plan_destroy_admiral:
-	$(eval TMP := $(shell mktemp -d -t admiral ))
-	mv $(BUILD)/admiral*.tf $(TMP)
-	cd $(BUILD); $(TF_PLAN)
-	mv  $(TMP)/admiral*.tf $(BUILD)
-	rmdir $(TMP)
+init_admiral: etcd admiral_key
+	mkdir -p $(BUILD)/admiral
+	cp -rf $(RESOURCES)/terraforms/admiral/admiral.tf $(BUILD)/admiral
+	ln -sf $(BUILD)/*.tf $(BUILD)/admiral
+	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
+  		cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/admiral.yaml.tmpl; \
+  	fi
 
-destroy_admiral: destroy_admiral_key clean_admiral
-	cd $(BUILD); $(TF_APPLY) 
+clean_admiral:
+	rm -rf $(BUILD)/admiral
 
-init_admiral: init_etcd init_iam admiral_key
-	cp -rf $(RESOURCES)/terraforms/admiral.tf $(RESOURCES)/terraforms/vpc-subnet-admiral.tf $(BUILD)
-
-# Call this explicitly to re-load user_data
-update_admiral_user_data:
-	cd $(BUILD); \
-		${TF_TAINT} aws_s3_bucket_object.admiral_cloud_config ; \
-		$(TF_APPLY)
+gen_admiral_vars:
+	cd $(BUILD)/admiral; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/admiral_vars.tf
 
 get_admiral_ips:
 	@echo "admiral public ips: " `$(SCRIPTS)/get-ec2-public-id.sh admiral`
 
-.PHONY: admiral plan_destroy_admiral destroy_admiral plan_admiral init_admiral get_admiral_ips update_admiral_user_data
-.PHONY: create_admiral_key destroy_admiral_key  upload_admiral_key clean_admiral
+# EFS target
+admiral_efs_target: plan_admiral_efs_target
+	cd $(BUILD)/admiral; $(TF_GET); $(TF_APPLY);
+
+plan_admiral_efs_target:
+	cp -rf $(RESOURCES)/terraforms/admiral/admiral-efs-target.tf $(BUILD)/admiral
+	cd $(BUILD)/admiral; $(TF_GET); $(TF_PLAN)
+
+# Call this explicitly to re-load user_data
+update_admiral_user_data:
+	cd $(BUILD)/admiral; \
+		${TF_TAINT} aws_s3_bucket_object.admiral_cloud_config ; \
+		$(TF_APPLY)
+
+.PHONY: admiral admiral_only destroy_admiral plan_destroy_admiral plan_admiral init_admiral get_admiral_ips update_admiral_user_data
+.PHONY: show_admiral admiral_key destroy_admiral_key gen_admiral_vars init_efs_target clean_admiral

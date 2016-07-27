@@ -55,9 +55,7 @@ accountId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/docu
 bucket=${accountId}-CLUSTER-NAME-cloudinit
 
 # Path to cloud-config.yaml
-# Remove environment from instanceProfile, if any. Assume all instances sharing the same prefix is the same role.
-# e.g. hosting, hosting-nonprod assuming "hosting" role.
-roleProfile=${instanceProfile/-*/}
+roleProfile=${instanceProfile}
 cloudConfigYaml="${roleProfile}/cloud-config.yaml"
 
 # path to initial-cluster urls file

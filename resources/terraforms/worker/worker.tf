@@ -1,9 +1,10 @@
 module "worker" {
-  source = "../modules/cluster"
+  source = "../../modules/cluster"
+
   # cluster varaiables
   cluster_name = "worker"
   # a list of subnet IDs to launch resources in.
-  cluster_vpc_zone_identifiers = "${module.worker_subnet_a.id},${module.worker_subnet_b.id},${module.worker_subnet_c.id}"
+  cluster_vpc_zone_identifiers = "${var.worker_subnet_a_id},${var.worker_subnet_b_id},${var.worker_subnet_c_id}"
   cluster_min_size = 1
   cluster_max_size = 1
   cluster_desired_capacity = 1
@@ -14,7 +15,7 @@ module "worker" {
   image_type = "t2.small"
   keypair = "${var.cluster_name}-worker"
 
-  # Note: currently launch_configuration devices can NOT be changed after cluster is up
+  # Note: currently worker launch_configuration devices can NOT be changed after worker cluster is up
   # See https://github.com/hashicorp/terraform/issues/2910
   # Instance disks
   root_volume_type = "gp2"
@@ -24,33 +25,34 @@ module "worker" {
   data_volume_type = "gp2"
   data_volume_size = 100
 
-  user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
+  user_data = "${file("../cloud-config/s3-cloudconfig-bootstrap.sh")}"
   iam_role_policy = "${template_file.worker_policy_json.rendered}"
 }
-
 
 # Upload CoreOS cloud-config to a s3 bucket; s3-cloudconfig-bootstrap script in user-data will download 
 # the cloud-config upon reboot to configure the system. This avoids rebuilding machines when 
 # changing cloud-config.
 resource "aws_s3_bucket_object" "worker_cloud_config" {
-  bucket = "${aws_s3_bucket.cloudinit.id}"
+  bucket = "${var.s3_cloudinit_bucket}"
   key = "worker/cloud-config.yaml"
   content = "${template_file.worker_cloud_config.rendered}"
 }
+
 resource "template_file" "worker_cloud_config" {
-    template = "${file("cloud-config/worker.yaml.tmpl")}"
+    template = "${file("../cloud-config/worker.yaml.tmpl")}"
     vars {
         "AWS_ACCOUNT" = "${var.aws_account.id}"
-        "AWS_USER" = "${aws_iam_user.deployment.name}"
-        "AWS_ACCESS_KEY_ID" = "${aws_iam_access_key.deployment.id}"
-        "AWS_SECRET_ACCESS_KEY" = "${aws_iam_access_key.deployment.secret}"
+        "AWS_USER" = "${var.deployment_user}"
+        "AWS_ACCESS_KEY_ID" = "${var.deployment_key_id}"
+        "AWS_SECRET_ACCESS_KEY" = "${var.deployment_key_secret}"
         "AWS_DEFAULT_REGION" = "${var.aws_account.default_region}"
         "CLUSTER_NAME" = "${var.cluster_name}"
+        "APP_REPOSITORY" = "${var.app_repository}"
     }
 }
 
 resource "template_file" "worker_policy_json" {
-    template = "${file(\"policies/worker_policy.json\")}"
+    template = "${file(\"../policies/worker_policy.json\")}"
     vars {
         "AWS_ACCOUNT" = "${var.aws_account.id}"
         "CLUSTER_NAME" = "${var.cluster_name}"
@@ -58,9 +60,13 @@ resource "template_file" "worker_policy_json" {
 }
 
 resource "aws_security_group" "worker"  {
-  name = "worker"
-  vpc_id = "${aws_vpc.cluster_vpc.id}"
+  name = "${var.cluster_name}-worker"
+  vpc_id = "${var.cluster_vpc_id}"
   description = "worker"
+  # Hacker's note: the cloud_config has to be uploaded to s3 before instances fireup
+  # but module can't have 'depends_on', so we have to make 
+  # this indrect dependency through security group
+  depends_on = ["aws_s3_bucket_object.worker_cloud_config"]
 
   # Allow all outbound traffic
   egress {
@@ -75,7 +81,7 @@ resource "aws_security_group" "worker"  {
     from_port = 10
     to_port = 65535
     protocol = "tcp"
-    cidr_blocks = ["${aws_vpc.cluster_vpc.cidr_block}"]
+    cidr_blocks = ["${var.cluster_vpc_cidr}"]
   }
 
   # Allow access from vpc
@@ -83,20 +89,22 @@ resource "aws_security_group" "worker"  {
     from_port = 10
     to_port = 65535
     protocol = "udp"
-    cidr_blocks = ["${aws_vpc.cluster_vpc.cidr_block}"]
+    cidr_blocks = ["${var.cluster_vpc_cidr}"]
   }
 
   # Allow SSH from my hosts
   ingress {
     from_port = 22
     to_port = 22
-    protocol = "tcp"
+    protocol = "tcp" 
     cidr_blocks = ["${split(",", var.allow_ssh_cidr)}"]
     self = true
   }
 
   tags {
-    Name = "worker"
+    Name = "${var.cluster_name}-worker"
   }
 }
+
+output "worker_security_group" { value = "${aws_security_group.worker.id}" }
 

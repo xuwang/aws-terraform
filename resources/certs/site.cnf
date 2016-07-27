@@ -21,12 +21,12 @@ req_extensions     = v3_req
 [ req_distinguished_name ]
 countryName            = "US"                     # C=
 stateOrProvinceName    = "CA"                     # ST=
-localityName           = "Half Moon Bay"          # L=
-postalCode             = "94019"                  # L/postalcode=
+localityName           = "Example City"          # L=
+postalCode             = "99999"                  # L/postalcode=
 organizationName       = "Dockerage"              # O=
 organizationalUnitName = "IT Department"          # OU=
-commonName             = "*.dockerage.com"      # CN=
-emailAddress           = "admin@dockerage.com"  # CN/emailAddress=
+commonName             = "*.DOMAIN"      # CN=
+emailAddress           = "admin@example.com"  # CN/emailAddress=
 
 # req_extensions
 [ v3_req ]
@@ -39,5 +39,5 @@ extendedKeyUsage = serverAuth
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = dockerage.com
-DNS.2 = *.dockerage.com
+DNS.1 = DOMAIN
+DNS.2 = *.DOMAIN

@@ -1,16 +1,16 @@
-show: | $(BUILD)
-	cd $(BUILD); $(TF_SHOW)
+show:
+	@echo "show_<resource>"
 
 show_state: init
 	cat $(BUILD)/terraform.tfstate
-
-graph: | $(BUILD)
-	cd $(BUILD); $(TF_GRAPH)
 
 refresh: init
 	cd $(BUILD); $(TF_REFRESH)
 
 init: | $(TF_PORVIDER) $(AMI_VAR)
+
+get_vpc_id:
+	$(SCRIPTS)/get-vpc-id.sh
 
 $(BUILD): init_build_dir
 
@@ -28,14 +28,14 @@ init_build_dir:
 
 update_ami:	| $(BUILD)
 	# Generate default AMI ids
-	$(SCRIPTS)/get-ami.sh > $(AMI_VAR)
+	$(SCRIPTS)/get-ami.sh > $(BUILD)/$(AMI_VAR)
 
 update_provider: | $(BUILD)
 	# Generate tf provider
-	$(SCRIPTS)/gen-provider.sh > $(TF_PORVIDER)
+	$(SCRIPTS)/gen-provider.sh > /dev/null 2>&1 &&  $(SCRIPTS)/gen-provider.sh > $(BUILD)/$(TF_PORVIDER)
 
 gen_certs: $(BUILD)
-	@cp -rf $(RESOURCES)/certs $(BUILD)
+	@cp -rf $(RESOURCES)/certs $(BUILD); sed -i '' "s/DOMAIN/$(APP_DOMAIN)/g" $(BUILD)/certs/*
 	@if [ ! -f "$(SITE_CERT)" ] ; \
 	then \
 		$(MAKE) -C $(CERTS) ; \
@@ -44,5 +44,5 @@ gen_certs: $(BUILD)
 clean_certs:
 	rm -f $(CERTS)/*.pem
 	
-.PHONY: init show show_state graph refresh update_ami update_provider init_build_dir
+.PHONY: init show show_state refresh update_ami update_provider init_build_dir
 .PHONY: gen_certs clean_certs

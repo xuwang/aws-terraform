@@ -1,9 +1,7 @@
 #
 #  General cluster autoscale group configurations
 #
-
 resource "aws_autoscaling_group" "cluster" {
-
   vpc_zone_identifier = ["${split(",",var.cluster_vpc_zone_identifiers)}"]
   name = "${var.cluster_name}"
   min_size = "${var.cluster_min_size}"

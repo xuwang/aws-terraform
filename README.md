@@ -39,6 +39,8 @@ Go to [AWS Console](https://console.aws.amazon.com/).
 1. Create a user `coreos-cluster` and __Download__ the user credentials.
 1. Add user `coreos-cluster` to group `coreos-cluster`.
 
+Of course you can change the group and user name to your specific implementation.
+
 ## Install tools
 
 If you use [Vagrant](https://www.vagrantup.com/), you can skip this section and go to 
@@ -120,6 +122,14 @@ worker public ips: 52.27.156.202
 ...
 ```
 
+The code will try to add keypairs to the ssh-agent on your laptop, so if you run `ssh-add -l`, you should see the keypairs. You can also find them in *build/keypairs* directory, and in `s3://<aws-account>-<cluster-name>-config/keypairs`. When you destroy the
+cluster, these will be removed too.  The build directory and *.pem, *.key are all ignored in .gitignore. 
+
+Now you shouild be able to login:
+```
+$ ssh core@52.27.156.202
+```
+
 Although the above quick start will help to understand what the code will do, the common development work flow is to build in steps, for example, you will build VPC first, then etcd, then worker. This is what I usually do for a new environment:
 
 ```
@@ -131,10 +141,10 @@ make plan_worker
 make worker
 ```
 
-#### To see the list of resources created:
+#### To see the list of resources created
 
 ```
-$ make show
+$ make show_all | more -R
 ...
   module.etcd.aws_autoscaling_group.etcd:
   id = etcd
@@ -157,6 +167,9 @@ $ make show
 ```
 
 #### Login to cluster node:
+
+
+In addition to the key paris that you will find in build/keypairs directory, by default ssh port 22 is open to your local machine IP. You should be able to login. 
 
 ```
 etcd public ips:  50.112.218.23
@@ -188,17 +201,32 @@ This will destroy ALL resources created by this project.
 ## Customization
 
 * The default values for VPC, ec2 instance profile, policies, keys, autoscaling group, lanuch configurations etc., 
-can be override in resources/terraform/<resource>.tf` files.
+can be override in resources/terraform/<resource>/<resource>.tf` files.
 
-* AWS profile and cluster name are defined at the top of  _Makefile_:
+* Default values defined at the top of _Makefile_:
 
-  ```
-  AWS_PROFILE := coreos-cluster
-  CLUSTER_NAME := coreos-cluster
-  ```
+```
+AWS_PROFILE ?= coreos-cluster
+CLUSTER_NAME ?= coreos-cluster
+APP_REPOSITORY ?= https://github.com/dockerage/coreos-cluster-apps
+COREOS_UPDATE_CHANNE ?= beta
+AWS_REGION ?= us-west-2
+VM_TYPE ?= hvm
+```
   
-  These can also be customized to match your AWS profile and cluster name.
+These can be changed to match your AWS implementation, or the easist way is to create an envs.sh file to override some
+of these values, so you don't need to chnge Makefile:
 
+```
+export AWS_PROFILE=my-dev-cluster
+export CLUSTER_NAME=my-dev-cluser
+export COREOS_UPDATE_CHANNE=stable
+```
+
+Then run
+```
+$ source ./envs.sh
+```
 
 ## Build multi-node cluster
 
@@ -325,6 +353,8 @@ $ make destroy_<resource>
 ├── Makefile
 ├── README.md
 ├── Vagrantfile
+├── app-deploy-key.pem.yaml.sample
+├── envs.sh.sample
 ├── modules
 │   ├── cluster
 │   │   ├── cluster.tf
@@ -346,16 +376,18 @@ $ make destroy_<resource>
 │   │   ├── rootCA.cnf
 │   │   └── site.cnf
 │   ├── cloud-config
-│   │   ├── admiral.yaml
 │   │   ├── admiral.yaml.tmpl
 │   │   ├── dockerhub.yaml
 │   │   ├── etcd.yaml.tmpl
 │   │   ├── files.yaml
+│   │   ├── git-sync-rsa.pem
 │   │   ├── s3-cloudconfig-bootstrap.sh
 │   │   ├── systemd-units-flannel.yaml
 │   │   ├── systemd-units.yaml
-│   │   ├── worker.yaml
 │   │   └── worker.yaml.tmpl
+│   ├── hushhush
+│   │   ├── iam-app-gitsync_rsa.pub
+│   │   └── iam-app-gitsync_rsa.yaml
 │   ├── makefiles
 │   │   ├── admiral.mk
 │   │   ├── cloudtrail.mk
@@ -377,33 +409,41 @@ $ make destroy_<resource>
 │   │   ├── etcd_policy.json
 │   │   └── worker_policy.json
 │   └── terraforms
-│       ├── admiral.tf
-│       ├── efs.tf
-│       ├── etcd.tf
-│       ├── iam.tf
-│       ├── module-elb.tf
-│       ├── rds.tf
-│       ├── route53.tf
-│       ├── s3.tf
-│       ├── vpc-subnet-admiral.tf
-│       ├── vpc-subnet-elb.tf
-│       ├── vpc-subnet-etcd.tf
-│       ├── vpc-subnet-rds.tf
-│       ├── vpc-subnet-worker.tf
-│       ├── vpc.tf
-│       ├── worker-efs-target.tf
-│       └── worker.tf
+│       ├── admiral
+│       │   └── admiral.tf
+│       ├── efs
+│       │   └── efs.tf
+│       ├── elb
+│       │   └── module-elb.tf
+│       ├── etcd
+│       │   └── etcd.tf
+│       ├── iam
+│       │   └── iam.tf
+│       ├── rds
+│       │   └── rds.tf
+│       ├── route53
+│       │   └── route53.tf
+│       ├── s3
+│       │   └── s3.tf
+│       ├── vpc
+│       │   ├── vpc-subnet-admiral.tf
+│       │   ├── vpc-subnet-elb.tf
+│       │   ├── vpc-subnet-etcd.tf
+│       │   ├── vpc-subnet-rds.tf
+│       │   ├── vpc-subnet-worker.tf
+│       │   └── vpc.tf
+│       └── worker
+│           └── worker.tf
 └── scripts
     ├── aws-keypair.sh
     ├── cloudtrail-admin.sh
     ├── gen-provider.sh
+    ├── gen-tf-vars.sh
     ├── get-ami.sh
     ├── get-ec2-public-id.sh
-    ├── mount-efs.sh
-    ├── read_cfg.sh
+    ├── session-lock.sh
     ├── substitute-AWS-ACCOUNT.sh
-    ├── substitute-CLUSTER-NAME.sh
-    └── wait-cloudinit-bucket.sh
+    └── substitute-CLUSTER-NAME.sh
 ```
 * Etcd cluster is on its own autoscaling group. It should be set with a fixed, odd number (1,3,5..), and cluster_desired_capacity=min_size=max_size.
 * Cluster discovery is managed with [dockerage/etcd-aws-cluster](https://hub.docker.com/r/dockerage/etcd-aws-cluster/) image. etcd cluster is formed by self-discovery through its auto-scaling group and then an etcd initial cluster is updated automatically to s3://AWS-ACCOUNT-CLUSTER-NAME-cloudinit/etcd/initial-cluster s3 bucket. Worker nodes join the cluster by downloading the etcd initial-cluster file from the s3 bucket during their bootstrap.

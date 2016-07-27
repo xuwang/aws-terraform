@@ -1,16 +1,31 @@
+etcd: init_etcd 
+	@cd $(BUILD)/$@ ; $(SCRIPTS)/tf-apply-confirm.sh
+	# Wait for vpc/subnets to be ready
+	sleep 5
+	@$(MAKE) gen_etcd_vars
+	$(MAKE) get_etcd_ips
 
-etcd: plan_etcd
-	@echo "#### Working on $@"
-	cd $(BUILD); $(TF_APPLY);
-	$(MAKE) upload_etcd_key
+etcd_only: init etcd_key
+	mkdir -p $(BUILD)/etcd
+	rsync -av  $(RESOURCES)/terraforms/etcd/ $(BUILD)/etcd
+	ln -sf $(BUILD)/*.tf $(BUILD)/etcd
+	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
+  		 cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/etcd.yaml.tmpl; \
+  	fi
+	@cd $(BUILD)/etcd ; $(SCRIPTS)/tf-apply-confirm.sh
+	# Wait for vpc/subnets to be ready
+	sleep 5
+	@$(MAKE) gen_etcd_vars
 	$(MAKE) get_etcd_ips
 
 plan_etcd: init_etcd
-	@echo "#### Working on $@"
-	cd $(BUILD); \
-	    for i in *.tf ; do \
-	      [[ -f $(RESOURCES)/terraforms/$$i ]] && rsync -avzq $(RESOURCES)/terraforms/$$i $(BUILD)/ ; \
-	    done; $(TF_GET); $(TF_PLAN)
+	cd $(BUILD)/etcd; $(TF_GET); $(TF_PLAN)
+
+destroy_etcd: destroy_etcd_key 
+	cd $(BUILD)/etcd; $(TF_DESTROY)
+
+show_etcd:  
+	cd $(BUILD)/etcd; $(TF_SHOW) 
 
 create_etcd_key:
 	@echo "#### Working on $@"
@@ -26,33 +41,28 @@ destroy_etcd_key:
 	@echo "#### Working on $@"
 	cd $(BUILD); $(SCRIPTS)/aws-keypair.sh -d $(CLUSTER_NAME)-etcd;
 
-plan_destroy_etcd:
-	@echo "#### Working on $@"
-	$(eval TMP := $(shell mktemp -d -t etcd ))
-	mv $(BUILD)/etcd*.tf $(TMP)
-	cd $(BUILD); $(TF_PLAN)
-	mv $(TMP)/etcd*.tf $(BUILD)
-	rmdir $(TMP)
+init_etcd: vpc iam s3 etcd_key 
+	mkdir -p $(BUILD)/etcd
+	rsync -av  $(RESOURCES)/terraforms/etcd/ $(BUILD)/etcd
+	ln -sf $(BUILD)/*.tf $(BUILD)/etcd
+	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
+  		 cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/etcd.yaml.tmpl; \
+  	fi
 
-destroy_etcd: destroy_etcd_key
-	@echo "#### Working on $@"
-	rm -f $(BUILD)/etcd*.tf
-	cd $(BUILD); $(TF_APPLY);
+clean_etcd:
+	rm -rf $(BUILD)/etcd
 
-init_etcd: init_vpc init_iam
-	@echo "#### Working on $@"
-	cp -rf $(RESOURCES)/terraforms/etcd*.tf $(BUILD)
-	$(MAKE) create_etcd_key 
-
-# Call this explicitly to re-load user_data
-update_etcd_user_data:
-	@echo "#### Working on $@"
-	cd $(BUILD); \
-		${TF_TAINT} aws_s3_bucket_object.etcd_cloud_config ; \
-		$(TF_APPLY)
+gen_etcd_vars:
+	cd $(BUILD)/etcd; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/etcd_vars.tf
 
 get_etcd_ips:
 	@echo "etcd public ips: " `$(SCRIPTS)/get-ec2-public-id.sh etcd`
 
-.PHONY: etcd destroy_etcd plan_destroy_etcd plan_etcd init_etcd get_etcd_ips update_etcd_user_data
-.PHONY: create_etcd_key upload_etcd_key destroy_etcd_key
+# Call this explicitly to re-load user_data
+update_etcd_user_data:
+	cd $(BUILD)/etcd; \
+		${TF_TAINT} aws_s3_bucket_object.etcd_cloud_config ; \
+		$(TF_APPLY)
+
+.PHONY: etcd etcd-only destroy_etcd plan_destroy_etcd plan_etcd init_etcd get_etcd_ips update_etcd_user_data
+.PHONY: show_etcd etcd_key destroy_etcd_key gen_etcd_vars clean_etcd

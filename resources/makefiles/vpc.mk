@@ -1,28 +1,30 @@
-vpc: plan_vpc
-	@echo "#### Working on $@"
-	cd $(BUILD); $(TF_APPLY)
+vpc: init_vpc
+	@cd $(BUILD)/$@ ; $(SCRIPTS)/tf-apply-confirm.sh
 	# Wait for vpc/subnets to be ready
 	sleep 5
+	$(MAKE) gen_vpc_vars
 
 plan_vpc: init_vpc
-	@echo "#### Working on $@"
-	cd $(BUILD); $(TF_GET); $(TF_PLAN)
+	cd $(BUILD)/vpc; $(TF_GET); $(TF_PLAN)
 
-plan_destroy_vpc:
-	@echo "#### Working on $@"
-	$(eval TMP := $(shell mktemp -d -t vpc ))
-	mv $(BUILD)/vpc*.tf $(TMP)
-	cd $(BUILD); $(TF_PLAN)
-	mv  $(TMP)/vpc*.tf $(BUILD)
-	rmdir $(TMP)
+destroy_vpc:
+	@echo "In $@."
+	@$(MAKE) confirm
+	cd $(BUILD)/vpc; $(TF_DESTROY)
 
-destroy_vpc:  
-	@echo "#### Working on $@"
-	rm -f $(BUILD)/vpc*.tf;
-	cd $(BUILD); $(TF_APPLY) 
+show_vpc:  
+	cd $(BUILD)/vpc; $(TF_SHOW) 
 
 init_vpc: init
-	rsync -avq $(RESOURCES)/terraforms/vpc*.tf $(BUILD)
+	mkdir -p $(BUILD)/vpc
+	rsync -av $(RESOURCES)/terraforms/vpc/ $(BUILD)/vpc
+	ln -sf $(BUILD)/*.tf $(BUILD)/vpc
 
-.PHONY: vpc plan_destroy_vpc destroy_vpc plan_vpc init_vpc
+clean_vpc:
+	rm -rf $(BUILD)/vpc
+
+gen_vpc_vars:
+	cd $(BUILD)/vpc; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/vpc_vars.tf
+
+.PHONY: get_vpc_ids vpc plan_destroy_vpc destroy_vpc plan_vpc init_vpc show_vpc clean_vpc
 

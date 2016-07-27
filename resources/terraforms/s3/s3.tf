@@ -47,3 +47,9 @@ resource "aws_s3_bucket" "logs" {
         Name = "Logs"
     }
 }
+
+output "s3_cloudinit_bucket" { value = "${aws_s3_bucket.cloudinit.id}" }
+output "s3_config_bucket" { value = "${aws_s3_bucket.config.id}" }
+output "s3_jenkins_bucket" { value = "${aws_s3_bucket.jenkins.id}" }
+output "s3_dockerhub_bucket" { value = "${aws_s3_bucket.dockerhub.id}" }
+output "s3_logs_bucket" { value = "${aws_s3_bucket.logs.id}" }

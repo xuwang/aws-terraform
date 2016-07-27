@@ -1,10 +1,10 @@
 module "etcd" {
-  source = "../modules/cluster"
+  source = "../../modules/cluster"
 
   # cluster varaiables
   cluster_name = "etcd"
   # a list of subnet IDs to launch resources in.
-  cluster_vpc_zone_identifiers = "${module.etcd_subnet_a.id},${module.etcd_subnet_b.id},${module.etcd_subnet_c.id}"
+  cluster_vpc_zone_identifiers = "${var.etcd_subnet_a_id},${var.etcd_subnet_b_id},${var.etcd_subnet_c_id}"
   # for etcd, cluster_min_size = cluster_max_size = cluster_desired_capacity = <odd number>
   cluster_min_size = 1
   cluster_max_size = 1
@@ -26,7 +26,7 @@ module "etcd" {
   data_volume_type = "gp2"
   data_volume_size = 100
 
-  user_data = "${file("cloud-config/s3-cloudconfig-bootstrap.sh")}"
+  user_data = "${file("../cloud-config/s3-cloudconfig-bootstrap.sh")}"
   iam_role_policy = "${template_file.etcd_policy_json.rendered}"
 }
 
@@ -34,32 +34,39 @@ module "etcd" {
 # the cloud-config upon reboot to configure the system. This avoids rebuilding machines when 
 # changing cloud-config.
 resource "aws_s3_bucket_object" "etcd_cloud_config" {
-  bucket = "${aws_s3_bucket.cloudinit.id}"
+  bucket = "${var.s3_cloudinit_bucket}"
   key = "etcd/cloud-config.yaml"
   content = "${template_file.etcd_cloud_config.rendered}"
 }
+
 resource "template_file" "etcd_cloud_config" {
-    template = "${file("cloud-config/etcd.yaml.tmpl")}"
+    template = "${file("../cloud-config/etcd.yaml.tmpl")}"
     vars {
         "AWS_ACCOUNT" = "${var.aws_account.id}"
-        "AWS_USER" = "${aws_iam_user.deployment.name}"
-        "AWS_ACCESS_KEY_ID" = "${aws_iam_access_key.deployment.id}"
-        "AWS_SECRET_ACCESS_KEY" = "${aws_iam_access_key.deployment.secret}"
+        "AWS_USER" = "${var.deployment_user}"
+        "AWS_ACCESS_KEY_ID" = "${var.deployment_key_id}"
+        "AWS_SECRET_ACCESS_KEY" = "${var.deployment_key_secret}"
         "AWS_DEFAULT_REGION" = "${var.aws_account.default_region}"
         "CLUSTER_NAME" = "${var.cluster_name}"
+        "APP_REPOSITORY" = "${var.app_repository}"
     }
 }
+
 resource "template_file" "etcd_policy_json" {
-    template = "${file(\"policies/etcd_policy.json\")}"
+    template = "${file(\"../policies/etcd_policy.json\")}"
     vars {
         "AWS_ACCOUNT" = "${var.aws_account.id}"
         "CLUSTER_NAME" = "${var.cluster_name}"
     }
 }
+
 resource "aws_security_group" "etcd"  {
-  name = "etcd"
-  vpc_id = "${aws_vpc.cluster_vpc.id}"
+  name = "${var.cluster_name}-etcd"
+  vpc_id = "${var.cluster_vpc_id}"
   description = "etcd"
+  # Hacker's note: the cloud_config has to be uploaded to s3 before instances fireup
+  # but module can't have 'depends_on', so we have to make 
+  # this indrect dependency through security group
   depends_on = ["aws_s3_bucket_object.etcd_cloud_config"]
   lifecycle { create_before_destroy = true }
 
@@ -76,7 +83,7 @@ resource "aws_security_group" "etcd"  {
     from_port = 2380
     to_port = 2380
     protocol = "tcp"
-    cidr_blocks = ["${aws_vpc.cluster_vpc.cidr_block}"]
+    cidr_blocks = ["${var.cluster_vpc_cidr}"]
   }
 
   # Allow etcd clients to communicate
@@ -84,7 +91,7 @@ resource "aws_security_group" "etcd"  {
     from_port = 2379
     to_port = 2379
     protocol = "tcp"
-    cidr_blocks = ["${aws_vpc.cluster_vpc.cidr_block}"]
+    cidr_blocks = ["${var.cluster_vpc_cidr}"]
   }
 
   # Allow SSH from my hosts
@@ -97,9 +104,8 @@ resource "aws_security_group" "etcd"  {
   }
 
   tags {
-    Name = "etcd"
+    Name = "${var.cluster_name}-etcd"
   }
 }
 
-
-
+output "etcd_security_group" { value = "${aws_security_group.etcd.id}" }

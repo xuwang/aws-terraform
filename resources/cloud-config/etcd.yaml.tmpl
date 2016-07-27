@@ -124,12 +124,14 @@ write_files:
     content: |
         #!/bin/bash
         # This script sync /var/lib/apps with github repo
+        export GIT_SSH_COMMAND="ssh -i /root/.ssh/git-sync-rsa.pem"
         if [[ -d /var/lib/apps ]]; 
         then 
             cd /var/lib/apps; git pull
         else
-            make -p /var/lib
-            git clone https://github.com/dockerage/coreos-cluster-apps /var/lib/apps
+            mkdir -p /var/lib
+            #git clone https://github.com/dockerage/coreos-cluster-apps /var/lib/apps
+            git clone ${APP_REPOSITORY} /var/lib/apps
         fi
   - path: /opt/bin/s3sync.sh
     permissions: 0700
@@ -192,7 +194,7 @@ write_files:
     content: |
         AWS_ACCOUNT=${AWS_ACCOUNT}
         AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-        CLUSTER_NAME=coreos-cluster
+        CLUSTER_NAME=${CLUSTER_NAME}
   - path: /root/.aws/envvars
     permissions: 0600
     owner: root
