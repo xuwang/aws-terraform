@@ -196,7 +196,7 @@ $ make get_worker_ips
 ```
 $ make destroy_all
 ```
-This will destroy ALL resources created by this project.
+This will destroy ALL resources created by this project. You will be asked to confirm before proceed.
 
 ## Customization
 
@@ -361,10 +361,6 @@ $ make destroy_<resource>
 │   │   └── variables.tf
 │   ├── efs-target
 │   │   └── efs-target.tf
-│   ├── elb
-│   │   ├── dockerhub.tf
-│   │   ├── security.tf
-│   │   └── variables.tf
 │   └── subnet
 │       └── subnet.tf
 ├── resources
@@ -385,14 +381,10 @@ $ make destroy_<resource>
 │   │   ├── systemd-units-flannel.yaml
 │   │   ├── systemd-units.yaml
 │   │   └── worker.yaml.tmpl
-│   ├── hushhush
-│   │   ├── iam-app-gitsync_rsa.pub
-│   │   └── iam-app-gitsync_rsa.yaml
 │   ├── makefiles
 │   │   ├── admiral.mk
 │   │   ├── cloudtrail.mk
 │   │   ├── efs.mk
-│   │   ├── elb.mk
 │   │   ├── etcd.mk
 │   │   ├── iam.mk
 │   │   ├── init.mk
@@ -413,8 +405,10 @@ $ make destroy_<resource>
 │       │   └── admiral.tf
 │       ├── efs
 │       │   └── efs.tf
-│       ├── elb
-│       │   └── module-elb.tf
+│       ├── elb-ci
+│       │   └── ci.tf
+│       ├── elb-dockerhub
+│       │   └── dockerhub.tf
 │       ├── etcd
 │       │   └── etcd.tf
 │       ├── iam
@@ -441,9 +435,11 @@ $ make destroy_<resource>
     ├── gen-tf-vars.sh
     ├── get-ami.sh
     ├── get-ec2-public-id.sh
+    ├── get-vpc-id.sh
     ├── session-lock.sh
     ├── substitute-AWS-ACCOUNT.sh
     └── substitute-CLUSTER-NAME.sh
+    └── tf-apply-confirm.sh
 ```
 * Etcd cluster is on its own autoscaling group. It should be set with a fixed, odd number (1,3,5..), and cluster_desired_capacity=min_size=max_size.
 * Cluster discovery is managed with [dockerage/etcd-aws-cluster](https://hub.docker.com/r/dockerage/etcd-aws-cluster/) image. etcd cluster is formed by self-discovery through its auto-scaling group and then an etcd initial cluster is updated automatically to s3://AWS-ACCOUNT-CLUSTER-NAME-cloudinit/etcd/initial-cluster s3 bucket. Worker nodes join the cluster by downloading the etcd initial-cluster file from the s3 bucket during their bootstrap.
