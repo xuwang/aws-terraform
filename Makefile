@@ -18,6 +18,11 @@ COREOS_UPDATE_CHANNE ?= beta
 AWS_REGION ?= us-west-2
 VM_TYPE ?= hvm
 
+# All resources used in destroy_all, in the order of dependencies.
+# It doesn't hurt if a resource in the list is not created, but if it does, add 
+# it to the list to make sure cleanup is done properly. 
+ALL_RESOURCES := admiral worker etcd iam s3 elb-ci elb-gitlab elb_dockerhub efs route53 rds vpc
+
 # To prevent you from mistakenly using a wrong account (and end up destroying live environment),
 # a list of allowed AWS account IDs should be defined:
 #ALLOWED_ACCOUNT_IDS := "123456789012","012345678901"
@@ -67,9 +72,6 @@ TF_OUTPUT := terraform output
 # cidr block to allow ssh; default to  $(curl -s http://ipinfo.io/ip)/32)
 # TF_VAR_allow_ssh_cidr := 
 
-# All resources used in destroy_all, in the order of dependencies
-ALL_RESOURCES := admiral worker etcd iam efs s3 elb-ci elb-gitlab elb_dockerhub route53 rds vpc
-
 ##########################
 ## End of customization ##
 ##########################
@@ -103,7 +105,9 @@ session_end:
 
 plan_destroy_all:
 	@echo $(BUILD_SUBDIRS)
-	$(foreach resource,$(BUILD_SUBDIRS),cd $(BUILD)/$(resource) && $(TF_DESTROY_PLAN)  2> /tmp/destroy.err;)
+	@mkdir -p /tmp/$(CLUSTER_NAME)
+	$(foreach resource,$(BUILD_SUBDIRS),cd $(BUILD)/$(resource) && $(TF_DESTROY_PLAN) -out /tmp/$(CLUSTER_NAME)/$(resource)-destroy.plan 2> /tmp/destroy.err;)
+
 
 confirm:
 	@echo "CONTINUE? [Y/N]: "; read ANSWER; \
@@ -112,7 +116,9 @@ confirm:
     fi
 
 destroy_all: | plan_destroy_all
-	@echo "Will destroy $(ALL_RESOURCES)"
+	@for i in /tmp/$(CLUSTER_NAME)/*.plan; do $(TF_SHOW) $$i; done | grep -- -
+	$(eval total = $(shell for i in /tmp/$(CLUSTER_NAME)/*.plan; do $(TF_SHOW) $$i; done | grep -- - | wc -l))
+	    echo ; echo "Will destroy $$total resources"
 	$(MAKE) confirm
 	@for i in $(ALL_RESOURCES); do \
 	  if [ -d $(BUILD)/$$i ]; then \
