@@ -1,10 +1,14 @@
 # You can override default values in Makefile by creating envs.sh and run source ./envs.sh
-unset AWS_PROFILE  CLUSTER_NAME REGION APP_REPOSITORY APP_REPOSITORY_DEPLOYKEY
+unset AWS_PROFILE CLUSTER_NAME REGION APP_REPOSITORY APP_REPOSITORY_DEPLOYKEY APP_DOMAIN
 export AWS_PROFILE=my-aws-profile
 export CLUSTER_NAME=my-cluster
-export REGION=us-west-2
+# Default AWS region. Note, if you change this, you will also need to change terraform resources/vpc/*.tf to 
+# match the zone information for the region. 
+#export REGION=us-west-2
 # If you have a private repo needs to be synced to host under /var/lib/app. :
 #export APP_REPOSITORY=git@example.com:user/app-repo.git
 #export APP_REPOSITORY_DEPLOYKEY=/path/to/private/app-deploy-key.pem.yaml
 # If you have a public repo
 #export APP_REPOSITORY=https://github.com/user/app-repo.git
+# Default domain for route53 zone and for iam server certificate
+#export APP_DOMAIN=dockerage.com
