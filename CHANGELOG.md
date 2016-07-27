@@ -24,3 +24,5 @@ cloud-config file from their corresponding S3 bucket, then CoreOS will run cloud
 creation, file system mount, docker units files etc. The content of the applicaiton repo is cloned under/var/lib/apps location. The timer runs every minute, to pick up new changes.  A [default app repo](https://github.com/dockerage/coreos-cluster-apps) is provided, and you can change it in __envs.sh__ to use your own repoistory. You can also configure a private key for git-sync to use for the sync.
 * **route53, iam server certificate**: these are optional resources. If you define APP_DOMAIN in envs.sh, the domain name will be used as a default route53 zone and a self-signed star server certificate will be generated and can used as default elb certitificate.
 * **default VPC**: If you change AWS region, you need to go through __terraform/vpc__ directory to make sure availablity zones are set correctly for the region,otherwise, the build will fail.
+
+## v0.1.0
