@@ -21,7 +21,7 @@ VM_TYPE ?= hvm
 # All resources used in destroy_all, in the order of dependencies.
 # It doesn't hurt if a resource in the list is not created, but if it does, add 
 # it to the list to make sure cleanup is done properly. 
-ALL_RESOURCES := admiral worker etcd iam s3 elb-ci elb-gitlab elb_dockerhub efs route53 rds vpc
+ALL_RESOURCES := admiral worker etcd iam s3 elb-ci elb-gitlab elb_dockerhub efs rds route53 vpc
 
 # To prevent you from mistakenly using a wrong account (and end up destroying live environment),
 # a list of allowed AWS account IDs should be defined:
@@ -117,15 +117,15 @@ confirm:
 
 destroy_all: | plan_destroy_all
 	@for i in /tmp/$(CLUSTER_NAME)/*.plan; do $(TF_SHOW) $$i; done | grep -- -
-	$(eval total = $(shell for i in /tmp/$(CLUSTER_NAME)/*.plan; do $(TF_SHOW) $$i; done | grep -- - | wc -l))
+	@$(eval total = $(shell for i in /tmp/$(CLUSTER_NAME)/*.plan; do $(TF_SHOW) $$i; done | grep -- - | wc -l)) ; \
 	    echo ; echo "Will destroy $$total resources"
 	$(MAKE) confirm
 	@for i in $(ALL_RESOURCES); do \
 	  if [ -d $(BUILD)/$$i ]; then \
-	    $(MAKE) destroy_$$i ; \
+	    cd $(BUILD)/$$i; $(TF_DESTROY); \
 	  fi ; \
 	done
-	rm -rf $(BUILD)
+	#rm -rf $(BUILD)
 
 destroy: 
 	@echo "Usage: make destroy_<resource> | make plan_destroy_all | make destroy_all"
