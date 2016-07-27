@@ -10,6 +10,9 @@ CLUSTER_NAME ?= coreos-cluster
 APP_REPOSITORY ?= https://github.com/dockerage/coreos-cluster-apps
 APP_REPOSITORY_DEPLOYKEY ?= ''
 
+# Domain: default domain for Route53 zone and a self-signed *.domain cert for default ELBs.
+APP_DOMAIN ?= 'example.com'
+
 # For get-ami.sh
 COREOS_UPDATE_CHANNE ?= beta
 AWS_REGION ?= us-west-2
@@ -52,15 +55,20 @@ TF_APPLY := terraform apply -refresh=false
 # Note: for production, remove --force to confirm destroy.
 TF_DESTROY := terraform destroy -force
 TF_DESTROY_PLAN := terraform plan -destroy -refresh=false
-TF_GET := terraform get -update 
+TF_GET := terraform get -update
 TF_GRAPH := terraform graph -draw-cycles -verbose
 TF_PLAN := terraform plan -module-depth=1 -refresh=false
 TF_SHOW := terraform show -module-depth=1
 TF_REFRESH := terraform refresh
 TF_TAINT := terraform taint -allow-missing
+TF_OUTPUT := terraform output
+
 
 # cidr block to allow ssh; default to  $(curl -s http://ipinfo.io/ip)/32)
 # TF_VAR_allow_ssh_cidr := 
+
+# All resources used in destroy_all, in the order of dependencies
+ALL_RESOURCES := admiral worker etcd iam efs s3 elb_ci elb_gitlab elb_dockerhub route53 vpc
 
 ##########################
 ## End of customization ##
@@ -104,7 +112,8 @@ confirm:
     fi
 
 destroy_all: | plan_destroy_all confirm
-	@for i in admiral worker etcd iam efs s3 vpc; do \
+	@echo "Will destroy $(ALL_RESOURCES)"
+	@for i in $(ALL_RESOURCES); do \
 	  if [ -d $(BUILD)/$$i ]; then \
 	    $(MAKE) destroy_$$i ; \
 	  fi ; \
