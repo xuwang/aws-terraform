@@ -39,6 +39,14 @@ resource "aws_route53_record" "star_postgresdb" {
     records = [ "${aws_db_instance.cluster-postgres.address}" ]
 }
 
+resource "aws_route53_record" "star_mysql" {
+    zone_id = "${var.route53_private_zone_id}"
+    name = "*.mysql"
+    type = "CNAME"
+    ttl = "60"
+    records = [ "${aws_db_instance.cluster-mysql.address}" ]
+}
+
 resource "aws_db_instance" "cluster-mysql" {
     identifier = "${var.cluster_name}-mysql"
     allocated_storage = 10
