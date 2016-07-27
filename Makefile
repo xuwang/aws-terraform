@@ -68,7 +68,7 @@ TF_OUTPUT := terraform output
 # TF_VAR_allow_ssh_cidr := 
 
 # All resources used in destroy_all, in the order of dependencies
-ALL_RESOURCES := admiral worker etcd iam efs s3 elb_ci elb_gitlab elb_dockerhub route53 vpc
+ALL_RESOURCES := admiral worker etcd iam efs s3 elb_ci elb_gitlab elb_dockerhub route53 rds vpc
 
 ##########################
 ## End of customization ##
