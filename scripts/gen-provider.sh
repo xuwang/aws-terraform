@@ -50,4 +50,7 @@ variable "modules_dir" {
 variable "app_repository" {
     default = "${APP_REPOSITORY}"
 }
+variable "app_domain" {
+    default = "${APP_DOMAIN}"
+}
 EOF
