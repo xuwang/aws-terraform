@@ -4,9 +4,6 @@ show:
 show_state: init
 	cat $(BUILD)/terraform.tfstate
 
-graph: | $(BUILD)
-	cd $(BUILD); $(TF_GRAPH)
-
 refresh: init
 	cd $(BUILD); $(TF_REFRESH)
 
@@ -47,5 +44,5 @@ gen_certs: $(BUILD)
 clean_certs:
 	rm -f $(CERTS)/*.pem
 	
-.PHONY: init show show_state graph refresh update_ami update_provider init_build_dir
+.PHONY: init show show_state refresh update_ami update_provider init_build_dir
 .PHONY: gen_certs clean_certs

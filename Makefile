@@ -56,7 +56,7 @@ TF_APPLY := terraform apply -refresh=false
 TF_DESTROY := terraform destroy -force
 TF_DESTROY_PLAN := terraform plan -destroy -refresh=false
 TF_GET := terraform get -update
-TF_GRAPH := terraform graph -draw-cycles -verbose
+TF_GRAPH := terraform graph -module-depth=0
 TF_PLAN := terraform plan -module-depth=1 -refresh=false
 TF_SHOW := terraform show -module-depth=1
 TF_REFRESH := terraform refresh
@@ -68,7 +68,7 @@ TF_OUTPUT := terraform output
 # TF_VAR_allow_ssh_cidr := 
 
 # All resources used in destroy_all, in the order of dependencies
-ALL_RESOURCES := admiral worker etcd iam efs s3 elb_ci elb_gitlab elb_dockerhub route53 rds vpc
+ALL_RESOURCES := admiral worker etcd iam efs s3 elb-ci elb-gitlab elb_dockerhub route53 rds vpc
 
 ##########################
 ## End of customization ##
@@ -111,8 +111,9 @@ confirm:
 		echo "Exiting." ; exit 1 ; \
     fi
 
-destroy_all: | plan_destroy_all confirm
+destroy_all: | plan_destroy_all
 	@echo "Will destroy $(ALL_RESOURCES)"
+	$(MAKE) confirm
 	@for i in $(ALL_RESOURCES); do \
 	  if [ -d $(BUILD)/$$i ]; then \
 	    $(MAKE) destroy_$$i ; \
@@ -124,6 +125,14 @@ destroy:
 	@echo "Usage: make destroy_<resource> | make plan_destroy_all | make destroy_all"
 	@echo "For example: make destroy_worker"
 	@echo "Node: destroy may fail because of outstanding dependences"
+
+graph: | $(BUILD)
+	@for i in $(ALL_RESOURCES); do \
+	  if [ -d $(BUILD)/$$i ]; then \
+	  	cd $(BUILD)/$$i ; \
+	    $(TF_GRAPH) | dot -Tpng > $$i.png ; \
+	  fi ; \
+	done
 
 show_all:
 	@echo $(BUILD_SUBDIRS)
@@ -144,4 +153,6 @@ push_tf_state:
 # Load all resouces makefile
 include resources/makefiles/*.mk
 
-.PHONY: all confirm destroy destroy_all lock unlock plan_destroy_all help pull_tf_state push_tf_state
+.PHONY: all confirm destroy destroy_all graph lock unlock plan_destroy_all help pull_tf_state push_tf_state
+.NOTPARALLEL:
+
