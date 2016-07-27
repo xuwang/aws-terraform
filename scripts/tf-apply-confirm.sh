@@ -7,7 +7,7 @@ TF_GET=${TF_GET:-"terraform get -update"}
 TF_APPLY=${TF_APPLY:-"terraform apply -refresh=false"}
 resource=$(basename $(PWD))
 
-$TF_GET
+$TF_GET > /dev/null
 echo "Creating or updating $resource plan. This may take a while."
 $TF_PLAN -detailed-exitcode > /dev/null
 if [ $? -eq 2 ];
