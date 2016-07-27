@@ -66,6 +66,10 @@ Instructions for install tools on MacOS:
     ```
     $ brew install jq
     ```
+1. Install [graphviz](http://www.graphviz.org/) for generating Terraform graph png files
+    ```
+    $ brew install graphviz
+    ```
 
 1. Install [AWS CLI](https://github.com/aws/aws-cli)
     ```
