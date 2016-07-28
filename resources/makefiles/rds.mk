@@ -12,7 +12,7 @@ plan_destroy_rds:
 destroy_rds: 
 	cd $(BUILD)/rds; $(TF_DESTROY)
 
-init_rds: init_vpc
+init_rds: vpc
 	mkdir -p $(BUILD)/rds
 	cp -rf $(RESOURCES)/terraforms/rds/rds.tf $(BUILD)/rds
 	ln -sf $(BUILD)/*.tf $(BUILD)/rds

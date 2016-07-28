@@ -6,7 +6,7 @@ efs: init_efs
 plan_efs: init_efs
 	cd $(BUILD)/efs; $(TF_GET); $(TF_PLAN)
 
-init_efs: init_vpc
+init_efs: vpc
 	mkdir -p $(BUILD)/efs
 	rsync -avq  $(RESOURCES)/terraforms/efs/ $(BUILD)/efs
 	ln -sf $(BUILD)/*.tf $(BUILD)/efs
