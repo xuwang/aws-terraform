@@ -16,10 +16,11 @@ AWS_PROFILE=${AWS_PROFILE:-coreos-cluster}
 CLUSTER_NAME=${CLUSTER_NAME:-coreos-cluster}
 AWS_ACCOUNT=${AWS_ACCOUNT:-}
 AWS_REGION=${AWS_REGION:-us-west-2}
+ROOTDIR=${ROOTDIR:-`PWD`}
 
 # Default keypair name, to be used as a lock
 LOCK_KEYNAME="${CLUSTER_NAME}-tfstate-lock"
-LOCK_KEY_PEMFILE="${HOME}/.aws/${LOCK_KEYNAME}.pem"
+LOCK_KEY_PEMFILE="${ROOTDIR}/${LOCK_KEYNAME}.pem"
 
 # AWS key command
 AWS_EC2_CLI="aws --profile ${AWS_PROFILE} --region ${AWS_REGION} ec2"
