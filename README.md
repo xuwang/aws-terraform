@@ -111,7 +111,14 @@ when prompted.
 
 The above command will create a __coreos-cluster__ profile authentication section in ~/.aws/config and ~/.aws/credentials files. The build process bellow will automatically configure Terraform AWS provider credentials using this profile. 
 
-#### To build:
+#### To build with 'cluster-manager.sh' script
+
+__cluster-manager.sh__ is a wrapper script around make for most commmon operations. The commands are safe to run and re-run, because 
+Terraform will keep status and pick up from where it left should something fail.
+```
+$ ./cluster-manager.sh
+```
+#### To build using make command
 
 This default build will create one etcd node and one worker node cluster in a VPC, 
 with application buckets for data, necessary iam roles, polices, keypairs and keys. 
