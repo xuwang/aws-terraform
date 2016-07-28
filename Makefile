@@ -105,9 +105,8 @@ session_end:
 
 plan_destroy_all:
 	@echo $(BUILD_SUBDIRS)
-	@mkdir -p /tmp/$(CLUSTER_NAME)
-	$(foreach resource,$(BUILD_SUBDIRS),cd $(BUILD)/$(resource) && $(TF_DESTROY_PLAN) -out /tmp/$(CLUSTER_NAME)/$(resource)-destroy.plan 2> /tmp/destroy.err;)
-
+	@rm -rf /tmp/$(CLUSTER_NAME); mkdir -p /tmp/$(CLUSTER_NAME)
+	@$(foreach resource,$(BUILD_SUBDIRS),cd $(BUILD)/$(resource) && $(TF_DESTROY_PLAN) -out /tmp/$(CLUSTER_NAME)/$(resource)-destroy.plan 2> /tmp/destroy.err;)
 
 confirm:
 	@echo "CONTINUE? [Y/N]: "; read ANSWER; \
@@ -141,8 +140,7 @@ graph: | $(BUILD)
 	done
 
 show_all:
-	@echo $(BUILD_SUBDIRS)
-	$(foreach resource,$(BUILD_SUBDIRS),$(TF_SHOW) $(BUILD)/$(resource)/terraform.tfstate 2> /dev/null;)
+	@$(foreach resource,$(BUILD_SUBDIRS),$(TF_SHOW) $(BUILD)/$(resource)/terraform.tfstate 2> /dev/null; )
 
 # TODO: Push/Pull terraform states from a tf state repo
 # For team work, you need to commit terraform to a remote location, such as git repo, S3 
