@@ -36,15 +36,15 @@ function showAllResources() {
 }
 
 function updateResource() {
-  make $resourceType
+  make $resourceType -k 2>&1 | tee /tmp/$resourceType.$$.log
 }
 
 function createCluster() {
   make all -k 2>&1  | tee /tmp/build.$$.log
 }
 
-function clusterDistroy() {
-  make distroy_all -k 2>&1  | tee /tmp/destroy.$$.log
+function distroyCluster() {
+  make destroy_all -k 2>&1  | tee /tmp/destroy.$$.log
 }
 
 function hitAnyKey() {
@@ -63,7 +63,7 @@ function answerMe() {
 
 # Core display screen
 function clusterScreen() {
-    echo "===== Cluster Wide Operations ======"
+    echo "===== Cluster-Wide Operations ======"
     echo ""
     echo "0. Create Cluster"
     echo "1. Destroy Cluster"
@@ -90,21 +90,21 @@ function clusterScreen() {
  
     echo ""
     case $CHOICE in
- 	0)
-	    createCluster 
-        hitAnyKey
-        return $callAgain
-	    ;;
+ 	    0)
+	        createCluster 
+            hitAnyKey
+            return $callAgain
+	        ;;
         1)
             distroyCluster
             hitAnyKey
             return $callAgain
-	    ;;
+	        ;;
         2)
             showAllResources
             hitAnyKey
             return $callAgain
-	    ;;
+	        ;;
         3)
             resourceType='admiral'
             updateResource
