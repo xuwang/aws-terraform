@@ -52,7 +52,7 @@ gen_admiral_vars:
 	cd $(BUILD)/admiral; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/admiral_vars.tf
 
 get_admiral_ips:
-	@echo "admiral public ips: " `$(SCRIPTS)/get-ec2-public-id.sh admiral`
+	@echo "admiral public ips: " `$(SCRIPTS)/get-ec2-public-id.sh $(CLUSTER_NAME)-admiral`
 
 # EFS target
 admiral_efs_target: plan_admiral_efs_target

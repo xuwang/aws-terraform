@@ -1,14 +1,11 @@
-variable "deployment_user" {
-	default = "deployment"
-}
 
 # deployment user for elb registrations, s3 access, efs mount etc.
 resource "aws_iam_user" "deployment" {
-    name = "${var.deployment_user}"
-    path = "/system/"
+    name = "${var.cluster_name}-deployment"
+    path = "/system/"   
 }
 resource "aws_iam_user_policy" "deployment" {
-    name = "deployment"
+    name = "${aws_iam_user.deployment.name}"
     user = "${aws_iam_user.deployment.name}"
     policy = "${file(\"../policies/deployment_policy.json\")}"
 }
@@ -37,6 +34,6 @@ resource "aws_iam_access_key" "deployment" {
     user = "${aws_iam_user.deployment.name}"
 }
 
-output "deployment_user" { value = "${var.deployment_user}" }
+output "deployment_user" { value = "${aws_iam_user.deployment.name}" }
 output "deployment_key_id" { value = "${aws_iam_access_key.deployment.id}" }
 output "deployment_key_secret" { value = "${aws_iam_access_key.deployment.secret}" }

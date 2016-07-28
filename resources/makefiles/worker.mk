@@ -48,7 +48,7 @@ gen_worker_vars:
 	cd $(BUILD)/worker; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/worker_vars.tf
 
 get_worker_ips:
-	@echo "worker public ips: " `$(SCRIPTS)/get-ec2-public-id.sh worker`
+	@echo "worker public ips: " `$(SCRIPTS)/get-ec2-public-id.sh $(CLUSTER_NAME)-worker`
 
 
 # Call this explicitly to re-load user_data

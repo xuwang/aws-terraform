@@ -3,7 +3,7 @@
 #
 resource "aws_autoscaling_group" "cluster" {
   vpc_zone_identifier = ["${split(",",var.cluster_vpc_zone_identifiers)}"]
-  name = "${var.cluster_name}"
+  name = "${var.cluster_name}-${var.asg_name}"
   min_size = "${var.cluster_min_size}"
   max_size = "${var.cluster_max_size}"
   desired_capacity = "${var.cluster_desired_capacity}"
@@ -17,14 +17,14 @@ resource "aws_autoscaling_group" "cluster" {
   
   tag {
     key = "Name"
-    value = "${var.cluster_name}"
+    value = "${var.cluster_name}-${var.asg_name}"
     propagate_at_launch = true
   }
 }
 
 resource "aws_launch_configuration" "cluster" {
   # use system generated name to allow changes of launch_configuration
-  name_prefix = "${var.cluster_name}-"
+  name_prefix = "${var.cluster_name}-${var.asg_name}"
   image_id = "${var.ami}"
   instance_type = "${var.image_type}"
   iam_instance_profile = "${aws_iam_instance_profile.cluster.name}"
@@ -65,7 +65,7 @@ resource "aws_launch_configuration" "cluster" {
 
 # Define policy and role
 resource "aws_iam_role_policy" "cluster" {
-  name = "${var.cluster_name}"
+  name = "${var.asg_name}"
   role = "${aws_iam_role.cluster.id}"
   policy = "${var.iam_role_policy}"
   lifecycle { create_before_destroy = true }
@@ -73,7 +73,7 @@ resource "aws_iam_role_policy" "cluster" {
 
 # setup the cluster ec2 profile
 resource "aws_iam_instance_profile" "cluster" {
-  name = "${var.cluster_name}"
+  name = "${var.asg_name}"
   roles = ["${aws_iam_role.cluster.name}"]
   lifecycle { create_before_destroy = true }
 
@@ -86,7 +86,7 @@ resource "aws_iam_instance_profile" "cluster" {
 }
 
 resource "aws_iam_role" "cluster" {
-  name = "${var.cluster_name}"
+  name = "${var.asg_name}"
   path = "/"
   lifecycle { create_before_destroy = true }
   assume_role_policy =  <<EOF

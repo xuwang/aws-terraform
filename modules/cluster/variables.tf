@@ -1,6 +1,7 @@
 
 # cluster variables
 variable "cluster_name" { }
+variable "asg_name" { }
 # a list of subnet IDs to launch resources in.
 variable "cluster_vpc_zone_identifiers" { }
 variable "cluster_security_groups" { }

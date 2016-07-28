@@ -1,8 +1,9 @@
 module "admiral" {
   source = "../../modules/cluster"
 
-  # cluster varaiables
-  cluster_name = "admiral"
+  # cluster varaiables for the cluster module
+  cluster_name = "${var.cluster_name}"
+  asg_name = "admiral"
   # a list of subnet IDs to launch resources in.
   cluster_vpc_zone_identifiers = "${var.admiral_subnet_a_id},${var.admiral_subnet_b_id},${var.admiral_subnet_c_id}"
   cluster_min_size = 1

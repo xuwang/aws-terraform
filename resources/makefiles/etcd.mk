@@ -56,7 +56,7 @@ gen_etcd_vars:
 	cd $(BUILD)/etcd; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/etcd_vars.tf
 
 get_etcd_ips:
-	@echo "etcd public ips: " `$(SCRIPTS)/get-ec2-public-id.sh etcd`
+	@echo "etcd public ips: " `$(SCRIPTS)/get-ec2-public-id.sh $(CLUSTER_NAME)-etcd`
 
 # Call this explicitly to re-load user_data
 update_etcd_user_data:
