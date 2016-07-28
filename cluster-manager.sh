@@ -34,6 +34,10 @@ function init() {
 function showAllResources() {
   make show_all | more -R
 }
+# Make graph
+function makeGraph() {
+  make graph && echo "Graphs are generated under build/graph directory."
+}
 
 function updateResource() {
   make $resourceType -k 2>&1 | tee /tmp/$resourceType.$$.log
@@ -68,20 +72,21 @@ function clusterScreen() {
     echo "0. Create Cluster"
     echo "1. Destroy Cluster"
     echo "2. Show all Resources"
+    echo "3. Make graph"
     echo 
     echo "===== Update Individual Resources ======"
-    echo "3. Admiral"
-    echo "4. Worker"
-    echo "5. Etcd"
-    echo "6. Iam"
-    echo "7. Elastic loadbalancer: CI"
-    echo "8. Elastic loadbalancer: GitLab (WIP)"
-    echo "9. Elastic loadbalancer: dockerhub (WIP)"
-    echo "10. EFS"
-    echo "11. RDS"
-    echo "12. Route53"
-    echo "13. S3 buckets"
-    echo "14. VPC"
+    echo "10. Admiral"
+    echo "11. Worker"
+    echo "12. Etcd"
+    echo "13. Iam"
+    echo "14. Elastic loadbalancer: CI"
+    echo "15. Elastic loadbalancer: GitLab (WIP)"
+    echo "16. Elastic loadbalancer: dockerhub (WIP)"
+    echo "17. EFS"
+    echo "18. RDS"
+    echo "19. Route53"
+    echo "20. S3 buckets"
+    echo "21. VPC"
     echo "88. Exit"
     echo ""
     echo "Note: If resources already exist, current status will be displayed."
@@ -106,72 +111,77 @@ function clusterScreen() {
             return $callAgain
 	        ;;
         3)
+            makeGraph
+            hitAnyKey
+            return $callAgain
+            ;;
+        10)
             resourceType='admiral'
             updateResource
             hitAnyKey
             return $callAgain
             ;;
-        4)
+        11)
             resourceType='worker'
             updateResource
             hitAnyKey
             return $callAgain
             ;;
-        5)
+        12)
             resourceType='etcd'
             updateResource
             hitAnyKey
             return $callAgain
             ;;
-        6)
+        13)
             resourceType='iam'
             updateResource
             hitAnyKey
             return $callAgain
             ;;
-        7)
+        14)
             resourceType='elb-ci'
             updateResource
             hitAnyKey
             return $callAgain
             ;;
-        8)
+        15)
             resourceType='elb-gitlab'
             updateResource
             hitAnyKey
             return $callAgain
             ;;
-        9)
+        16)
             resourceType='elb-dockerhub'
             updateResource
             hitAnyKey
             return $callAgain
             ;;
-        10)
+        17)
             resourceType='efs'
             updateResource
             hitAnyKey
             return $callAgain
             ;;
-        11)
+        18)
             resourceType='rds'
             updateResource
             hitAnyKey
             return $callAgain
             ;;
-        12)
+        19)
             resourceType='route53'
             updateResource
             hitAnyKey
             return $callAgain
             ;;
-        13)
+        20)
             resourceType='s3'
             updateResource
             hitAnyKey
             return $callAgain
             ;;
-        14)
+        21)
             resourceType='vpc'
             updateResource
             hitAnyKey

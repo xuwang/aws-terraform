@@ -132,10 +132,11 @@ destroy:
 	@echo "Node: destroy may fail because of outstanding dependences"
 
 graph: | $(BUILD)
+	@mkdir -p $(BUILD)/graph
 	@for i in $(ALL_RESOURCES); do \
 	  if [ -d $(BUILD)/$$i ]; then \
 	  	cd $(BUILD)/$$i ; \
-	    $(TF_GRAPH) | dot -Tpng > $$i.png ; \
+	    $(TF_GRAPH) | dot -Tpng > $(BUILD)/graph/$$i.png ; \
 	  fi ; \
 	done
 
