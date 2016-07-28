@@ -6,7 +6,7 @@ admiral: init_admiral
 	@$(MAKE) get_admiral_ips
 
 # Use this for ongoing changes if you only changed admiral.tf.
-admiral_only: init admiral_key
+admiral_only: init create_admiral_key
 	mkdir -p $(BUILD)/admiral
 	cp -rf $(RESOURCES)/terraforms/admiral/admiral.tf $(BUILD)/admiral
 	ln -sf $(BUILD)/*.tf $(BUILD)/admiral
@@ -37,7 +37,7 @@ upload_admiral_key:
 destroy_admiral_key:
 	cd $(BUILD); $(SCRIPTS)/aws-keypair.sh -d $(CLUSTER_NAME)-admiral;
 
-init_admiral: etcd admiral_key
+init_admiral: etcd create_admiral_key
 	mkdir -p $(BUILD)/admiral
 	cp -rf $(RESOURCES)/terraforms/admiral/admiral.tf $(BUILD)/admiral
 	ln -sf $(BUILD)/*.tf $(BUILD)/admiral
@@ -69,4 +69,4 @@ update_admiral_user_data:
 		$(TF_APPLY)
 
 .PHONY: admiral admiral_only destroy_admiral plan_destroy_admiral plan_admiral init_admiral get_admiral_ips update_admiral_user_data
-.PHONY: show_admiral admiral_key destroy_admiral_key gen_admiral_vars init_efs_target clean_admiral
+.PHONY: show_admiral create_admiral_key destroy_admiral_key gen_admiral_vars init_efs_target clean_admiral

@@ -4,7 +4,7 @@ worker: init_worker
 	@$(MAKE) get_worker_ips
 
 # Use this for ongoing changes if you only changed worker.tf.
-worker_only: init worker_key
+worker_only: init create_worker_key
 	mkdir -p $(BUILD)/worker
 	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
 	ln -sf $(BUILD)/*.tf $(BUILD)/worker	
@@ -18,7 +18,7 @@ worker_only: init worker_key
 plan_worker: init_worker
 	cd $(BUILD)/worker; $(TF_GET); $(TF_PLAN)
 
-init_worker: etcd worker_key
+init_worker: etcd create_worker_key
 	mkdir -p $(BUILD)/worker
 	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
 	ln -sf $(BUILD)/*.tf $(BUILD)/worker
@@ -58,4 +58,4 @@ update_worker_user_data:
 		$(TF_APPLY)
 
 .PHONY: worker worker_only destroy_worker plan_destroy_worker plan_worker init_worker get_worker_ips update_worker_user_data
-.PHONY: show_worker worker_key destroy_worker_key gen_worker_vars clean_worker
+.PHONY: show_worker create_worker_key destroy_worker_key gen_worker_vars clean_worker

@@ -5,7 +5,7 @@ etcd: init_etcd
 	@$(MAKE) gen_etcd_vars
 	$(MAKE) get_etcd_ips
 
-etcd_only: init etcd_key
+etcd_only: init create_etcd_key
 	mkdir -p $(BUILD)/etcd
 	rsync -av  $(RESOURCES)/terraforms/etcd/ $(BUILD)/etcd
 	ln -sf $(BUILD)/*.tf $(BUILD)/etcd
@@ -41,7 +41,7 @@ destroy_etcd_key:
 	@echo "#### Working on $@"
 	cd $(BUILD); $(SCRIPTS)/aws-keypair.sh -d $(CLUSTER_NAME)-etcd;
 
-init_etcd: vpc iam s3 etcd_key 
+init_etcd: vpc iam s3 create_etcd_key 
 	mkdir -p $(BUILD)/etcd
 	rsync -av  $(RESOURCES)/terraforms/etcd/ $(BUILD)/etcd
 	ln -sf $(BUILD)/*.tf $(BUILD)/etcd
@@ -65,4 +65,4 @@ update_etcd_user_data:
 		$(TF_APPLY)
 
 .PHONY: etcd etcd-only destroy_etcd plan_destroy_etcd plan_etcd init_etcd get_etcd_ips update_etcd_user_data
-.PHONY: show_etcd etcd_key destroy_etcd_key gen_etcd_vars clean_etcd
+.PHONY: show_etcd create_etcd_key destroy_etcd_key gen_etcd_vars clean_etcd
