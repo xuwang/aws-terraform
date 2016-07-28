@@ -117,9 +117,9 @@ confirm:
 
 destroy_all: | plan_destroy_all
 	@for i in /tmp/$(CLUSTER_NAME)/*.plan; do $(TF_SHOW) $$i; done | grep -- -
-	@$(eval total = $(shell for i in /tmp/$(CLUSTER_NAME)/*.plan; do $(TF_SHOW) $$i; done | grep -- - | wc -l)) ; \
-	    echo ; echo "Will destroy $$total resources"
-	$(MAKE) confirm
+	@$(eval total=$(shell for i in /tmp/$(CLUSTER_NAME)/*.plan; do $(TF_SHOW) $$i; done | grep -- - | wc -l))
+	@echo "\nWill destroy $$total resources\n"
+	@$(MAKE) confirm
 	@for i in $(ALL_RESOURCES); do \
 	  if [ -d $(BUILD)/$$i ]; then \
 	    cd $(BUILD)/$$i; $(TF_DESTROY); \
