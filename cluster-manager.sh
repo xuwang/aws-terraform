@@ -44,7 +44,7 @@ function createCluster() {
 }
 
 function clusterDistroy() {
-  make distroy_app -k 2>&1  | tee /tmp/destroy.$$.log
+  make distroy_all -k 2>&1  | tee /tmp/destroy.$$.log
 }
 
 function hitAnyKey() {
@@ -75,8 +75,8 @@ function clusterScreen() {
     echo "5. Etcd"
     echo "6. Iam"
     echo "7. Elastic loadbalancer: CI"
-    echo "8. Elastic loadbalancer: GitLab"
-    echo "9. Elastic loadbalancer: dockerhub"
+    echo "8. Elastic loadbalancer: GitLab (WIP)"
+    echo "9. Elastic loadbalancer: dockerhub (WIP)"
     echo "10. EFS"
     echo "11. RDS"
     echo "12. Route53"
@@ -215,14 +215,14 @@ DOCS=<<__END_OF_DOCS__
 
 =head1 NAME
 
-install-pacific - Menu-driven script to install Pacific docker platform.
+cluster-manager.sh - Menu-driven script to install CoreOS docker platform.
 
 =head1 FILES
 
-The script reads the platform configuration from $HOME/.aws
+The script reads the platform configuration from envs.sh.
 
 =head1 AUTHORS
 
-Xueshan Feng <sfeng@stanford.edu>
+Xueshan Feng <xueshan.feng@gmail.com>
 
 =cut
