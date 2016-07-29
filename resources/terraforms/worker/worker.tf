@@ -7,13 +7,13 @@ module "worker" {
   # a list of subnet IDs to launch resources in.
   cluster_vpc_zone_identifiers = "${var.worker_subnet_a_id},${var.worker_subnet_b_id},${var.worker_subnet_c_id}"
   cluster_min_size = 1
-  cluster_max_size = 1
-  cluster_desired_capacity = 1
+  cluster_max_size = 2
+  cluster_desired_capacity = 2
   cluster_security_groups = "${aws_security_group.worker.id}"
 
   # Instance specifications
   ami = "${var.ami}"
-  image_type = "t2.small"
+  image_type = "t2.micro"
   keypair = "${var.cluster_name}-worker"
 
   # Note: currently worker launch_configuration devices can NOT be changed after worker cluster is up

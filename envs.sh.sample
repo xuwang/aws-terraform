@@ -12,3 +12,5 @@ export CLUSTER_NAME=my-cluster
 #export APP_REPOSITORY=https://github.com/user/app-repo.git
 # Default domain for route53 zone and for iam server certificate
 #export APP_DOMAIN=dockerage.com
+# Default CONFIRM_TF_APPLY
+#export CONFIRM_TF_APPLY=YES

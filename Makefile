@@ -30,7 +30,7 @@ AWS_ACCOUNT := $(shell aws --profile ${AWS_PROFILE} iam get-user | jq -r ".User.
 AWS_USER := $(shell aws --profile ${AWS_PROFILE} iam get-user | jq -r ".User.UserName")
 ALLOWED_ACCOUNT_IDS := "$(AWS_ACCOUNT)"
 
-# Working Directories
+# Working Directories and files
 ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 SCRIPTS := $(ROOT_DIR)scripts
 MODULES := $(ROOT_DIR)modules
@@ -47,6 +47,9 @@ AMI_VAR := ami.tf
 # LOCKKEY to prevent multiple terraform runs. The private key for the lock will be put in $HOME/.aws/{LOCK_KEYNAME}.pem
 # which is used to valide if you own the lock.
 LOCK_KEYNAME := $(CLUSTER_NAME)-tfstate-lock
+
+# Default to confirm when applying Terraform changes to the infrastrucutre
+CONFIRM_TF_APPLY ?= YES
 
 # Terraform files
 TF_PORVIDER := provider.tf
