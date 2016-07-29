@@ -24,7 +24,7 @@ resource "aws_autoscaling_group" "cluster" {
 
 resource "aws_launch_configuration" "cluster" {
   # use system generated name to allow changes of launch_configuration
-  name_prefix = "${var.cluster_name}-${var.asg_name}"
+  name_prefix = "${var.cluster_name}-${var.asg_name}-"
   image_id = "${var.ami}"
   instance_type = "${var.image_type}"
   iam_instance_profile = "${aws_iam_instance_profile.cluster.name}"
