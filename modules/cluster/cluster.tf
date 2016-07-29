@@ -1,7 +1,7 @@
 #
 #  General cluster autoscale group configurations
 #
-resource "aws_autoscaling_group" "cluster" {
+resource "aws_autoscaling_group" "instance_pool" {
   vpc_zone_identifier = ["${split(",",var.cluster_vpc_zone_identifiers)}"]
   name = "${var.cluster_name}-${var.asg_name}"
   min_size = "${var.cluster_min_size}"
@@ -13,7 +13,7 @@ resource "aws_autoscaling_group" "cluster" {
   force_delete = true
   metrics_granularity = "1Minute"
 
-  launch_configuration = "${aws_launch_configuration.cluster.name}"
+  launch_configuration = "${aws_launch_configuration.instance_pool.name}"
   
   tag {
     key = "Name"
@@ -22,12 +22,12 @@ resource "aws_autoscaling_group" "cluster" {
   }
 }
 
-resource "aws_launch_configuration" "cluster" {
+resource "aws_launch_configuration" "instance_pool" {
   # use system generated name to allow changes of launch_configuration
   name_prefix = "${var.cluster_name}-${var.asg_name}-"
   image_id = "${var.ami}"
   instance_type = "${var.image_type}"
-  iam_instance_profile = "${aws_iam_instance_profile.cluster.name}"
+  iam_instance_profile = "${aws_iam_instance_profile.instance_pool.name}"
   security_groups = ["${split(",",var.cluster_security_groups)}"]
   key_name = "${var.keypair}"  
   lifecycle { create_before_destroy = true }
@@ -64,28 +64,28 @@ resource "aws_launch_configuration" "cluster" {
 }
 
 # Define policy and role
-resource "aws_iam_role_policy" "cluster" {
+resource "aws_iam_role_policy" "instance_pool" {
   name = "${var.asg_name}"
-  role = "${aws_iam_role.cluster.id}"
+  role = "${aws_iam_role.instance_pool.id}"
   policy = "${var.iam_role_policy}"
   lifecycle { create_before_destroy = true }
 }
 
-# setup the cluster ec2 profile
-resource "aws_iam_instance_profile" "cluster" {
+# setup ec2 instance profile
+resource "aws_iam_instance_profile" "instance_pool" {
   name = "${var.asg_name}"
-  roles = ["${aws_iam_role.cluster.name}"]
+  roles = ["${aws_iam_role.instance_pool.name}"]
   lifecycle { create_before_destroy = true }
 
   # Sleep a little to wait the IAM profile to be ready - 
   # This seems to fix:
-  #     aws_launch_configuration.cluster: Error creating launch configuration: ValidationError: You are not authorized to #       perform this operation
+  #     aws_launch_configuration.instance_pool: Error creating launch configuration: ValidationError: You are not authorized to #       perform this operation
   provisioner "local-exec" {
     command = "sleep ${var.wait_time}"
   }
 }
 
-resource "aws_iam_role" "cluster" {
+resource "aws_iam_role" "instance_pool" {
   name = "${var.asg_name}"
   path = "/"
   lifecycle { create_before_destroy = true }
