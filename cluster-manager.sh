@@ -190,10 +190,12 @@ function clusterScreen() {
         88|q|quit|exit)
             # Reminder to uppdate git repo
             cd $GITROOT
-            git status
-            echo "Please commit changes!"
-            exit 0
-             ;;
+            if ! git diff-index --name-status --exit-code HEAD -- ; then \
+               echo "You have unpublished changes:"; exit 1 ; \
+            else
+               exit 0
+            fi
+            ;;
         *)
             clear
             return $callAgain
