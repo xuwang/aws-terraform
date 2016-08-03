@@ -28,17 +28,14 @@ show_etcd:
 	cd $(BUILD)/etcd; $(TF_SHOW) 
 
 create_etcd_key:
-	@echo "#### Working on $@"
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c $(CLUSTER_NAME)-etcd;
 
 upload_etcd_key:
-	@echo "#### Working on $@"
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -u $(CLUSTER_NAME)-etcd;
 
 destroy_etcd_key:
-	@echo "#### Working on $@"
 	cd $(BUILD); $(SCRIPTS)/aws-keypair.sh -d $(CLUSTER_NAME)-etcd;
 
 init_etcd: vpc iam s3 create_etcd_key 

@@ -11,7 +11,7 @@ coreos:
   update:
     reboot-strategy: best-effort
   locksmith:
-    group: workers
+    group: worker
   units:
     - name: locksmithd.service
       command: start
@@ -108,8 +108,8 @@ write_files:
     content: |
         #!/bin/bash
         # This script sync /var/lib/apps with github repo
-        export GIT_SSH_COMMAND="ssh -i /root/.ssh/git-sync-rsa.pem"
-        if [[ -d /var/lib/apps ]]; 
+        export GIT_SSH_COMMAND=${GIT_SSH_COMMAND}
+        if [[ -d /var/lib/apps/.git ]]; 
         then 
             cd /var/lib/apps; git pull
         else

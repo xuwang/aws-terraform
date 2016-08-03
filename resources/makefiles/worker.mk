@@ -33,12 +33,10 @@ show_worker:
 	cd $(BUILD)/worker; $(TF_SHOW) 
 
 create_worker_key:
-	@echo "#### Working on $@"
 	cd $(BUILD); \
 		$(SCRIPTS)/aws-keypair.sh -c $(CLUSTER_NAME)-worker;
 
 destroy_worker_key:
-	@echo "#### Working on $@"
 	cd $(BUILD); $(SCRIPTS)/aws-keypair.sh -d $(CLUSTER_NAME)-worker;
 
 clean_worker:
