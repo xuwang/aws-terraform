@@ -48,8 +48,7 @@ instanceProfile=$(curl -s http://169.254.169.254/latest/meta-data/iam/info \
 	| sed  's#.*instance-profile/##')
 
 # AWS Account
-accountId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document \
-	| grep -Eo '([[:digit:]]{12})')
+accountId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .'accountId')
 
 # Bucket path for the cloud-config.yaml 
 bucket=${accountId}-CLUSTER-NAME-cloudinit
