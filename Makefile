@@ -71,6 +71,8 @@ TF_REFRESH := terraform refresh
 TF_TAINT := terraform taint -allow-missing
 TF_OUTPUT := terraform output
 
+# Git clone/pull command
+GIT_SSH_COMMAND := ssh -i /root/.ssh/git-sync-rsa.pem -o 'StrictHostKeyChecking no'
 
 # cidr block to allow ssh; default to  $(curl -s http://ipinfo.io/ip)/32)
 # TF_VAR_allow_ssh_cidr := 

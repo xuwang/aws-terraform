@@ -50,6 +50,7 @@ resource "template_file" "etcd_cloud_config" {
         "AWS_DEFAULT_REGION" = "${var.aws_account.default_region}"
         "CLUSTER_NAME" = "${var.cluster_name}"
         "APP_REPOSITORY" = "${var.app_repository}"
+        "GIT_SSH_COMMAND" = "\"${var.git_ssh_command}\""
     }
 }
 

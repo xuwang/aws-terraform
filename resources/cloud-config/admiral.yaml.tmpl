@@ -143,8 +143,8 @@ write_files:
     content: |
         #!/bin/bash
         # This script sync /var/lib/apps with github repo
-        export GIT_SSH_COMMAND="ssh -i /root/.ssh/git-sync-rsa.pem"
-        if [[ -d /var/lib/apps ]]; 
+        export GIT_SSH_COMMAND=${GIT_SSH_COMMAND}
+        if [[ -d /var/lib/apps/.git ]]; 
         then 
             cd /var/lib/apps; git pull
         else
@@ -161,14 +161,14 @@ write_files:
         AWS_CONFIG_ENV=/root/.aws/envvars
         source $AWS_CONFIG_ENV
         IMAGE=suet/awscli:latest
-        APPBUCKET=s3://$${AWS_ACCOUNT}-coreos-cluster-config/apps
+        APPBUCKET=s3://${AWS_ACCOUNT}-${CLUSTER_NAME}-config/apps
         DST=/var/lib/apps
-        CMD="aws s3 sync --exact-timestamps --delete $APPBUCKET $DST && chmod 755 $${DST}/bin/*"
+        CMD="aws s3 sync --exact-timestamps --delete $APPBUCKET $DST && chmod 755 $DST/bin/*"
         
         # pull the IMAGE if not loaded
         docker history $IMAGE > /dev/null 2>&1 || docker pull $IMAGE
         # sync s3 apps to
-        docker run --rm --name s3sync -v $${DST}:$${DST} --env-file=$AWS_CONFIG_ENV $IMAGE /bin/bash -c "$CMD"
+        docker run --rm --name s3sync -v $DST:$DST --env-file=$AWS_CONFIG_ENV $IMAGE /bin/bash -c "$CMD"
   - path: /opt/bin/post-provision.sh
     permissions: 0700
     owner: root
@@ -192,20 +192,6 @@ write_files:
     content: |
         [Service]
         Environment=DOCKER_OPTS='--insecure-registry=10.0.0.0/8,dockerhub.coreos-cluster.local'
-
-  - path: /opt/bin/etcd-init.sh
-    permissions: 0700
-    owner: root
-    content: |
-      #!/bin/bash
-      
-      # dyamically create/join the etcd cluster by querying autoscaling group
-      # see https://github.com/dockerage/etcd-aws-cluster
-      image=dockerage/etcd-aws-cluster
-      /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ $image /etcd-aws-cluster
-      
-      # upload etcd initial-cluster urls to s3 bucket for worker cluster's etcd_proxy
-      /usr/bin/docker run -v /etc/sysconfig/:/etc/sysconfig/ $image /etcd-aws-proxy
 
   - path: /etc/aws/account.envvars
     permissions: 0644
