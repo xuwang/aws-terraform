@@ -126,7 +126,7 @@ destroy_all: | plan_destroy_all
 	@$(MAKE) confirm
 	@for i in $(ALL_RESOURCES); do \
 	  if [ -d $(BUILD)/$$i ]; then \
-	    cd $(BUILD)/$$i; $(TF_DESTROY); \
+	    $(MAKE) "destroy_$$i"; \
 	  fi ; \
 	done
 	#rm -rf $(BUILD)
