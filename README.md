@@ -46,43 +46,16 @@ Of course you can change the group and user name to your specific implementation
 If you use [Vagrant](https://www.vagrantup.com/), you can skip this section and go to 
 [Quick Start](#quick-start) section.
 
-Instructions for install tools on MacOS:
+Instructions for install tools requried on MacOS:
 
-1. Install [Terraform](http://www.terraform.io/downloads.html)
+Install [Terraform](http://www.terraform.io/downloads.html), [Jq](http://stedolan.github.io/jq/), [graphviz](http://www.graphviz.org/), [AWS CLI](https://github.com/aws/aws-cli):
 
     ```
     $ brew update
-    $ brew install terraform
-    ```
-    or
-    ```
-    $ mkdir -p ~/bin/terraform
-    $ cd ~/bin/terraform
-    $ curl -L -O https://releases.hashicorp.com/terraform/0.6.12/terraform_0.6.12_darwin_amd64.zip
-    $ unzip terraform_0.6.12_darwin_amd64.zip
+    $ brew install terraform jq graphviz awscli
     ```
 
-1. Install [Jq](http://stedolan.github.io/jq/)
-    ```
-    $ brew install jq
-    ```
-1. Install [graphviz](http://www.graphviz.org/) for generating Terraform graph png files
-    ```
-    $ brew install graphviz
-    ```
-
-1. Install [AWS CLI](https://github.com/aws/aws-cli)
-    ```
-    $ brew install awscli
-    ```
-    or
-
-    ```
-    $ sudo easy_install pip
-    $ sudo pip install --upgrade awscli
-    ```
-
-For other platforms, follow the tool links and instructions on tool sites.
+For other platforms, follow the tool links and instructions on these tools's site. Remeber to peirodically update these packages. 
 
 ## Quick start
 
