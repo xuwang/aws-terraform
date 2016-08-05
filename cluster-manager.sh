@@ -96,7 +96,7 @@ function clusterScreen() {
     echo ""
     case $CHOICE in
  	    0)
-	        createCluster 
+	    createCluster 
             hitAnyKey
             return $callAgain
 	        ;;
@@ -140,7 +140,7 @@ function clusterScreen() {
             return $callAgain
             ;;
         14)
-            resourceType='elb-ci'
+            resourceType='elb_ci'
             updateResource
             hitAnyKey
             return $callAgain
