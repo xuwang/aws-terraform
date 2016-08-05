@@ -7,11 +7,11 @@ resource "aws_route53_zone" "public" {
 }
 
 resource "aws_route53_zone" "private" {
-    name = "${var.cluster_name}.cluster.local"   
+    name = "cluster.local"   
     vpc_id = "${var.cluster_vpc_id}"
 
     tags {
-        Name = "${var.cluster_name}.cluster.local"
+        Name = "cluster.local"
     }
 }
 
