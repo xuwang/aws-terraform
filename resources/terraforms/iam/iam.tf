@@ -34,6 +34,14 @@ resource "aws_iam_access_key" "deployment" {
     user = "${aws_iam_user.deployment.name}"
 }
 
-output "deployment_user" { value = "${aws_iam_user.deployment.name}" }
-output "deployment_key_id" { value = "${aws_iam_access_key.deployment.id}" }
-output "deployment_key_secret" { value = "${aws_iam_access_key.deployment.secret}" }
+output "deployment_user" { 
+    value = "${aws_iam_user.deployment.name}"
+}
+output "deployment_key_id" {
+    sensitive = true
+    value = "${aws_iam_access_key.deployment.id}"
+}
+output "deployment_key_secret" {
+    sensitive = true
+    value = "${aws_iam_access_key.deployment.secret}" 
+}
