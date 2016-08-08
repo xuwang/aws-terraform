@@ -12,11 +12,7 @@ init_route53: vpc
 	ln -sf $(BUILD)/*.tf $(BUILD)/route53
 
 plan_destroy_route53:
-	$(eval TMP := $(shell mktemp -d -t route53 ))
-	mv $(BUILD)/route53*.tf $(TMP)
 	cd $(BUILD); $(TF_PLAN)
-	mv  $(TMP)/route53*.tf $(BUILD)
-	rmdir $(TMP)
 
 gen_route53_vars:
 	cd $(BUILD)/route53; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/route53_vars.tf
