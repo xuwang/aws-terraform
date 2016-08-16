@@ -115,7 +115,7 @@ plan_destroy_all:
 
 confirm:
 	@echo "CONTINUE? [Y/N]: "; read ANSWER; \
-	if [ ! "$$ANSWER" == "Y" ]; then \
+	if [ ! "$$ANSWER" = "Y" ]; then \
 		echo "Exiting." ; exit 1 ; \
     fi
 
