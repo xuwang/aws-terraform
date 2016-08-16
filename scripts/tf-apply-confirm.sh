@@ -6,7 +6,7 @@ TF_PLAN=${TF_PLAN:-"terraform plan -module-depth=1"}
 TF_GET=${TF_GET:-"terraform get -update"}
 TF_APPLY=${TF_APPLY:-"terraform apply -refresh=false"}
 CONFIRM_TF_APPLY=${CONFIRM_TF_APPLY:-"YES"}
-resource=$(basename $(PWD))
+resource=$(basename $(pwd))
 
 $TF_GET > /dev/null
 echo "Creating or updating $resource plan. This may take a while."
