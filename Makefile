@@ -3,6 +3,9 @@
 ###################
 # Change here or use environment variables, e.g. export AWS_PROFILE=<aws profile name>.
 
+# Default SHELL for make for consistency on different platforms
+SHELL := /bin/bash
+
 # Default AWS profile and cluster name. Please choose cluster name carefully. It will used as prefix in many AWS resources to be created.
 AWS_PROFILE ?= coreos-cluster
 CLUSTER_NAME ?= coreos-cluster
