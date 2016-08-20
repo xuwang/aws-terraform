@@ -57,4 +57,10 @@ variable "git_ssh_command" {
 variable "app_domain" {
     default = "${APP_DOMAIN}"
 }
+variable "timestamp" {
+    default = "undefined"
+}
+variable "iamuser" {
+    default = "undefined"
+}
 EOF

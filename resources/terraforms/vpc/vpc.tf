@@ -4,9 +4,15 @@ resource "aws_vpc" "cluster_vpc" {
 
     enable_dns_support = true
     enable_dns_hostnames = true
+    lifecycle {
+        ignore_changes = ["tags"]
+    }
 
     tags {
         Name = "${var.cluster_name}"
+    }
+    tags {
+        Created = "${var.timestamp}-${var.iamuser}-Terraform"
     }
 }
 
