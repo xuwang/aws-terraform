@@ -295,7 +295,7 @@ Resource | Description
 *etcd* | Setup ETCD2 cluster
 *worker* | Setup application docker hosting cluster
 *admiral* | (Optional) Service cluster (Jenkins, fleet-ui, monitoring...). You can run these on worker machine, but you might have a different cluster for different access roles.
-*rds* | (Optinal) RDS server (postgres and mysql)
+*rds* | (Optional) RDS server (postgres and mysql)
 *cloudtrail* | Setup AWS CloudTrail
 
 To build the cluster step by step:
@@ -332,13 +332,28 @@ $ make destroy_<resource>
 ## Technical notes
 * File tree
 ```
+$ tree -I build
 .
+├── CHANGELOG.md
 ├── LICENSE
 ├── Makefile
 ├── README.md
 ├── Vagrantfile
 ├── app-deploy-key.pem.yaml.sample
+├── cluster-manager.sh
+├── envs.sh
 ├── envs.sh.sample
+├── graph-examples
+│   ├── admiral.png
+│   ├── efs.png
+│   ├── elb-ci.png
+│   ├── etcd.png
+│   ├── iam.png
+│   ├── rds.png
+│   ├── route53.png
+│   ├── s3.png
+│   ├── vpc.png
+│   └── worker.png
 ├── modules
 │   ├── cluster
 │   │   ├── cluster.tf
@@ -360,7 +375,6 @@ $ make destroy_<resource>
 │   │   ├── dockerhub.yaml
 │   │   ├── etcd.yaml.tmpl
 │   │   ├── files.yaml
-│   │   ├── git-sync-rsa.pem
 │   │   ├── s3-cloudconfig-bootstrap.sh
 │   │   ├── systemd-units-flannel.yaml
 │   │   ├── systemd-units.yaml
@@ -369,6 +383,7 @@ $ make destroy_<resource>
 │   │   ├── admiral.mk
 │   │   ├── cloudtrail.mk
 │   │   ├── efs.mk
+│   │   ├── elb-ci.mk
 │   │   ├── etcd.mk
 │   │   ├── iam.mk
 │   │   ├── init.mk
@@ -398,7 +413,9 @@ $ make destroy_<resource>
 │       ├── iam
 │       │   └── iam.tf
 │       ├── rds
-│       │   └── rds.tf
+│       │   ├── mysql.tf
+│       │   ├── postgres.tf
+│       │   └── security-group.tf
 │       ├── route53
 │       │   └── route53.tf
 │       ├── s3
@@ -416,28 +433,32 @@ $ make destroy_<resource>
     ├── aws-keypair.sh
     ├── cloudtrail-admin.sh
     ├── gen-provider.sh
+    ├── gen-rds-password.sh
     ├── gen-tf-vars.sh
     ├── get-ami.sh
+    ├── get-dns-name.sh
     ├── get-ec2-public-id.sh
     ├── get-vpc-id.sh
     ├── session-lock.sh
     ├── substitute-AWS-ACCOUNT.sh
-    └── substitute-CLUSTER-NAME.sh
+    ├── substitute-CLUSTER-NAME.sh
     └── tf-apply-confirm.sh
+
 ```
 * Etcd cluster is on its own autoscaling group. It should be set with a fixed, odd number (1,3,5..), and cluster_desired_capacity=min_size=max_size.
 * Cluster discovery is managed with [dockerage/etcd-aws-cluster](https://hub.docker.com/r/dockerage/etcd-aws-cluster/) image. etcd cluster is formed by self-discovery through its auto-scaling group and then an etcd initial cluster is updated automatically to s3://AWS-ACCOUNT-CLUSTER-NAME-cloudinit/etcd/initial-cluster s3 bucket. Worker nodes join the cluster by downloading the etcd initial-cluster file from the s3 bucket during their bootstrap.
 * AWS resources are defined in resources and modules directories.
 The build process will copy all resource files from _resources_ to a _build_ directory. 
-The terraform actions are performed under _build_, which is ignored in .gitignore. Tfstat file will also be stored in _build_ directory. The original Terraform files in the repo are kept intact. 
+The Terraform actions are performed under _build_, which is ignored in .gitignore. Tfstat file will also be stored in _build_ directory. The original Terraform files in the repo are kept intact. 
 * Makefiles and shell scripts are used to give more flexibility to fill the gap between Terraform and AWS API. This provides stream-lined build automation. 
-* All nodes use one common bootstrap script *resources/cloud-config/s3-cloudconfig-bootstrap.sh* as _user-data_ which downloads initial-cluster file and the cluster nodes's specific cloud-config.yaml to configure a node. If cloud-config changes, 
-no need to rebuild an instance. Just reboot it to pick up the change.
+* All nodes use one common bootstrap script *resources/cloud-config/s3-cloudconfig-bootstrap.sh* as _user-data_ which downloads initial-cluster file and the cluster nodes's specific cloud-config.yaml to configure a node. If cloud-config changes, no need to rebuild an instance. Just reboot it to pick up the change.
 * CoreOS AMI is generated on the fly to keep it up-to-data. Default channel can be changed in Makefile.
 * Terraform auto-generated launch configuration name and CBD feature are used 
 to allow launch configuration update on a live autoscaling group, 
 however, running ec2 instances in the autoscaling group has to be recycled outside of the Terraform management to pick up the new LC.
 * For a production system, the security groups defined in etcd, worker, and admiral module 
 should be carefully reviewed and tightened.
+* Databases (mysql and posgres) are created are public accessible for the purpose of testing and ports are open to `allow_ssh_cidr` variable, which is your local machine IP by default.  You can should change the security-group.tf, mysql.tf, and postgres.tf under `resources/terraform/rds` directory do adjust. 
+The password is generated on the fly. Both password and database address/endpoints can be retrived by `make show_rds`. A public DNS name is also created, e.g. mysqldb.example.com, postgresdb.example.com. The domain name is configured by APP_DOMAIN variable in envs.sh file.
 * Cluster CoreOS upgrade: workers and etcd clusters are defined as separate locksmith group so they can be independently managed by locksmith. The locksmith group, reboot stragtegy (best-effort) and upgrade window are defined under _resources/cloud_config_ directory.
 
