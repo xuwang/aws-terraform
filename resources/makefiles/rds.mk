@@ -29,4 +29,7 @@ $(DB_PWD):
 
 gen_db_pwd: $(DB_PWD)
 
-.PHONY: rds plan_rds plan_destroy_rds destroy_rds rds_only init_rds gen_rds_password gen_db_pwd
+show_rds:  
+	cd $(BUILD)/rds; $(TF_SHOW) 
+
+.PHONY: rds plan_rds plan_destroy_rds destroy_rds rds_only init_rds gen_rds_password show_rds gen_db_pwd
