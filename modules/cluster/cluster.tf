@@ -81,7 +81,7 @@ resource "aws_iam_instance_profile" "instance_pool" {
   # This seems to fix:
   #     aws_launch_configuration.instance_pool: Error creating launch configuration: ValidationError: You are not authorized to #       perform this operation
   provisioner "local-exec" {
-    command = "sleep ${var.wait_time}"
+    command = "sleep 10"
   }
 }
 

@@ -21,6 +21,3 @@ variable "data_volume_type"  { default = "gp2" }
 variable "data_volume_size" { default = 12 }
 variable "user_data" { }
 variable "iam_role_policy" { }
-
-# General
-variable "wait_time" { default = 10 }

@@ -63,4 +63,7 @@ variable "timestamp" {
 variable "iamuser" {
     default = "undefined"
 }
+variable "wait_time" {
+    default = 10
+}
 EOF

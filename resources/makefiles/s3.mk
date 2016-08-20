@@ -14,7 +14,7 @@ show_s3:
 init_s3: init
 	mkdir -p $(BUILD)/s3
 	rsync -av  $(RESOURCES)/terraforms/s3/ $(BUILD)/s3
-	ln -sf $(BUILD)/*.tf $(BUILD)/s3
+	cd $(BUILD)/s3 ; ln -sf ../*.tf .
 
 clean_s3:
 	rm -rf $(BUILD)/s3

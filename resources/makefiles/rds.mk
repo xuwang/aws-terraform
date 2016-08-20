@@ -19,13 +19,13 @@ plan_destroy_rds:
 destroy_rds: 
 	cd $(BUILD)/rds; $(TF_DESTROY)
 
-init_rds: vpc
+init_rds: vpc route53
 	mkdir -p $(BUILD)/rds
 	rsync -av $(RESOURCES)/terraforms/rds/ $(BUILD)/rds
 	cd $(BUILD)/rds ; ln -sf ../*.tf .
 
 $(DB_PWD): 
-	$(SCRIPTS)/gen-rds-password.sh $(DB_PwD)
+	$(SCRIPTS)/gen-rds-password.sh $(DB_PWD)
 
 gen_db_pwd: $(DB_PWD)
 

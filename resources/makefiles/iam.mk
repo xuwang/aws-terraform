@@ -15,7 +15,7 @@ show_iam:
 init_iam: s3
 	mkdir -p $(BUILD)/iam
 	rsync -av  $(RESOURCES)/terraforms/iam/ $(BUILD)/iam
-	ln -sf $(BUILD)/*.tf $(BUILD)/iam
+	cd $(BUILD)/iam ; ln -sf ../*.tf .
 
 clean_iam:
 	rm -rf $(BUILD)/iam

@@ -9,7 +9,7 @@ plan_efs: init_efs
 init_efs: vpc
 	mkdir -p $(BUILD)/efs
 	rsync -avq  $(RESOURCES)/terraforms/efs/ $(BUILD)/efs
-	ln -sf $(BUILD)/*.tf $(BUILD)/efs
+	cd $(BUILD)/efs ; ln -sf ../*.tf .
 
 destroy_efs:
 	cd $(BUILD)/efs; $(TF_DESTROY)

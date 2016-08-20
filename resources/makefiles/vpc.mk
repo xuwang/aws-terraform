@@ -18,7 +18,7 @@ show_vpc:
 init_vpc: init
 	mkdir -p $(BUILD)/vpc
 	rsync -av $(RESOURCES)/terraforms/vpc/ $(BUILD)/vpc
-	ln -sf $(BUILD)/*.tf $(BUILD)/vpc
+	cd $(BUILD)/vpc ; ln -sf ../*.tf .
 
 clean_vpc:
 	rm -rf $(BUILD)/vpc

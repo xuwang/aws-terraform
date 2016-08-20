@@ -9,7 +9,7 @@ plan_route53: plan_vpc init_route53
 init_route53: vpc
 	mkdir -p $(BUILD)/route53
 	rsync -avq  $(RESOURCES)/terraforms/route53/ $(BUILD)/route53
-	ln -sf $(BUILD)/*.tf $(BUILD)/route53
+	cd $(BUILD)/route53 ; ln -sf ../*.tf .
 
 plan_destroy_route53:
 	cd $(BUILD); $(TF_PLAN)

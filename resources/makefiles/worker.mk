@@ -7,7 +7,7 @@ worker: init_worker
 worker_only: init create_worker_key
 	mkdir -p $(BUILD)/worker
 	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
-	ln -sf $(BUILD)/*.tf $(BUILD)/worker	
+	cd $(BUILD)/worker ; ln -sf ../*.tf .	
 	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
   		cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/worker.yaml.tmpl; \
   	fi
@@ -21,7 +21,7 @@ plan_worker: init_worker
 init_worker: etcd create_worker_key
 	mkdir -p $(BUILD)/worker
 	cp -rf $(RESOURCES)/terraforms/worker/worker.tf $(BUILD)/worker
-	ln -sf $(BUILD)/*.tf $(BUILD)/worker
+	cd $(BUILD)/worker ; ln -sf ../*.tf .
 	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
   		cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/worker.yaml.tmpl; \
   	fi
