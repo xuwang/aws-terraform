@@ -7,8 +7,8 @@
 SHELL := /bin/bash
 
 # Default AWS profile and cluster name. Please choose cluster name carefully. It will used as prefix in many AWS resources to be created.
-AWS_PROFILE ?= coreos-cluster
-CLUSTER_NAME ?= coreos-cluster
+AWS_PROFILE ?= NODEFAULT
+CLUSTER_NAME ?= NODEFAULT
 # Application repository. Automatically synced to /var/lib/apps every minute
 APP_REPOSITORY ?= https://github.com/dockerage/coreos-cluster-apps
 APP_REPOSITORY_DEPLOYKEY ?= ''
@@ -17,14 +17,14 @@ APP_REPOSITORY_DEPLOYKEY ?= ''
 APP_DOMAIN ?= 'example.com'
 
 # For get-ami.sh
-COREOS_UPDATE_CHANNE ?= beta
+COREOS_UPDATE_CHANNE ?= stable
 AWS_REGION ?= us-west-2
 VM_TYPE ?= hvm
 
 # All resources used in destroy_all, in the order of dependencies.
 # It doesn't hurt if a resource in the list is not created, but if it does, add 
 # it to the list to make sure cleanup is done properly. 
-ALL_RESOURCES := admiral worker etcd iam s3 elb-ci elb-gitlab elb_dockerhub efs rds route53 vpc
+ALL_RESOURCES := vault admiral worker etcd iam s3 elb-ci elb-gitlab elb_dockerhub efs rds route53 vpc
 
 # To prevent you from mistakenly using a wrong account (and end up destroying live environment),
 # a list of allowed AWS account IDs should be defined:
