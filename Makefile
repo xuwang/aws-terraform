@@ -5,6 +5,8 @@
 
 # Default SHELL for make for consistency on different platforms
 SHELL := /bin/bash
+# Load environments
+include envs.sh
 
 # Default AWS profile and cluster name. Please choose cluster name carefully. It will used as prefix in many AWS resources to be created.
 AWS_PROFILE ?= NODEFAULT
