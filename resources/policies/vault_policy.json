@@ -1,0 +1,29 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::${AWS_ACCOUNT}-${CLUSTER_NAME}-cloudinit",
+        "arn:aws:s3:::${AWS_ACCOUNT}-${CLUSTER_NAME}-cloudinit/*",
+        "arn:aws:s3:::${AWS_ACCOUNT}-${CLUSTER_NAME}-vault-cloudinit",
+        "arn:aws:s3:::${AWS_ACCOUNT}-${CLUSTER_NAME}-vault-cloudinit/*",
+        "arn:aws:s3:::${AWS_ACCOUNT}-${CLUSTER_NAME}-config",
+        "arn:aws:s3:::${AWS_ACCOUNT}-${CLUSTER_NAME}-config/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:Describe*",
+        "autoscaling:Describe*"
+      ],
+      "Resource": [
+        "*"
+      ]
+    }
+  ]
+}
