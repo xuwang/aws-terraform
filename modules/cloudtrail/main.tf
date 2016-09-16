@@ -4,6 +4,9 @@ resource "aws_cloudtrail" "cluster_cloudtrail" {
     include_global_service_events = "${var.include_global_service_events}"
     is_multi_region_trail = "${var.is_multi_region_trail}"
     #sns_topic_name = "${var.sns_topic_name}"
+    tags {
+        Name = "${var.trail_name}"
+    }
 }
 
 resource "aws_s3_bucket" "cluster_cloudtrail" {
