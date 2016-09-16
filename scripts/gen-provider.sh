@@ -33,6 +33,7 @@ variable "aws_account" {
     default = {
         id = "$TF_VAR_aws_account"
         default_region = "$AWS_REGION"
+        profile = "$AWS_PROFILE"
     }
 }
 variable "cluster_name" {
