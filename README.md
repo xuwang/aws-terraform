@@ -332,7 +332,6 @@ $ make destroy_<resource>
 ## Technical notes
 * File tree
 ```
-$ tree -I build
 .
 ├── CHANGELOG.md
 ├── LICENSE
@@ -340,6 +339,138 @@ $ tree -I build
 ├── README.md
 ├── Vagrantfile
 ├── app-deploy-key.pem.yaml.sample
+├── build-sfeng-cluster
+│   ├── admiral
+│   │   ├── admiral.tf
+│   │   ├── ami.tf -> ../ami.tf
+│   │   ├── etcd_vars.tf -> ../etcd_vars.tf
+│   │   ├── iam_vars.tf -> ../iam_vars.tf
+│   │   ├── provider.tf -> ../provider.tf
+│   │   ├── s3_vars.tf -> ../s3_vars.tf
+│   │   ├── terraform.tfstate
+│   │   ├── vpc_vars.tf -> ../vpc_vars.tf
+│   │   └── worker_vars.tf -> ../worker_vars.tf
+│   ├── admiral_vars.tf
+│   ├── ami.tf
+│   ├── certs
+│   │   ├── Makefile
+│   │   ├── README.md
+│   │   ├── etcd-client-key.pem
+│   │   ├── etcd-client.cnf
+│   │   ├── etcd-client.csr
+│   │   ├── etcd-client.pem
+│   │   ├── etcd-key.pem
+│   │   ├── etcd.cnf
+│   │   ├── etcd.csr
+│   │   ├── etcd.pem
+│   │   ├── rootCA-key.pem
+│   │   ├── rootCA.cnf
+│   │   ├── rootCA.pem
+│   │   ├── rootCA.srl
+│   │   ├── site-key.pem
+│   │   ├── site.cnf
+│   │   ├── site.csr
+│   │   └── site.pem
+│   ├── cloud-config
+│   │   ├── admiral.yaml.tmpl
+│   │   ├── common-files.yaml.tmpl
+│   │   ├── dockerhub.yaml
+│   │   ├── etcd.yaml.tmpl
+│   │   ├── files-vault.yaml
+│   │   ├── files.yaml
+│   │   ├── s3-cloudconfig-bootstrap.sh
+│   │   ├── systemd-units-flannel.yaml
+│   │   ├── systemd-units.yaml
+│   │   ├── vault.yaml.tmpl
+│   │   └── worker.yaml.tmpl
+│   ├── etcd
+│   │   ├── ami.tf -> ../ami.tf
+│   │   ├── etcd.tf
+│   │   ├── iam_vars.tf -> ../iam_vars.tf
+│   │   ├── provider.tf -> ../provider.tf
+│   │   ├── s3_vars.tf -> ../s3_vars.tf
+│   │   ├── terraform.tfstate
+│   │   ├── vpc_vars.tf -> ../vpc_vars.tf
+│   │   └── worker_vars.tf -> ../worker_vars.tf
+│   ├── etcd_vars.tf
+│   ├── iam
+│   │   ├── admiral_vars.tf -> ../admiral_vars.tf
+│   │   ├── ami.tf -> ../ami.tf
+│   │   ├── etcd_vars.tf -> ../etcd_vars.tf
+│   │   ├── iam.tf
+│   │   ├── iam_vars.tf -> ../iam_vars.tf
+│   │   ├── provider.tf -> ../provider.tf
+│   │   ├── s3_vars.tf -> ../s3_vars.tf
+│   │   ├── terraform.tfstate
+│   │   ├── vault_vars.tf -> ../vault_vars.tf
+│   │   ├── vpc_vars.tf -> ../vpc_vars.tf
+│   │   └── worker_vars.tf -> ../worker_vars.tf
+│   ├── iam_vars.tf
+│   ├── keypairs
+│   │   ├── sfeng-cluster-admiral.pem
+│   │   ├── sfeng-cluster-etcd.pem
+│   │   └── sfeng-cluster-worker.pem
+│   ├── policies
+│   │   ├── admiral_policy.json
+│   │   ├── assume_role_policy.json
+│   │   ├── deployment_policy.json
+│   │   ├── dockerhub_policy.json
+│   │   ├── etcd_policy.json
+│   │   ├── vault_policy.json
+│   │   └── worker_policy.json
+│   ├── provider.tf
+│   ├── s3
+│   │   ├── admiral_vars.tf -> ../admiral_vars.tf
+│   │   ├── ami.tf -> ../ami.tf
+│   │   ├── etcd_vars.tf -> ../etcd_vars.tf
+│   │   ├── iam_vars.tf -> ../iam_vars.tf
+│   │   ├── provider.tf -> ../provider.tf
+│   │   ├── s3.tf
+│   │   ├── s3_vars.tf -> ../s3_vars.tf
+│   │   ├── terraform.tfstate
+│   │   ├── vault_vars.tf -> ../vault_vars.tf
+│   │   ├── vpc_vars.tf -> ../vpc_vars.tf
+│   │   └── worker_vars.tf -> ../worker_vars.tf
+│   ├── s3_vars.tf
+│   ├── vault
+│   │   ├── admiral_vars.tf -> ../admiral_vars.tf
+│   │   ├── ami.tf -> ../ami.tf
+│   │   ├── elb.tf
+│   │   ├── etcd_vars.tf -> ../etcd_vars.tf
+│   │   ├── iam_vars.tf -> ../iam_vars.tf
+│   │   ├── provider.tf -> ../provider.tf
+│   │   ├── s3_vars.tf -> ../s3_vars.tf
+│   │   ├── terraform.tfstate
+│   │   ├── terraform.tfstate.backup
+│   │   ├── variables.tf
+│   │   ├── vault.tf
+│   │   ├── vault_vars.tf -> ../vault_vars.tf
+│   │   ├── vpc_vars.tf -> ../vpc_vars.tf
+│   │   └── worker_vars.tf -> ../worker_vars.tf
+│   ├── vault_vars.tf
+│   ├── vpc
+│   │   ├── provider.tf -> ../provider.tf
+│   │   ├── terraform.tfstate
+│   │   ├── vpc-subnet-admiral.tf
+│   │   ├── vpc-subnet-elb.tf
+│   │   ├── vpc-subnet-etcd.tf
+│   │   ├── vpc-subnet-rds.tf
+│   │   ├── vpc-subnet-vault.tf
+│   │   ├── vpc-subnet-worker.tf
+│   │   └── vpc.tf
+│   ├── vpc_vars.tf
+│   ├── worker
+│   │   ├── admiral_vars.tf -> ../admiral_vars.tf
+│   │   ├── ami.tf -> ../ami.tf
+│   │   ├── etcd_vars.tf -> ../etcd_vars.tf
+│   │   ├── iam_vars.tf -> ../iam_vars.tf
+│   │   ├── provider.tf -> ../provider.tf
+│   │   ├── s3_vars.tf -> ../s3_vars.tf
+│   │   ├── terraform.tfstate
+│   │   ├── vpc_vars.tf -> ../vpc_vars.tf
+│   │   ├── worker.tf
+│   │   └── worker_vars.tf -> ../worker_vars.tf
+│   └── worker_vars.tf
 ├── cluster-manager.sh
 ├── envs.sh
 ├── envs.sh.sample
@@ -355,6 +486,12 @@ $ tree -I build
 │   ├── vpc.png
 │   └── worker.png
 ├── modules
+│   ├── asg-with-elb
+│   │   ├── autoscaling-group-with-elb.tf
+│   │   └── variables.tf
+│   ├── cloudtrail
+│   │   ├── main.tf
+│   │   └── variables.tf
 │   ├── cluster
 │   │   ├── cluster.tf
 │   │   └── variables.tf
@@ -372,12 +509,15 @@ $ tree -I build
 │   │   └── site.cnf
 │   ├── cloud-config
 │   │   ├── admiral.yaml.tmpl
+│   │   ├── common-files.yaml.tmpl
 │   │   ├── dockerhub.yaml
 │   │   ├── etcd.yaml.tmpl
+│   │   ├── files-vault.yaml
 │   │   ├── files.yaml
 │   │   ├── s3-cloudconfig-bootstrap.sh
 │   │   ├── systemd-units-flannel.yaml
 │   │   ├── systemd-units.yaml
+│   │   ├── vault.yaml.tmpl
 │   │   └── worker.yaml.tmpl
 │   ├── makefiles
 │   │   ├── admiral.mk
@@ -390,6 +530,7 @@ $ tree -I build
 │   │   ├── rds.mk
 │   │   ├── route53.mk
 │   │   ├── s3.mk
+│   │   ├── vault.mk
 │   │   ├── vpc.mk
 │   │   └── worker.mk
 │   ├── policies
@@ -398,10 +539,13 @@ $ tree -I build
 │   │   ├── deployment_policy.json
 │   │   ├── dockerhub_policy.json
 │   │   ├── etcd_policy.json
+│   │   ├── vault_policy.json
 │   │   └── worker_policy.json
 │   └── terraforms
 │       ├── admiral
 │       │   └── admiral.tf
+│       ├── cloudtrail
+│       │   └── cloudtrail.tf
 │       ├── efs
 │       │   └── efs.tf
 │       ├── elb-ci
@@ -420,11 +564,16 @@ $ tree -I build
 │       │   └── route53.tf
 │       ├── s3
 │       │   └── s3.tf
+│       ├── vault
+│       │   ├── elb.tf
+│       │   ├── variables.tf
+│       │   └── vault.tf
 │       ├── vpc
 │       │   ├── vpc-subnet-admiral.tf
 │       │   ├── vpc-subnet-elb.tf
 │       │   ├── vpc-subnet-etcd.tf
 │       │   ├── vpc-subnet-rds.tf
+│       │   ├── vpc-subnet-vault.tf
 │       │   ├── vpc-subnet-worker.tf
 │       │   └── vpc.tf
 │       └── worker
@@ -440,6 +589,7 @@ $ tree -I build
     ├── get-ec2-public-id.sh
     ├── get-vpc-id.sh
     ├── session-lock.sh
+    ├── setup_vault.sh
     ├── substitute-AWS-ACCOUNT.sh
     ├── substitute-CLUSTER-NAME.sh
     └── tf-apply-confirm.sh
