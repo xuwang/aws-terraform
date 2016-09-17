@@ -1,3 +1,10 @@
+## v0.2.1
+
+FEATURES:
+
+* Added AWS Cloudtrail module
+* Added Vault cluster with dedicated etcd storage backend
+
 ## v0.2.0
 
 DESIGN CHANGE:
