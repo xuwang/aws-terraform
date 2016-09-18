@@ -297,6 +297,7 @@ Resource | Description
 *admiral* | (Optional) Service cluster (Jenkins, fleet-ui, monitoring...). You can run these on worker machine, but you might have a different cluster for different access roles.
 *rds* | (Optional) RDS server (postgres and mysql)
 *cloudtrail* | Setup AWS CloudTrail
+*vault* | Hashicorp Vault cluster with etcd as storage backend
 
 To build the cluster step by step:
 
@@ -479,5 +480,6 @@ however, running ec2 instances in the autoscaling group has to be recycled outsi
 should be carefully reviewed and tightened.
 * Databases (mysql and posgres) are created are public accessible for the purpose of testing and ports are open to `allow_ssh_cidr` variable, which is your local machine IP by default.  You can should change the security-group.tf, mysql.tf, and postgres.tf under `resources/terraform/rds` directory do adjust. 
 The password is generated on the fly. Both password and database address/endpoints can be retrived by `make show_rds`. A public DNS name is also created, e.g. mysqldb.example.com, postgresdb.example.com. The domain name is configured by APP_DOMAIN variable in envs.sh file.
+* Vault cluster: Since we run CoreOS, and etcd comes with it, the Vault cluster uses etcd backend for HA. It is a 3 node dedicated cluster. After start, run `/var/lib/apps/bin/setup-vault.sh` on each vault node to unseal the vault cluster.
 * Cluster CoreOS upgrade: workers and etcd clusters are defined as separate locksmith group so they can be independently managed by locksmith. The locksmith group, reboot stragtegy (best-effort) and upgrade window are defined under _resources/cloud_config_ directory.
 
