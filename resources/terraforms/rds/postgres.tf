@@ -17,7 +17,7 @@ resource "aws_db_instance" "cluster-postgres" {
     publicly_accessible = "true"
     backup_retention_period = "7"
     maintenance_window = "tue:10:33-tue:11:03"
-    backup_window = "09:19-10:19"
+    backup_window = "09:19-10:10"
     vpc_security_group_ids = [ "${aws_security_group.rds.id}" ]
     db_subnet_group_name = "${aws_db_subnet_group.cluster_db.id}"
 }
@@ -32,6 +32,12 @@ resource "aws_route53_record" "postgresdb" {
     records = [ "${aws_db_instance.cluster-postgres.address}" ]
 }
 
+output "db_instance_cluster_postgres_name" {
+    value = "${aws_db_instance.cluster-postgres.name}"
+}
+output "db_instance_cluster_postgres_username" {
+    value = "${aws_db_instance.cluster-postgres.username}"
+}
 output "postgres_db_password" {
     sensitive = true
     value = "${var.postgres_db_password}"
