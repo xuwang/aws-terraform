@@ -26,7 +26,7 @@ VM_TYPE ?= hvm
 # All resources used in destroy_all, in the order of dependencies.
 # It doesn't hurt if a resource in the list is not created, but if it does, add 
 # it to the list to make sure cleanup is done properly. 
-ALL_RESOURCES := vault admiral worker etcd iam s3 elb-ci elb-gitlab elb_dockerhub efs rds route53 vpc
+ALL_RESOURCES := vault admiral worker etcd iam s3 elb-ci elb-gitlab elb_dockerhub efs rds route53 cloudtrail vpc
 
 # To prevent you from mistakenly using a wrong account (and end up destroying live environment),
 # a list of allowed AWS account IDs should be defined:
@@ -96,7 +96,7 @@ help:
 	@echo "Usage: make plan_<resource> | <resource> | plan_destroy_<resource> | destroy_<resource>"
 	@echo "Or make show_<resource> | graph"
 	@echo "Or make plan_destroy_all | destroy_all"
-	@echo "Available resources: vpc s3 route53 iam efs elb etcd worker admiral rds"
+	@echo "Available resources: cloudtrail vault vpc s3 route53 iam efs elb etcd worker admiral rds"
 	@echo "For example: make plan_worker # to show what resources are planned for worker"
 
 lock:
