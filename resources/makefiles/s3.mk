@@ -1,5 +1,6 @@
 s3: init_s3
 	@cd $(BUILD)/$@; $(SCRIPTS)/tf-apply-confirm.sh
+	@sleep 10
 	@$(MAKE) gen_s3_vars
 
 plan_s3: init_s3
@@ -17,7 +18,7 @@ init_s3: init
 	cd $(BUILD)/s3 ; ln -sf ../*.tf .
 
 clean_s3:
-	rm -rf $(BUILD)/s3
+	rm -rf $(BUILD)/s3 $(BUILD)/s3_vars.tf
 
 gen_s3_vars:
 	cd $(BUILD)/s3; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/s3_vars.tf

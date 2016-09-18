@@ -19,8 +19,8 @@ coreos:
       - name: 30-cloudinit.conf
         content: |
           [Service]
-          Environment="LOCKSMITHD_REBOOT_WINDOW_START=05:30"
-          Environment="LOCKSMITHD_REBOOT_WINDOW_LENGTH=3h"
+          Environment=LOCKSMITHD_REBOOT_WINDOW_START=05:30
+          Environment=LOCKSMITHD_REBOOT_WINDOW_LENGTH=3h
     - name: etcd2.service
       command: start
       drop-ins:
@@ -70,6 +70,7 @@ coreos:
         Wants=install-vault.service
         After=install-vault.service
         [Service]
+        ExecStartPre=/bin/bash -c "cd /opt/etc/vault/certs && if [ ! -f "vault.crt" ]; then ./gen.sh; fi"
         ExecStart=/opt/bin/vault server -config /opt/etc/vault/vault.hcl
         RestartSec=5
         Restart=always
@@ -224,10 +225,10 @@ write_files:
       DNS.5 = *.*.*.*.*
       DNS.6 = *.*.*.*.*.*
       DNS.7 = *.*.*.*.*.*.*
+      DNS.8 = vault.example.com
       IP.1 = $private_ipv4
       IP.2 = $public_ipv4
       IP.3 = 127.0.0.1
-      IP.4 = vault.example.com
   - path: /opt/etc/vault/certs/gen.sh
     permissions: 0700
     owner: root

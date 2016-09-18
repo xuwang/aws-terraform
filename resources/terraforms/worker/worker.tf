@@ -27,7 +27,7 @@ module "worker" {
   data_volume_size = 100
 
   user_data = "${file("../cloud-config/s3-cloudconfig-bootstrap.sh")}"
-  iam_role_policy = "${template_file.worker_policy_json.rendered}"
+  iam_role_policy = "${data.template_file.worker_policy_json.rendered}"
 }
 
 # Upload CoreOS cloud-config to a s3 bucket; s3-cloudconfig-bootstrap script in user-data will download 
@@ -36,27 +36,27 @@ module "worker" {
 resource "aws_s3_bucket_object" "worker_cloud_config" {
   bucket = "${var.s3_cloudinit_bucket}"
   key = "worker/cloud-config.yaml"
-  content = "${template_file.worker_cloud_config.rendered}"
+  content = "${data.template_file.worker_cloud_config.rendered}"
 }
 
-resource "template_file" "worker_cloud_config" {
+data "template_file" "worker_cloud_config" {
     template = "${file("../cloud-config/worker.yaml.tmpl")}"
     vars {
-        "AWS_ACCOUNT" = "${var.aws_account.id}"
+        "AWS_ACCOUNT" = "${var.aws_account["id"]}"
         "AWS_USER" = "${var.deployment_user}"
         "AWS_ACCESS_KEY_ID" = "${var.deployment_key_id}"
         "AWS_SECRET_ACCESS_KEY" = "${var.deployment_key_secret}"
-        "AWS_DEFAULT_REGION" = "${var.aws_account.default_region}"
+        "AWS_DEFAULT_REGION" = "${var.aws_account["default_region"]}"
         "CLUSTER_NAME" = "${var.cluster_name}"
         "APP_REPOSITORY" = "${var.app_repository}"
         "GIT_SSH_COMMAND" = "\"${var.git_ssh_command}\""
     }
 }
 
-resource "template_file" "worker_policy_json" {
-    template = "${file(\"../policies/worker_policy.json\")}"
+data "template_file" "worker_policy_json" {
+    template = "${file("../policies/worker_policy.json")}"
     vars {
-        "AWS_ACCOUNT" = "${var.aws_account.id}"
+        "AWS_ACCOUNT" = "${var.aws_account["id"]}"
         "CLUSTER_NAME" = "${var.cluster_name}"
     }
 }

@@ -4,5 +4,8 @@ echo "# $(date)"
 echo "$(terraform output)" | while read line
 do
 	IFS=' = ' read -r -a array <<< "$line"
-	echo variable \"${array[0]}\" { default = \"${array[1]}\"}
+	if [ ! -z "${array[0]}" ];
+	then
+		echo variable \"${array[0]}\" { default = \"${array[1]}\"}
+	fi
 done

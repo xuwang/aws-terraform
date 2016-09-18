@@ -18,10 +18,10 @@ show_vpc:
 init_vpc: init
 	mkdir -p $(BUILD)/vpc
 	rsync -av $(RESOURCES)/terraforms/vpc/ $(BUILD)/vpc
-	cd $(BUILD)/vpc ; ln -sf ../*.tf .
+	cd $(BUILD)/vpc ; ln -sf ../provider.tf .
 
 clean_vpc:
-	rm -rf $(BUILD)/vpc
+	rm -rf $(BUILD)/vpc $(BUILD)/vpc_vars.tf
 
 gen_vpc_vars:
 	cd $(BUILD)/vpc; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/vpc_vars.tf

@@ -18,7 +18,7 @@ init_iam: s3
 	cd $(BUILD)/iam ; ln -sf ../*.tf .
 
 clean_iam:
-	rm -rf $(BUILD)/iam
+	rm -rf $(BUILD)/iam $(BUILD)/iam_vars.tf
 
 gen_iam_vars:
 	cd $(BUILD)/iam; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/iam_vars.tf

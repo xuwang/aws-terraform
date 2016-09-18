@@ -38,7 +38,7 @@ resource "aws_route_table" "cluster_vpc" {
 
 resource "aws_vpc_endpoint" "s3" {
     vpc_id = "${aws_vpc.cluster_vpc.id}"
-    service_name = "com.amazonaws.${var.aws_account.default_region}.s3"
+    service_name = "com.amazonaws.${var.aws_account["default_region"]}.s3"
     route_table_ids = ["${aws_route_table.cluster_vpc.id}"]
 }
 

@@ -2,7 +2,7 @@ admiral: init_admiral
 	cd $(BUILD)/$@ ; $(SCRIPTS)/tf-apply-confirm.sh
 	# Wait for vpc/subnets to be ready
 	sleep 5
-	$(MAKE) gen_admiral_vars
+	#$(MAKE) gen_admiral_vars
 	@$(MAKE) get_admiral_ips
 
 # Use this for ongoing changes if you only changed admiral.tf.
@@ -40,13 +40,13 @@ destroy_admiral_key:
 init_admiral: etcd create_admiral_key
 	mkdir -p $(BUILD)/admiral
 	cp -rf $(RESOURCES)/terraforms/admiral/admiral.tf $(BUILD)/admiral
-	cd $(BUILD)/admiral ; ln -sf ../*.tf .
+	cd $(BUILD)/admiral ; rm -rf $(BUILD)/admiral_vars.tf admiral_vars.tf; ln -sf ../*.tf .
 	@if [[ "X$(APP_REPOSITORY_DEPLOYKEY)" != "X" ]] && [[ -f $(APP_REPOSITORY_DEPLOYKEY) ]]; then \
   		cat $(APP_REPOSITORY_DEPLOYKEY) >> $(BUILD)/cloud-config/admiral.yaml.tmpl; \
   	fi
 
 clean_admiral:
-	rm -rf $(BUILD)/admiral
+	rm -rf $(BUILD)/admiral $(BUILD)/admiral_vars.tf
 
 gen_admiral_vars:
 	cd $(BUILD)/admiral; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/admiral_vars.tf

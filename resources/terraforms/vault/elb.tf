@@ -1,14 +1,5 @@
 #
 # ELB for Vault
-#
-
-variable "vault_cert" { default = "../certs/site.pem" }
-variable "vault_cert_chain" { default = "../certs/rootCA.pem" }
-variable "vault_cert_key" { default = "../certs/site-key.pem" }
-variable "elb-health-check" {
-    default = "HTTP:8200/v1/sys/health"
-    description = "Health check for Vault servers"
-}
 
 # Upload a example/demo wildcard cert
 resource "aws_iam_server_certificate" "wildcard" {

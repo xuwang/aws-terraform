@@ -1,6 +1,6 @@
 worker: init_worker
 	cd $(BUILD)/$@ ; $(SCRIPTS)/tf-apply-confirm.sh
-	@$(MAKE) gen_worker_vars
+	#@$(MAKE) gen_worker_vars
 	@$(MAKE) get_worker_ips
 
 # Use this for ongoing changes if you only changed worker.tf.
@@ -40,7 +40,7 @@ destroy_worker_key:
 	cd $(BUILD); $(SCRIPTS)/aws-keypair.sh -d $(CLUSTER_NAME)-worker;
 
 clean_worker:
-	rm -rf $(BUILD)/worker
+	rm -rf $(BUILD)/worker $(BUILD)/worker_vars.tf
 
 gen_worker_vars:
 	cd $(BUILD)/worker; ${SCRIPTS}/gen-tf-vars.sh > $(BUILD)/worker_vars.tf

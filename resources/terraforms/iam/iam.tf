@@ -7,7 +7,7 @@ resource "aws_iam_user" "deployment" {
 resource "aws_iam_user_policy" "deployment" {
     name = "${aws_iam_user.deployment.name}"
     user = "${aws_iam_user.deployment.name}"
-    policy = "${file(\"../policies/deployment_policy.json\")}"
+    policy = "${file("../policies/deployment_policy.json")}"
 }
 
 resource "aws_iam_policy_attachment" "efs-readonly" {
