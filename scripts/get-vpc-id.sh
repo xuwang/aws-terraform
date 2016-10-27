@@ -3,8 +3,9 @@
 # Only proceed if the cluster doesn't exist. Return value is 0.
 
 CLUSTER_NAME=${CLUSTER_NAME:-''}
+AWS_PROFILE=${AWS_PROFILE:-''}
 if [ ! -z "$CLUSTER_NAME" ]; then
-  cluster_tag=$(aws --profile iam-infra-dev ec2 describe-vpcs  --filters "Name=tag:Name,Values=${CLUSTER_NAME}" | jq -r '.Vpcs[0].VpcId')
+  cluster_tag=$(aws --profile ${AWS_PROFILE} ec2 describe-vpcs  --filters "Name=tag:Name,Values=${CLUSTER_NAME}" | jq -r '.Vpcs[0].VpcId')
   if [[ $? -ne 0 ]]; then
     echo "Error checking cluster."
     exit 1
