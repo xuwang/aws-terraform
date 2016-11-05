@@ -61,8 +61,8 @@ get_vault_ips:
 update_vault_user_data:
 	cat $(RESOURCES)/cloud-config/vault.yaml.tmpl $(RESOURCES)/cloud-config/common-files.yaml.tmpl > $(BUILD)/cloud-config/vault.yaml.tmpl
 	cd $(BUILD)/vault; \
-		${TF_DESTROY} -target data.template_file.vault_cloud_config ; \
-		${TF_DESTROY} -target aws_s3_bucket_object.vault_cloud_config ; \
+		$(TF_DESTROY) -target data.template_file.vault_cloud_config ; \
+		$(TF_DESTROY) -target aws_s3_bucket_object.vault_cloud_config ; \
 		$(TF_APPLY)
 
 .PHONY: vault vault-only destroy_vault plan_destroy_vault plan_vault init_vault get_vault_ips update_vault_user_data

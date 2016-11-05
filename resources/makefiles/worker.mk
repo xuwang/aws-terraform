@@ -52,7 +52,8 @@ get_worker_ips:
 # Call this explicitly to re-load user_data
 update_worker_user_data:
 	cd $(BUILD)/worker; \
-		${TF_TAINT} aws_s3_bucket_object.worker_cloud_config ; \
+		$(TF_DESTROY) -target data.template_file.worker_cloud_config ; \
+		$(TF_DESTROY) -target aws_s3_bucket_object.worker_cloud_config ; \
 		$(TF_APPLY)
 
 .PHONY: worker worker_only destroy_worker plan_destroy_worker plan_worker init_worker get_worker_ips update_worker_user_data
