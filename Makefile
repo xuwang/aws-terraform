@@ -64,13 +64,13 @@ TF_STATE := terraform.tfstate
 
 # Terraform commands
 # Note: for production, set -refresh=true to be safe
-TF_APPLY := terraform apply -refresh=false
+TF_APPLY := terraform apply -refresh=true
 # Note: for production, remove --force to confirm destroy.
 TF_DESTROY := terraform destroy -force
-TF_DESTROY_PLAN := terraform plan -destroy -refresh=false
+TF_DESTROY_PLAN := terraform plan -destroy -refresh=true
 TF_GET := terraform get -update
 TF_GRAPH := terraform graph -module-depth=0
-TF_PLAN := terraform plan -module-depth=1 -refresh=false
+TF_PLAN := terraform plan -module-depth=1 -refresh=true
 TF_SHOW := terraform show -module-depth=1
 TF_REFRESH := terraform refresh
 TF_TAINT := terraform taint -allow-missing

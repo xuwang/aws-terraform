@@ -65,8 +65,7 @@ plan_admiral_efs_target:
 # Call this explicitly to re-load user_data
 update_admiral_user_data:
 	cd $(BUILD)/admiral; \
-		$(TF_DESTROY) -target data.template_file.admiral_cloud_config ; \
-		$(TF_DESTROY) -target aws_s3_bucket_object.admiral_cloud_config ; \
+		${TF_PLAN} -target=data.template_file.admiral_cloud_config; \
 		$(TF_APPLY)
 
 .PHONY: admiral admiral_only destroy_admiral plan_destroy_admiral plan_admiral init_admiral get_admiral_ips update_admiral_user_data

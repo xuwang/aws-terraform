@@ -58,8 +58,7 @@ get_etcd_ips:
 # Call this explicitly to re-load user_data
 update_etcd_user_data:
 	cd $(BUILD)/etcd; \
-		$(TF_DESTROY) -target data.template_file.etcd_cloud_config ; \
-		$(TF_DESTROY) -target aws_s3_bucket_object.etcd_cloud_config ; \
+		{TF_PLAN} -target=data.template_file.etcd_cloud_config; \
 		$(TF_APPLY)
 
 .PHONY: etcd etcd-only destroy_etcd plan_destroy_etcd plan_etcd init_etcd get_etcd_ips update_etcd_user_data
