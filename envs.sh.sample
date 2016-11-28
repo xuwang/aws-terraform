@@ -3,13 +3,10 @@
 
 export AWS_PROFILE=my-aws-profile
 export CLUSTER_NAME=my-cluster
+export AWS_REGION=us-west-2
 
 # Default domain for route53 zone and for iam server certificate
 #export APP_DOMAIN=dockerage.com
-
-# Default AWS region. Note, if you change this, you will also need to change terraform resources/vpc/*.tf to 
-# match the zone information for the region. 
-#export REGION=us-west-2
 
 # If you have a private repo needs to be synced to host under /var/lib/app. :
 #export APP_REPOSITORY=git@example.com:user/app-repo.git

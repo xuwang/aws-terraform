@@ -153,6 +153,8 @@ graph: | $(BUILD)
 	  fi ; \
 	done
 
+plan:
+	@echo "plan_<resource>"
 show_all:
 	@$(foreach resource,$(BUILD_SUBDIRS),$(TF_SHOW) $(BUILD)/$(resource)/terraform.tfstate 2> /dev/null; )
 

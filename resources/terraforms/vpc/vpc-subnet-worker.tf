@@ -1,36 +1,36 @@
-module "worker_subnet_a" {
+module "worker_subnet_0" {
   source = "../../modules/subnet"
 
-  subnet_name = "${var.cluster_name}-worker_a"
+  subnet_name = "${var.cluster_name}-worker_0"
   subnet_cidr = "10.10.5.0/26"
-  subnet_az = "us-west-2a"
+  subnet_az = "${data.aws_availability_zones.available.names[0]}"
   vpc_id = "${aws_vpc.cluster_vpc.id}"
   route_table_id = "${aws_route_table.cluster_vpc.id}"
 }
 
-module "worker_subnet_b" {
+module "worker_subnet_1" {
   source = "../../modules/subnet"
 
-  subnet_name = "${var.cluster_name}-worker_b"
+  subnet_name = "${var.cluster_name}-worker_1"
   subnet_cidr = "10.10.5.64/26"
-  subnet_az = "us-west-2b"
+  subnet_az = "${data.aws_availability_zones.available.names[1]}"
   vpc_id = "${aws_vpc.cluster_vpc.id}"
   route_table_id = "${aws_route_table.cluster_vpc.id}"
 }
 
-module "worker_subnet_c" {
+module "worker_subnet_2" {
   source = "../../modules/subnet"
 
-  subnet_name = "${var.cluster_name}-worker_c"
+  subnet_name = "${var.cluster_name}-worker_2"
   subnet_cidr = "10.10.5.128/26"
-  subnet_az = "us-west-2c"
+  subnet_az = "${data.aws_availability_zones.available.names[2]}"
   vpc_id = "${aws_vpc.cluster_vpc.id}"
   route_table_id = "${aws_route_table.cluster_vpc.id}"
 }
 
-output "worker_subnet_a_id" { value = "${module.worker_subnet_a.id}" }
-output "worker_subnet_a_az" { value = "${module.worker_subnet_a.az}" }
-output "worker_subnet_b_id" { value = "${module.worker_subnet_b.id}" }
-output "worker_subnet_b_az" { value = "${module.worker_subnet_b.az}" }
-output "worker_subnet_c_id" { value = "${module.worker_subnet_c.id}" }
-output "worker_subnet_c_az" { value = "${module.worker_subnet_c.az}" }
+output "worker_subnet_0_id" { value = "${module.worker_subnet_0.id}" }
+output "worker_subnet_0_az" { value = "${module.worker_subnet_0.az}" }
+output "worker_subnet_1_id" { value = "${module.worker_subnet_1.id}" }
+output "worker_subnet_1_az" { value = "${module.worker_subnet_1.az}" }
+output "worker_subnet_2_id" { value = "${module.worker_subnet_2.id}" }
+output "worker_subnet_2_az" { value = "${module.worker_subnet_2.az}" }
