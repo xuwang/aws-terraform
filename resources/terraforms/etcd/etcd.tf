@@ -5,7 +5,7 @@ module "etcd" {
   asg_name = "etcd"
   cluster_name = "${var.cluster_name}"
   # a list of subnet IDs to launch resources in.
-  cluster_vpc_zone_identifiers = "${var.etcd_subnet_a_id},${var.etcd_subnet_b_id},${var.etcd_subnet_c_id}"
+  cluster_vpc_zone_identifiers = "${var.etcd_subnet_0_id},${var.etcd_subnet_1_id},${var.etcd_subnet_2_id}"
   # for etcd, cluster_min_size = cluster_max_size = cluster_desired_capacity = <odd number>
   cluster_min_size = 1
   cluster_max_size = 1

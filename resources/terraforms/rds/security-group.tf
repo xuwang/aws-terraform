@@ -1,7 +1,7 @@
 resource "aws_db_subnet_group" "cluster_db" {
     name = "${var.cluster_name}-db"
     description = "db subnets for ${var.cluster_name} applications"
-    subnet_ids = ["${var.rds_subnet_a_id}","${var.rds_subnet_b_id}","${var.rds_subnet_c_id}"]
+    subnet_ids = ["${var.rds_subnet_0_id}","${var.rds_subnet_1_id}","${var.rds_subnet_2_id}"]
 }
 
 resource "aws_security_group" "rds"  {

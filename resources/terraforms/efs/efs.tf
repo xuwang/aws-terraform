@@ -42,7 +42,7 @@ module "efs-target" {
     source = "../../modules/efs-target"
     filesystem_id = "${aws_efs_file_system.efs.id}"
     security_group_id = "${aws_security_group.efs.id}"
-    efs_subnet_a_id = "${var.worker_subnet_a_id}"
-    efs_subnet_b_id = "${var.worker_subnet_b_id}"
-    efs_subnet_c_id = "${var.worker_subnet_c_id}"
+    efs_subnet_0_id = "${var.worker_subnet_0_id}"
+    efs_subnet_1_id = "${var.worker_subnet_1_id}"
+    efs_subnet_2_id = "${var.worker_subnet_2_id}"
 }

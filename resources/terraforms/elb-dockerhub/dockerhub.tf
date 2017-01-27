@@ -11,7 +11,7 @@ resource "aws_elb" "dockerhub" {
   depends_on = "aws_iam_server_certificate.wildcard"
   
   security_groups = [ "${aws_security_group.elb.id}" ]
-  subnets = ["${var.elb_subnet_a_id}","${var.elb_subnet_b_id}","${var.elb_subnet_c_id}"]
+  subnets = ["${var.elb_subnet_0_id}","${var.elb_subnet_1_id}","${var.elb_subnet_2_id}"]
   
   listener {
     lb_port = 443

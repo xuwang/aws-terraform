@@ -12,7 +12,7 @@ resource "aws_db_instance" "cluster-postgres" {
     username = "${var.postgres_db_user}"
     password = "${var.postgres_db_password}"
     multi_az = "false" 
-    availability_zone = "${var.rds_subnet_a_az}"
+    availability_zone = "${var.rds_subnet_0_az}"
     port = "5432"
     publicly_accessible = "true"
     backup_retention_period = "7"
