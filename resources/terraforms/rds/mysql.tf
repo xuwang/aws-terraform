@@ -11,7 +11,7 @@ resource "aws_db_instance" "cluster-mysql" {
     username = "${var.mysql_db_user}"
     password = "${var.mysql_db_password}"
     multi_az = "false" 
-    availability_zone = "${var.rds_subnet_a_az}"
+    availability_zone = "${var.rds_subnet_0_az}"
     port = "3306"
     publicly_accessible = "true"
     backup_retention_period = "7"

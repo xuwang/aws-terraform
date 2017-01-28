@@ -9,7 +9,7 @@ variable "ci_cert_key" { default = "../certs/site-key.pem" }
 resource "aws_elb" "ci" {
   name = "${var.cluster_name}-elb-ci"
   depends_on = [ "aws_iam_server_certificate.wildcard" ]  
-  subnets = ["${var.elb_subnet_a_id}","${var.elb_subnet_b_id}","${var.elb_subnet_c_id}"]
+  subnets = ["${var.elb_subnet_0_id}","${var.elb_subnet_1_id}","${var.elb_subnet_2_id}"]
   security_groups = [ "${aws_security_group.elb_ci.id}" ]
 
   listener {

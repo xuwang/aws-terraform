@@ -5,7 +5,7 @@ module "worker" {
   cluster_name = "${var.cluster_name}"
   asg_name = "worker"
   # a list of subnet IDs to launch resources in.
-  cluster_vpc_zone_identifiers = "${var.worker_subnet_a_id},${var.worker_subnet_b_id},${var.worker_subnet_c_id}"
+  cluster_vpc_zone_identifiers = "${var.worker_subnet_0_id},${var.worker_subnet_1_id},${var.worker_subnet_2_id}"
   cluster_min_size = 1
   cluster_max_size = 2
   cluster_desired_capacity = 2

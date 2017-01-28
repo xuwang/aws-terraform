@@ -63,7 +63,7 @@ resource "aws_elb" "vault" {
     connection_draining = true
     connection_draining_timeout = 400
     internal = true
-    subnets = ["${var.elb_subnet_a_id}","${var.elb_subnet_b_id}","${var.elb_subnet_c_id}"]
+    subnets = ["${var.elb_subnet_0_id}","${var.elb_subnet_1_id}","${var.elb_subnet_2_id}"]
     security_groups = ["${aws_security_group.elb.id}"]
 
     listener {
