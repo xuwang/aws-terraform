@@ -5,7 +5,7 @@
     content: |
       backend "etcd" {
         address = "http://127.0.0.1:2379"
-        advertise_addr = "https://$public_ipv4:8200"
+        redirect_addr = "https://$public_ipv4:8200"
         path = "vault"
         sync = "yes"
       }
