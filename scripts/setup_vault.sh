@@ -25,17 +25,16 @@ if [ ! $(els root-token 2> /dev/null ) ]; then
   echo "Initialize Vault"
   vault init | tee /tmp/vault.init > /dev/null
 
-  # Store master keys in etcd for operator to retrieve and remove
+  # Store master keys and unseal keys in etcd for operator to retrieve and remove
   COUNTER=1
-  cat /tmp/vault.init | grep '\(hex\)' | awk '{print $6}' | for key in $(cat -); do
+  cat /tmp/vault.init | grep '\(Unseal Key\)' | awk '{print $4}' | for key in $(cat -); do
     eset unseal-key-$COUNTER $key
     COUNTER=$((COUNTER + 1))
   done
-
   export ROOT_TOKEN=$(cat /tmp/vault.init | grep '^Initial' | awk '{print $4}')
   eset root-token $ROOT_TOKEN
 
-  echo "Remove master keys from disk"
+  echo "Tempoary key files are in /tmp/vault.init. You can remove keys from disk: shred /tmp/vault.init"
   #shred /tmp/vault.init
 else
   echo "Vault has already been initialized, skipping."
@@ -53,7 +52,7 @@ instructions() {
 We use an instance of HashiCorp Vault for secrets management.
 It has been automatically initialized and unsealed once. Future unsealing must
 be done manually.
-The unseal keys and root token have been temporarily stored in Consul K/V.
+The unseal keys and root token have been temporarily stored in Etcd K/V.
   /service/vault/root-token /service/vault/unseal-key-{1..5}
 Please securely distribute and record these secrets and remove them from Consul.
 EOF
