@@ -19,7 +19,7 @@ APP_REPOSITORY_DEPLOYKEY ?= ''
 APP_DOMAIN ?= 'example.com'
 
 # For get-ami.sh
-COREOS_UPDATE_CHANNE ?= stable
+COREOS_UPDATE_CHANNEL ?= stable
 AWS_REGION ?= us-west-2
 VM_TYPE ?= hvm
 

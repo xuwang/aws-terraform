@@ -193,7 +193,7 @@ can be override in resources/terraform/<resource>/<resource>.tf` files.
 AWS_PROFILE ?= coreos-cluster
 CLUSTER_NAME ?= coreos-cluster
 APP_REPOSITORY ?= https://github.com/dockerage/coreos-cluster-apps
-COREOS_UPDATE_CHANNE ?= beta
+COREOS_UPDATE_CHANNEL ?= beta
 AWS_REGION ?= us-west-2
 VM_TYPE ?= hvm
 ```
@@ -204,7 +204,7 @@ of these values, so you don't need to chnge Makefile:
 ```
 export AWS_PROFILE=my-dev-cluster
 export CLUSTER_NAME=my-dev-cluser
-export COREOS_UPDATE_CHANNE=stable
+export COREOS_UPDATE_CHANNEL=stable
 ```
 
 Then run
