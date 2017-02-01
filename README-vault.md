@@ -66,3 +66,10 @@ cubbyhole/  cubbyhole  n/a          n/a      per-token private secret storage
 secret/     generic    system       system   generic secret storage
 sys/        system     n/a          n/a      system endpoints used for control, policy and debugging
 ```
+## Validate vault elb health
+
+You can check on AWS EC2/Loadbalancer console, or run:
+
+```
+$ aws elb --profile <profile> describe-instance-health --load-balancer-name=vault --region <region>
+```
