@@ -6,7 +6,7 @@ variable "vault_cert_chain" { default = "../certs/rootCA.pem" }
 variable "vault_cert_key" { default = "../certs/site-key.pem" }
 #  Use TCP because we use TLS. 
 variable "elb-health-check" {
-    default = "TCP"
+    default = "TCP:8200"
     description = "Health check for Vault servers"
 }
 
