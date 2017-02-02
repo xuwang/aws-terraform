@@ -79,8 +79,8 @@ TF_OUTPUT := terraform output
 # Git clone/pull command
 GIT_SSH_COMMAND := ssh -i /root/.ssh/git-sync-rsa.pem -o 'StrictHostKeyChecking no'
 
-# cidr block to allow ssh; default to  $(curl -s http://ipinfo.io/ip)/32)
-# TF_VAR_allow_ssh_cidr := $(curl -s http://ipinfo.io/ip)/32)
+# Comman separated list of cidr blocks to allow ssh; default to  $(curl -s http://ipinfo.io/ip)/32
+# TF_VAR_allow_ssh_cidr := "$(shell curl -s http://ipinfo.io/ip)/32"
 TF_VAR_timestamp := $(shell date +%Y-%m-%d-%H%M)
 TF_VAR_iamuser := $(AWS_USER)
 
