@@ -90,7 +90,7 @@ resource "aws_security_group_rule" "vault-ssh" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = ["${var.allow_ssh_cidr}"]
+    cidr_blocks = ["${split(",", var.allow_ssh_cidr)}"]
 }
 
 # Allow etcd client to communicate

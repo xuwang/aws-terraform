@@ -22,13 +22,13 @@ resource "aws_security_group" "rds"  {
       from_port = 3306
       to_port = 3306
       protocol = "tcp"
-      cidr_blocks = ["${var.cluster_vpc_cidr}", "${var.allow_ssh_cidr}"]
+      cidr_blocks = ["${var.cluster_vpc_cidr}", "${split(",", var.allow_ssh_cidr)}"]
     }
     # Allow PostgresSQL access
     ingress {
       from_port = 5432
       to_port = 5432
       protocol = "tcp" 
-      cidr_blocks = ["${var.cluster_vpc_cidr}", "${var.allow_ssh_cidr}"]
+      cidr_blocks = ["${var.cluster_vpc_cidr}", "${split(",", var.allow_ssh_cidr)}"]
     }
 }
