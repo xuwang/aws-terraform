@@ -26,8 +26,9 @@ shared services such as CI, private docker registry, logging and monitoring, etc
 
 The entire infrastructure is managed by [Terraform](https://www.terraform.io/intro/index.html).
 
-Other two Terrraform implmentation references are:
-* A Unix cluster with an AMI of your choice:  see a similar repo [aws-linux-cluster](https://github.com/xuwang/aws-linux-cluster).
+Other three Terrraform implmentation references are:
+* [A Kubernetes cluster on AWS](https://github.com/xuwang/kube-aws-terraform)
+* A Unix cluster with an AMI of your choice: see a similar repo [aws-linux-cluster](https://github.com/xuwang/aws-linux-cluster).
 * A static website using hugo and AWS Lambda: see [terraform-hugo-lambda](https://github.com/xuwang/terraform-hugo-lambda).
 
 ## Setup AWS credentials
