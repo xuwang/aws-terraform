@@ -1,9 +1,7 @@
 
 # AWS CoreOS cluster provisioning with [Terraform](https://www.terraform.io/intro/index.html)
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-## Table of Contents##
+## Table of Contents
 
 - [Overview](#overview)
 - [Setup AWS credentials](#setup-aws-credentials)
@@ -26,8 +24,9 @@ shared services such as CI, private docker registry, logging and monitoring, etc
 
 The entire infrastructure is managed by [Terraform](https://www.terraform.io/intro/index.html).
 
-Other three Terrraform implmentation references are:
-* [A Kubernetes cluster on AWS](https://github.com/xuwang/kube-aws-terraform)
+Note: [A Kubernetes cluster on AWS with Terraform (KAT) ](https://github.com/xuwang/kube-aws-terraform) is also available with the same code structure as this repo. 
+
+Other two Terrraform implmentation references are:
 * A Unix cluster with an AMI of your choice: see a similar repo [aws-linux-cluster](https://github.com/xuwang/aws-linux-cluster).
 * A static website using hugo and AWS Lambda: see [terraform-hugo-lambda](https://github.com/xuwang/terraform-hugo-lambda).
 
