@@ -57,7 +57,7 @@ LOCK_KEYNAME := $(CLUSTER_NAME)-tfstate-lock
 CONFIRM_TF_APPLY ?= YES
 
 # Terraform files
-TF_PORVIDER := provider.tf
+TF_PROVIDER := provider.tf
 TF_DESTROY_PLAN_OUT := destroy.tfplan
 TF_APPLY_PLAN := apply.tfplan
 TF_STATE := terraform.tfstate
