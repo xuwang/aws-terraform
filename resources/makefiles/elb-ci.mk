@@ -5,8 +5,8 @@ elb_ci: vpc plan_elb_ci
 plan_elb_ci: plan_vpc init_elb_ci
 	cd $(BUILD)/elb_ci; $(TF_PLAN)
 
-destroy_elb_ci: | $(TF_PORVIDER)
-	cd $(BUILD)/elb_ci; $(TF_DESTROY) 
+destroy_elb_ci: | $(TF_PROVIDER)
+	cd $(BUILD)/elb_ci; $(TF_DESTROY)
 
 plan_destroy_elb_ci:
 	cd $(BUILD)/elb_ci; $(TF_DESTROY_PLAN)

@@ -7,14 +7,14 @@ show_state: init
 refresh: init
 	cd $(BUILD); $(TF_REFRESH)
 
-init: | $(TF_PORVIDER) $(AMI_VAR)
+init: | $(TF_PROVIDER) $(AMI_VAR)
 
 get_vpc_id:
 	$(SCRIPTS)/get-vpc-id.sh
 
 $(BUILD): init_build_dir
 
-$(TF_PORVIDER): update_provider
+$(TF_PROVIDER): update_provider
 
 $(AMI_VAR): update_ami
 
@@ -32,7 +32,7 @@ update_ami:	| $(BUILD)
 
 update_provider: | $(BUILD)
 	# Generate tf provider
-	$(SCRIPTS)/gen-provider.sh > /dev/null 2>&1 &&  $(SCRIPTS)/gen-provider.sh > $(BUILD)/$(TF_PORVIDER)
+	$(SCRIPTS)/gen-provider.sh > /dev/null 2>&1 &&  $(SCRIPTS)/gen-provider.sh > $(BUILD)/$(TF_PROVIDER)
 
 gen_certs: $(BUILD)
 	@cp -rf $(RESOURCES)/certs $(BUILD); sed -i '' "s/DOMAIN/$(APP_DOMAIN)/g" $(BUILD)/certs/*
@@ -43,6 +43,6 @@ gen_certs: $(BUILD)
 
 clean_certs:
 	rm -f $(CERTS)/*.pem
-	
+
 .PHONY: init show show_state refresh update_ami update_provider init_build_dir
 .PHONY: gen_certs clean_certs
